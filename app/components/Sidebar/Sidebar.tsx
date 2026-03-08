@@ -2,7 +2,7 @@ import Links from "../Links/Links";
 
 export default function Sidebar() {
   return (
-    <aside className="flex flex-col justify-between w-32 h-screen bg-red-950">
+    <aside className="flex flex-col justify-between w-32 h-screen bg-gray-900">
       <img alt="logo"/>
       <Links />
       <nav className="flex flex-col gap-4">
