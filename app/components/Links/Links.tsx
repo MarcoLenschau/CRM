@@ -1,12 +1,9 @@
 import Link from "../Link/Link"
 
-export default function Links() {
+export default function Links({linksArray}: {linksArray: string[]}) {
   return (
     <nav className="w-full flex flex-col gap-4">
-      <Link name="Home"/>
-      <Link name="Users"/>
-      <Link name="Email"/>
-      <Link name="Help"/>
+      {linksArray.map((item, index) => <Link name={item} key={index}/>)}
     </nav>
   );
 }

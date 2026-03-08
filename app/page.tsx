@@ -8,9 +8,10 @@ import Footer from "./components/Footer/Footer"
 
 export default function Home() {
   const [sidebarShow, setSidebarShow] = useState(true);
+  const [isUserLogedIn, setUserState] = useState(false);
   return (
     <div className="flex">
-      {sidebarShow && <Sidebar />}
+      {sidebarShow && <Sidebar isUserLogedIn={isUserLogedIn}/>}
       <section className="flex flex-col w-full h-screen">
         <Header setSidebarShow={setSidebarShow} sidebarShow={sidebarShow}/>
         <Main />
