@@ -7,8 +7,8 @@ const countries = [
 ]
 
 export default function Language() {
-  const [selectedLanguage, setLanguage] = useState(countries[0])
-  const [open, setOpen] = useState(false)
+  const [selectedLanguage, setLanguage] = useState(countries[0]);
+  const [open, setOpen] = useState(false);
   return (
     <div className="relative flex flex-col gap-4 w-64">
         <section className="flex justify-center items-center gap-2 h-12 border rounded-2xl" onClick={() => setOpen(!open)}>
