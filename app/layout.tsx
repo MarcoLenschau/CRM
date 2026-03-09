@@ -3,13 +3,13 @@ import Container from "./components/Container/Container";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "CRM",
-  description: "CRM with Next JS",
+  title: "Login",
+  description: "CRM Login page",
 };
 
 export default function RootLayout({children}: Readonly<{children: React.ReactNode;}>) {
   return (
-    <html lang="en">
+    <html className="bg-zinc-900" lang="en">
       <body>
         <Container>
             {children}
