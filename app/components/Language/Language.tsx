@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { Dispatch, SetStateAction, useState } from "react"
 
 const countries = [
   { name: "German", code: "DE" },
@@ -6,7 +6,7 @@ const countries = [
   { name: "Spain", code: "ES" },
 ]
 
-export default function Language() {
+export default function Language({setHourMode}: {setHourMode: Dispatch<SetStateAction<boolean>>}) {
   const [selectedLanguage, setLanguage] = useState(countries[0]);
   const [open, setOpen] = useState(false);
   return (
@@ -23,7 +23,7 @@ export default function Language() {
         <section className={`absolute top-13 w-full flex flex-col justify-center items-center gap-2 p-4 border bg-zinc-900 rounded-2xl ${open ? "" : "hidden"}`}>
             {countries.map((countrie, index) =>  { 
                 return (
-                    <section key={index} className="flex gap-2 items-center w-30" onClick={() => { setLanguage(countrie), setOpen(false)}}>
+                    <section key={index} className="flex gap-2 items-center w-30" onClick={() => { setLanguage(countrie), setOpen(false), setHourMode(countrie.code === "GB")}}>
                         <img src={`/flags/${countrie.code}.svg`} className="w-8" alt={countrie.code}/>
                         <span>{countrie.name}</span>
                     </section>
