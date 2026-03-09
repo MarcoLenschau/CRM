@@ -1,10 +1,10 @@
-import Link from "../Link/Link"
+import LinkTemplate from "../LinkTemplate/LinkTemplate"
 
 export default function Juridical() {
   return (
     <nav className="flex flex-col gap-4">
-      <Link name="Impress" />
-      <Link name="Privacy" />
+      <LinkTemplate name="Impress"/>
+      <LinkTemplate name="Privacy"/>
     </nav>
   );
 }
