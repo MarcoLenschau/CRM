@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Container from "./components/Container/Container";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -10,7 +11,9 @@ export default function RootLayout({children}: Readonly<{children: React.ReactNo
   return (
     <html lang="en">
       <body>
-        {children}
+        <Container>
+            {children}
+        </Container>
       </body>
     </html>
   );
