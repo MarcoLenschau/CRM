@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({children}: Readonly<{children: React.ReactNode;}>) {
   return (
-    <html className="bg-zinc-900" lang="en">
+    <html className="bg-zinc-800" lang="en">
       <body>
         <Container>
             {children}

@@ -10,6 +10,7 @@ export default function Home() {
       <InputField placeholder="Username" type="text"/>
       <InputField placeholder="Password" type="password"/>
       <Button text="Login" type="submit"/>
+      <Button type="reset"/>
     </InputForm>
   );
 }
