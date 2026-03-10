@@ -7,6 +7,8 @@ import InputForm from "../components/ui/InputForm/InputForm";
 import ErrorDialog from "../components/ui/dialogs/ErrorDialog/ErrorDialog";
 import InputContainer from "../components/ui/InputContainer/InputContainer";
 
+export type Status = Promise<{status: number}>;
+
 export default function Register() {
   const [errorDialogMessage, setErrorDialog] = useState(""); 
   return ( 
@@ -40,11 +42,10 @@ const register = async(setErrorDialog: Dispatch<SetStateAction<string>>): Promis
     return;
   }
   const response = await fetchData(name, email, password);
-  response.status === 200 ? console.log("User is created") : 
-  response.status === 400 ? console.error("User is not created") : console.error("Error");
+  setErrorDialog(response.status === 200 ? "User is created" : response.status === 400 ? "User is not created" : "Error"); 
 };
 
-const fetchData = async(name: string, email: string, password: string) => {
+const fetchData = async(name: string, email: string, password: string): Status => {
   const response = await fetch("/api/register", {
     method: "POST",
     headers: {
