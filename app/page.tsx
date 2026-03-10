@@ -6,10 +6,10 @@ import InputForm from "./components/ui/InputForm/InputForm";
 
 export default function Home() {
   return (
-    <InputForm>
+    <InputForm onSubmit={() => login()}>
       <InputField placeholder="Username" type="text"/>
       <InputField placeholder="Password" type="password"/>
-      <Button type="submit" onClick={() => login()}/>
+      <Button text="Login" type="submit"/>
     </InputForm>
   );
 }

@@ -8,12 +8,12 @@ export default function Register() {
   return ( 
     <>
       <title>Register</title>
-      <InputForm>
+      <InputForm onSubmit={() => register()}>
         <InputField placeholder="Email" type="email"/>
         <InputField placeholder="Name" type="text"/>
         <InputField placeholder="Password" type="password"/>
         <InputField placeholder="Password repeat" type="password"/>
-        <Button type="submit" onClick={() => register()}/>
+        <Button text="Register" type="submit"/>
         <Button type="reset"/>
       </InputForm>
     </>
