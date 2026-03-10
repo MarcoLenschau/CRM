@@ -5,6 +5,8 @@ import Button from "../components/ui/Button/Button";
 import InputField from "../components/ui/InputField/InputField";
 import InputForm from "../components/ui/InputForm/InputForm";
 import ErrorDialog from "../components/ui/dialogs/ErrorDialog/ErrorDialog";
+import InputContainer from "../components/ui/InputContainer/InputContainer";
+
 export default function Register() {
   const [errorDialogMessage, setErrorDialog] = useState(""); 
   return ( 
@@ -12,12 +14,16 @@ export default function Register() {
       {errorDialogMessage !== "" && <ErrorDialog text={errorDialogMessage} setErrorDialog={setErrorDialog}/>}
       <title>Register</title>
       <InputForm>
-        <InputField id="email" placeholder="Email" type="email"/>
-        <InputField id="name" placeholder="Name" type="text"/>
-        <InputField id="password" placeholder="Password" type="password"/>
-        <InputField id="password-repear" placeholder="Password repeat" type="password"/>
-        <Button onClick={() => register(setErrorDialog)} type="button" text="Register"/>
-        <Button type="reset"/>
+        <InputContainer>
+          <InputField id="email" placeholder="Email" type="email"/>
+          <InputField id="name" placeholder="Name" type="text"/>
+          <InputField id="password" placeholder="Password" type="password"/>
+          <InputField id="password-repear" placeholder="Password repeat" type="password"/>        
+        </InputContainer>
+        <InputContainer>
+          <Button onClick={() => register(setErrorDialog)} type="button" text="Register"/>
+          <Button type="reset"/>        
+        </InputContainer>
       </InputForm>
     </>
   );
