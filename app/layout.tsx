@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Container from "./components/Container/Container";
-import "./globals.css";
 import "./globals.scss"
+import "./styles/lightmode.scss";
+import "./styles/tailwind.scss";
 
 export const metadata: Metadata = {
   title: "Login",
@@ -10,8 +11,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({children}: Readonly<{children: React.ReactNode;}>) {
   return (
-    <html className="bg-zinc-800" lang="en">
-      <body>
+    <html lang="en">
+      <body className="bg-zinc-800">
         <Container>
             {children}
         </Container>

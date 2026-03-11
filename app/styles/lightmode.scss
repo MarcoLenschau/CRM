@@ -1,0 +1,17 @@
+[data-theme="light"] {
+  --color-text: #0a0a0a;
+  --primary-bg: #FFFFFF;
+  --secondary-bg: #ededed;
+
+  * {
+    color: var(--color-text);
+  }
+
+  .bg-zinc-800 {
+    background-color: var(--primary-bg) !important;
+  }
+
+  .bg-zinc-900 {
+    background-color: var(--secondary-bg) !important;
+  }
+}
