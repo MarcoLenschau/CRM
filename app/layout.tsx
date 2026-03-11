@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Container from "./components/Container/Container";
 import "./globals.scss"
-import "./styles/lightmode.scss";
+import "./styles/theme.scss";
 import "./styles/tailwind.scss";
 
 export const metadata: Metadata = {

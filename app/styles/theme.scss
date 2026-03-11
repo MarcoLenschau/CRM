@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+[data-theme="light"] {
+  * {
+    @apply text-black;
+  }
+
+  .bg-zinc-800 {
+    @apply bg-white;
+  }
+
+  .bg-zinc-900 {
+    @apply bg-gray-100;
+  }
+}
