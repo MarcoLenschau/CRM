@@ -2,6 +2,7 @@ import { Dispatch, SetStateAction, useState } from "react";
 import Time from "../Time/Time";
 
 import Language from "../Language/Language";
+import ThemeToggle from "../ui/ThemeToggle/ThemeToggle";
 
 export default function Header({setSidebarShow, sidebarShow}: {setSidebarShow: Dispatch<SetStateAction<boolean>>, sidebarShow: boolean}) {
   const [hour12, setHourMode] = useState(false);
@@ -12,6 +13,7 @@ export default function Header({setSidebarShow, sidebarShow}: {setSidebarShow: D
         </svg>
         <Time hour12={hour12}/>
         <Language setHourMode={setHourMode}/>
+        <ThemeToggle/>
     </header>
   );
 }
