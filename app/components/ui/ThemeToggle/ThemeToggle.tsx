@@ -17,13 +17,12 @@ export default function ThemeToggle() {
   );
 }
 
-const SetDefaultTheme = (): [ Dispatch<SetStateAction<string>>, string ] => {
+const SetDefaultTheme = ():[Dispatch<SetStateAction<string>>, string] => {
   const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-  const [theme, setTheme] = useState(() => typeof window === "undefined" ? "light" : mediaQuery.matches ? "dark" : "light");
-
+  const [theme, setTheme] = useState(() => mediaQueryMatches(mediaQuery));
   useEffect(() => document.documentElement.setAttribute("data-theme", theme), [theme]);  
-
-  mediaQuery.addEventListener("change", () =>
-    setTheme(typeof window === "undefined" ? "light" : mediaQuery.matches ? "dark" : "light"));
+  mediaQuery.addEventListener("change", () => setTheme(mediaQueryMatches(mediaQuery)));
   return [setTheme, theme];
 }
+
+const mediaQueryMatches = (mediaQuery: MediaQueryList) => typeof window === "undefined" ? "light" : mediaQuery.matches ? "dark" : "light";
