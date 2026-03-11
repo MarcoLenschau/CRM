@@ -1,14 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, SetStateAction, Dispatch } from "react";
 
 export default function ThemeToggle() {
-  const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-  const [theme, setTheme] = useState(() => typeof window === "undefined" ? "light" : mediaQuery.matches ? "dark" : "light");
-
-  useEffect(() => document.documentElement.setAttribute("data-theme", theme), [theme]);  
-
-  mediaQuery.addEventListener("change", () =>
-    setTheme(typeof window === "undefined" ? "light" : mediaQuery.matches ? "dark" : "light"));
-
+  const [setTheme, theme]: [Dispatch<SetStateAction<string>>, string] = SetDefaultTheme();
   return (
     <section className="relative flex items-center w-30 h-10 bg-zinc-900 rounded-3xl cursor-pointer border">
       <section className="relative flex w-full justify-between px-3">
@@ -22,4 +15,15 @@ export default function ThemeToggle() {
       </section>
     </section>
   );
+}
+
+const SetDefaultTheme = (): [ Dispatch<SetStateAction<string>>, string ] => {
+  const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+  const [theme, setTheme] = useState(() => typeof window === "undefined" ? "light" : mediaQuery.matches ? "dark" : "light");
+
+  useEffect(() => document.documentElement.setAttribute("data-theme", theme), [theme]);  
+
+  mediaQuery.addEventListener("change", () =>
+    setTheme(typeof window === "undefined" ? "light" : mediaQuery.matches ? "dark" : "light"));
+  return [setTheme, theme];
 }
