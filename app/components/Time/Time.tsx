@@ -10,6 +10,6 @@ export default function Time({hour12}: {hour12: boolean}) {
   }, [hour12]);
 
   return (
-    <time className="font-bold text-4xl">{time}</time>
+    <time className="font-bold text-4xl hidden lg:block">{time}</time>
   );
 }
