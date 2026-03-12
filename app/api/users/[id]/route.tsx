@@ -1,11 +1,12 @@
 import { User } from "@/app/interfaces/user.interface";
+import { db } from "@/app/db";
 
-export async function GET(context: { params: { id: string }}) {
-  const users: User[] = [];
-  const contextRes = await context.params;
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }): Promise<Response> {
+  const { id } = await params;
+  const user: User = db[parseInt(id)];
   return Response.json({
-    id: Number(contextRes),
-    name: users[0].name,
-    email: users[0].email
+    id: Number(id),
+    name: user?.name,
+    email: user?.email
   });
 }
