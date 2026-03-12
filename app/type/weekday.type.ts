@@ -1,0 +1,1 @@
+export type Weekday = 'So' | 'Mo' | 'Di' | 'Mi' | 'Do' | 'Fr' | 'Sa';

@@ -3,8 +3,19 @@
 import { useState } from 'react';
 import { AppointmentDialogProps } from '../../../../interfaces/AppointmentDialogProps.interface';
 
-const getCurrentDay = () => String(new Date().getDate());
-
+/**
+ * A dialog component for creating a new appointment. It provides a form
+ * with fields for title, date, time, and description. The dialog is displayed
+ * as a modal and can be opened or closed based on the `isOpen` prop.
+ *
+ * @param {AppointmentDialogProps} props - The props for the AppointmentDialog component.
+ * @param {boolean} props.isOpen - Determines whether the dialog is open or closed.
+ * @param {() => void} props.onClose - Callback function to close the dialog.
+ * @param {(appointment: { title: string; date: string; time: string; description: string }) => void} props.onSubmit - Callback function to handle form submission with the appointment details.
+ * @param {Date | null} [props.selectedDate] - The pre-selected date for the appointment, if any.
+ *
+ * @returns {JSX.Element | null} The rendered AppointmentDialog component, or null if `isOpen` is false.
+ */
 export default function AppointmentDialog({ isOpen, onClose, onSubmit, selectedDate }: AppointmentDialogProps) {
   const [title, setTitle] = useState('');
   const [date, setDate] = useState(selectedDate?.toString() || getCurrentDay());
@@ -68,3 +79,10 @@ export default function AppointmentDialog({ isOpen, onClose, onSubmit, selectedD
     </div>
   );
 }
+
+/**
+ * Retrieves the current day of the month as a string.
+ *
+ * @returns {string} The current day of the month in string format.
+ */
+const getCurrentDay = () => String(new Date().getDate());

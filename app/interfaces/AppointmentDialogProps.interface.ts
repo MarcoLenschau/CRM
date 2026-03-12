@@ -1,4 +1,4 @@
-import { Appointment } from "../type/appointment";
+import { Appointment } from "../type/appointment.type";
 
 export interface AppointmentDialogProps {
   isOpen: boolean;
