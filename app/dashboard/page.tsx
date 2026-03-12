@@ -1,5 +1,11 @@
+import Calendar from "../components/ui/Calendar/Calendar";
+
 export default function Dashboard() {
   return (
-      <h1>Dashboard</h1>
+    <>
+      <section className="flex justify-center items-center h-full flex-col">
+        <Calendar/>
+      </section>
+    </>
   );
 }
