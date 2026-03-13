@@ -1,8 +1,10 @@
+import Calendar from "../components/ui/Calendar/Calendar";
+
 export default function Dashboard() {
   return (
     <>
       <section className="flex justify-center items-center h-full flex-col">
-        <h1 className="text-3xl font-bold text-white mb-4">Willkommen zum CRM Dashboard</h1>
+        <Calendar/>
       </section>
     </>
   );

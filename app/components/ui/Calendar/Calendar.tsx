@@ -20,7 +20,7 @@ import { Weekday } from '@/app/type/weekday.type';
  *
  * @returns {JSX.Element} The rendered calendar component.
  */
-export default function Calendar({height=100}: {height?: number}) {
+export default function Calendar({height=100, width=100}: {height?: number, width?: number}) {
   const [displayDate, setDisplayDate] = useState(new Date());
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
@@ -55,7 +55,7 @@ export default function Calendar({height=100}: {height?: number}) {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-4 px-4 w-150">
+      <div className={`flex items-center justify-between mb-4 px-4`} style={{width: `${width * 7}px`}}>
         <button onClick={() => setDisplayDate(new Date(year, month - 1))} className="text-2xl font-bold hover:brightness-150">←</button>
         <h2 className="text-xl font-bold">{monthNames[month]} {year}</h2>
         <button onClick={() => setDisplayDate(new Date(year, month + 1))} className="text-2xl font-bold hover:brightness-150">→</button>
