@@ -17,16 +17,16 @@ export default function ShowEventDialog({ isOpen, onClose, selectedEvent }: Show
         <h2 className="text-2xl font-bold text-white mb-4">{selectedEvent.name}</h2>
         <div className="space-y-3">
           <div>
-            <p className="text-gray-400 text-sm">Beschreibung</p>
-            <p className="text-white">{selectedEvent.description}</p>
+            <p className="text-gray-400 text-sm">ID</p>
+            <p className="text-white">#{selectedEvent.id}</p>
           </div>
           <div>
             <p className="text-gray-400 text-sm">Zeit</p>
             <p className="text-white">{selectedEvent.time.toLocaleString('de-DE')}</p>
           </div>
           <div>
-            <p className="text-gray-400 text-sm">ID</p>
-            <p className="text-white">#{selectedEvent.id}</p>
+            <p className="text-gray-400 text-sm">Beschreibung</p>
+            <p className="text-white">{selectedEvent.description}</p>
           </div>
         </div>
         <button onClick={onClose} className="mt-6 w-full bg-zinc-600 hover:bg-zinc-500 text-white py-2 rounded-lg font-semibold">Schließen</button>
