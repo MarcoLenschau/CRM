@@ -31,7 +31,7 @@ export default function CalendarPage() {
 
   return (
     <div className="flex flex-col">
-      <PageHeader h1="Calendar & Events" h2="Manage your events, appointments and schedule" color="#020a7d" img="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zm-5-7h4v4h-4z"></PageHeader>
+      <PageHeader h1="Calendar & Events" h2="Manage your events, appointments and schedule" color="#4f0623" img="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zm-5-7h4v4h-4z"></PageHeader>
 
       {/* Content - Scrollable */}
       <div className="flex-1 overflow-y-auto scrollbar-dark min-h-0">

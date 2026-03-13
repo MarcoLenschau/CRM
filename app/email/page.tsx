@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { db, emailTemplates } from '@/app/db';
 import SuccessDialog from '@/app/components/ui/dialogs/SuccessDialog/SuccessDialog';
 import PageHeader from '../components/ui/PageHeader/PageHeader';
+import QuickTip from '../components/ui/QuickTip/QuickTip';
 
 export default function EmailPage() {
   const [formData, setFormData] = useState({
@@ -152,8 +153,8 @@ export default function EmailPage() {
               </div>
               <h2 className="text-2xl font-bold text-white">Email Templates</h2>
             </div>
-
-            <div className="space-y-2 max-h-96 overflow-y-auto scrollbar-dark pr-2">
+            <section className="flex flex-col justify-between gap-4">
+              <div className="space-y-2 max-h-96 overflow-y-auto scrollbar-dark pr-2">  
               {emailTemplates.map((template, idx) => (
                 <button 
                   key={idx} 
@@ -174,20 +175,9 @@ export default function EmailPage() {
                   </div>
                 </button>
               ))}
-            </div>
-
-            {/* Info Box */}
-            <div className="bg-zinc-800 rounded-lg border-2 border-zinc-600 p-3 mt-3">
-              <h3 className="text-sm font-semibold text-white mb-2 flex items-center gap-2">
-                <svg className="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
-                </svg>
-                Tips
-              </h3>
-              <p className="text-xs text-gray-300 leading-relaxed">
-                Click on a template to load it, then customize before sending. You can also select a customer directly or enter an email manually.
-              </p>
-            </div>
+              </div>
+              <QuickTip text="Click on a template to load it, then customize before sending. You can also select a customer directly or enter an email manually."></QuickTip>
+            </section>
           </div>
           </div>
         </section>
