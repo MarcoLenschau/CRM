@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { db, activity } from '@/app/db';
+import SuccessDialog from '../SuccessDialog/SuccessDialog';
 
 interface NewCustomerDialogProps {
   isOpen: boolean;
@@ -15,6 +16,8 @@ export default function NewCustomerDialog({ isOpen, onClose }: NewCustomerDialog
     company: '',
     phone: ''
   });
+  const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false);
+  const [createdCustomerName, setCreatedCustomerName] = useState('');
 
   const handleSave = () => {
     if (newCustomer.name.trim() && newCustomer.email.trim()) {
@@ -35,9 +38,9 @@ export default function NewCustomerDialog({ isOpen, onClose }: NewCustomerDialog
       };
       activity.push(newActivity);
       
-      alert(`✅ Customer ${newCustomer.name} added!`);
+      setCreatedCustomerName(newCustomer.name);
+      setIsSuccessDialogOpen(true);
       setNewCustomer({ name: '', email: '', company: '', phone: '' });
-      onClose();
     } else {
       alert('Please fill in name and email');
     }
@@ -148,6 +151,19 @@ export default function NewCustomerDialog({ isOpen, onClose }: NewCustomerDialog
           </button>
         </div>
       </div>
+
+      <SuccessDialog 
+        isOpen={isSuccessDialogOpen}
+        onClose={() => {
+          setIsSuccessDialogOpen(false);
+          onClose();
+        }}
+        title="Customer added!"
+        message="New customer has been successfully created."
+        detailLabel="Customer name"
+        detailValue={createdCustomerName}
+        buttonText="Done"
+      />
     </div>
   );
 }

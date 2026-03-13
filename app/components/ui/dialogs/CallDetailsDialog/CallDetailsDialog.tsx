@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { db, activity } from '@/app/db';
+import SuccessDialog from '../SuccessDialog/SuccessDialog';
 
 interface CallDetailsDialogProps {
   isOpen: boolean;
@@ -16,6 +17,8 @@ export default function CallDetailsDialog({ isOpen, selectedUserId, onClose }: C
     interest: '',
     notes: ''
   });
+  const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false);
+  const [callUserName, setCallUserName] = useState('');
 
   const handleSave = () => {
     if (selectedUserId) {
@@ -29,9 +32,10 @@ export default function CallDetailsDialog({ isOpen, selectedUserId, onClose }: C
           timestamp: new Date()
         };
         activity.push(newActivity);
-        alert(`✅ Call with ${user.name} logged!`);
+        
+        setCallUserName(user.name);
+        setIsSuccessDialogOpen(true);
         setCallDetails({ status: '', nextAction: '', interest: '', notes: '' });
-        onClose();
       }
     }
   };
@@ -159,6 +163,19 @@ export default function CallDetailsDialog({ isOpen, selectedUserId, onClose }: C
           </button>
         </div>
       </div>
+
+      <SuccessDialog 
+        isOpen={isSuccessDialogOpen}
+        onClose={() => {
+          setIsSuccessDialogOpen(false);
+          onClose();
+        }}
+        title="Call logged!"
+        message="Call has been successfully recorded."
+        detailLabel="Call with"
+        detailValue={callUserName}
+        buttonText="Done"
+      />
     </div>
   );
 }

@@ -8,7 +8,7 @@ export default function Dashboard() {
   return (
     <div className="p-6 overflow-y-auto">
       <section className="flex flex-col justify-center items-center gap-6">
-        <h1 className="text-3xl font-bold text-white">Welcome to CRM Dashboard</h1>
+        <h1 className="text-2xl font-bold text-white">Welcome to CRM Dashboard</h1>
         
         <QuickActionsTemplate />
         

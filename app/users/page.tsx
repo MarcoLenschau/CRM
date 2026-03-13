@@ -4,17 +4,23 @@ import { useState } from 'react';
 import { db } from '@/app/db';
 import UserDialog from '@/app/components/ui/dialogs/UserDialog/UserDialog';
 import DeleteConfirmDialog from '@/app/components/ui/dialogs/DeleteConfirmDialog/DeleteConfirmDialog';
+import SuccessDialog from '@/app/components/ui/dialogs/SuccessDialog/SuccessDialog';
 import QuickTip from '@/app/components/ui/QuickTip/QuickTip';
+import PageHeader from '../components/ui/PageHeader/PageHeader';
 
 export default function UsersPage() {
   const [users, setUsers] = useState(db);
   const [showForm, setShowForm] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [newUser, setNewUser] = useState({ name: '', email: '' });
+  const [newUser, setNewUser] = useState({ name: '', email: '', isAdmin: false });
   const [editingId, setEditingId] = useState<number | null>(null);
   const [deleteUserId, setDeleteUserId] = useState<number | null>(null);
   const [deleteUserName, setDeleteUserName] = useState('');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [successDetail, setSuccessDetail] = useState('');
+  const [successTitle, setSuccessTitle] = useState('User added!');
 
   const filteredUsers = users.filter(user =>
     user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -25,8 +31,11 @@ export default function UsersPage() {
     if (newUser.name.trim() && newUser.email.trim()) {
       if (editingId !== null) {
         // Edit existing user
-        setUsers(users.map(u => u.id === editingId ? { ...u, name: newUser.name, email: newUser.email } : u));
-        alert(`✅ User updated successfully!`);
+        setUsers(users.map(u => u.id === editingId ? { ...u, name: newUser.name, email: newUser.email, isAdmin: newUser.isAdmin || false } : u));
+        setSuccessTitle('User updated!');
+        setSuccessMessage('User has been successfully updated.');
+        setSuccessDetail(newUser.name);
+        setIsSuccessDialogOpen(true);
         setEditingId(null);
       } else {
         // Add new user
@@ -34,12 +43,16 @@ export default function UsersPage() {
         const user = {
           id: maxId + 1,
           name: newUser.name,
-          email: newUser.email
+          email: newUser.email,
+          isAdmin: newUser.isAdmin || false
         };
         setUsers([...users, user]);
-        alert(`✅ User ${newUser.name} added successfully!`);
+        setSuccessTitle('User added!');
+        setSuccessMessage('New user has been successfully added.');
+        setSuccessDetail(newUser.name);
+        setIsSuccessDialogOpen(true);
       }
-      setNewUser({ name: '', email: '' });
+      setNewUser({ name: '', email: '', isAdmin: false });
       setShowForm(false);
     } else {
       alert('⚠️ Please fill in all fields');
@@ -56,14 +69,17 @@ export default function UsersPage() {
     if (deleteUserId) {
       setUsers(users.filter(u => u.id !== deleteUserId));
       setShowDeleteConfirm(false);
+      setSuccessTitle('User deleted!');
+      setSuccessMessage('User has been successfully deleted.');
+      setSuccessDetail(deleteUserName);
+      setIsSuccessDialogOpen(true);
       setDeleteUserId(null);
       setDeleteUserName('');
-      alert('✅ User deleted successfully!');
     }
   };
 
-  const handleEditUser = (user: { id: number; name: string; email: string }) => {
-    setNewUser({ name: user.name, email: user.email });
+  const handleEditUser = (user: { id: number; name: string; email: string; isAdmin?: boolean }) => {
+    setNewUser({ name: user.name, email: user.email, isAdmin: user.isAdmin || false });
     setEditingId(user.id);
     setShowForm(true);
   };
@@ -71,25 +87,12 @@ export default function UsersPage() {
   const handleCancelForm = () => {
     setShowForm(false);
     setEditingId(null);
-    setNewUser({ name: '', email: '' });
+    setNewUser({ name: '', email: '', isAdmin: false });
   };
 
   return (
-    <div className="flex flex-col h-screen bg-slate-950">
-      {/* Header - Sticky */}
-      <div className="flex-shrink-0 px-8 py-6 border-b-2 border-zinc-700 bg-slate-950">
-        <div className="flex items-center gap-4">
-          <div className="bg-green-900/30 rounded-xl p-3 border border-green-700/50">
-            <svg className="w-8 h-8 text-green-400" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-            </svg>
-          </div>
-          <div>
-            <h1 className="text-4xl font-bold text-white">User Management</h1>
-            <p className="text-sm text-gray-400 mt-1">Manage all your CRM users and their information</p>
-          </div>
-        </div>
-      </div>
+    <div className="flex flex-col">
+      <PageHeader h1="User Management" h2="Manage all your CRM users and their information" color="#4e1f23" img="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"></PageHeader>
 
       {/* Content - Scrollable */}
       <div className="flex-1 overflow-y-auto scrollbar-dark min-h-0">
@@ -160,7 +163,7 @@ export default function UsersPage() {
             isOpen={showForm}
             editingId={editingId}
             newUser={newUser}
-            onUserChange={setNewUser}
+            onUserChange={(user) => setNewUser({ name: user.name, email: user.email, isAdmin: user.isAdmin || false })}
             onSave={handleAddUser}
             onCancel={handleCancelForm}
           />
@@ -180,17 +183,18 @@ export default function UsersPage() {
           {/* Users Table & Quick Tip */}
           <div className="flex flex-col lg:flex-row gap-6 w-full">
             {/* Table - Main Section */}
-            <div className="flex-1 min-w-0">
+            <div className="w-full">
               <div className="bg-gradient-to-b from-zinc-800 to-zinc-900 rounded-lg border-2 border-zinc-700 overflow-hidden shadow-lg">
                 {filteredUsers.length > 0 ? (
                   <>
                     <div className="overflow-x-auto">
-                      <table className="w-full">
+                      <table className="w-full min-w-full">
                         <thead>
                           <tr className="bg-gradient-to-r from-zinc-700 to-zinc-800 border-b-2 border-zinc-600">
                             <th className="px-6 py-4 text-left text-gray-300 font-semibold text-sm uppercase tracking-wide">ID</th>
                             <th className="px-6 py-4 text-left text-gray-300 font-semibold text-sm uppercase tracking-wide">Name</th>
                             <th className="px-6 py-4 text-left text-gray-300 font-semibold text-sm uppercase tracking-wide">Email</th>
+                            <th className="px-6 py-4 text-center text-gray-300 font-semibold text-sm uppercase tracking-wide">Role</th>
                             <th className="px-6 py-4 text-center text-gray-300 font-semibold text-sm uppercase tracking-wide">Actions</th>
                           </tr>
                         </thead>
@@ -201,8 +205,25 @@ export default function UsersPage() {
                               className={`${index % 2 === 0 ? 'bg-zinc-800/50' : 'bg-zinc-900/30'} border-b border-zinc-700/50 hover:bg-zinc-700/50 transition-colors duration-200`}
                             >
                               <td className="px-6 py-4 text-gray-400 font-mono text-sm">{user.id}</td>
-                              <td className="px-6 py-4 text-white font-semibold">{user.name}</td>
+                              <a href={`/users/${user.id - 1}`}><td className="px-6 py-4 text-white font-semibold hover:underline">{user.name}</td></a>
                               <td className="px-6 py-4 text-gray-300 text-sm">{user.email}</td>
+                              <td className="px-6 py-4 text-center">
+                                {user.isAdmin ? (
+                                  <span className="inline-flex items-center gap-1 bg-purple-900/30 border border-purple-700/50 text-purple-300 px-3 py-1 rounded-full text-xs font-semibold">
+                                    <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                                      <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>
+                                    </svg>
+                                    Admin
+                                  </span>
+                                ) : (
+                                  <span className="inline-flex items-center gap-1 bg-blue-900/30 border border-blue-700/50 text-blue-300 px-3 py-1 rounded-full text-xs font-semibold">
+                                    <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                                      <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                                    </svg>
+                                    User
+                                  </span>
+                                )}
+                              </td>
                               <td className="px-6 py-4 text-center">
                                 <div className="flex gap-2 justify-center">
                                   <button
@@ -270,7 +291,6 @@ export default function UsersPage() {
                 )}
               </div>
             </div>
-
             {/* Quick Tip - Sidebar */}
             <div className="w-full lg:w-80">
               <QuickTip text="Use the search function to quickly find users by name or email. Click the Edit button to modify user information, or Delete to remove users from your system." width="w-full" />
@@ -280,6 +300,16 @@ export default function UsersPage() {
           </div>
         </section>
       </div>
+
+      <SuccessDialog 
+        isOpen={isSuccessDialogOpen}
+        onClose={() => setIsSuccessDialogOpen(false)}
+        title={successTitle}
+        message={successMessage}
+        detailLabel="Username"
+        detailValue={successDetail}
+        buttonText="Done"
+      />
     </div>
   );
 }

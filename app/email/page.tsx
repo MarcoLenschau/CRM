@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import { db, emailTemplates } from '@/app/db';
+import SuccessDialog from '@/app/components/ui/dialogs/SuccessDialog/SuccessDialog';
+import PageHeader from '../components/ui/PageHeader/PageHeader';
 
 export default function EmailPage() {
   const [formData, setFormData] = useState({
@@ -9,7 +11,8 @@ export default function EmailPage() {
     subject: '',
     message: ''
   });
-  const [sent, setSent] = useState(false);
+  const [isEmailSentDialogOpen, setIsEmailSentDialogOpen] = useState(false);
+  const [sentToEmail, setSentToEmail] = useState('');
 
   const handleSendEmail = () => {
     if (!formData.to.trim() || !formData.subject.trim() || !formData.message.trim()) {
@@ -19,33 +22,20 @@ export default function EmailPage() {
 
     // Simulate sending email
     console.log('Email sent:', formData);
-    alert(`✅ Email sent to ${formData.to}`);
     
-    setSent(true);
+    setSentToEmail(formData.to);
+    setIsEmailSentDialogOpen(true);
     setFormData({ to: '', subject: '', message: '' });
-    
-    setTimeout(() => setSent(false), 3000);
   };
 
   return (
-    <div className="p-4 overflow-y-auto">
-      <section className="flex flex-col justify-center items-center gap-4">
-        {/* Header */}
-        <div className="w-full max-w-6xl">
-          <div className="flex items-center gap-4 mb-4">
-            <div className="bg-purple-900/30 rounded-xl p-3 border border-purple-700/50">
-              <svg className="w-8 h-8 text-purple-400" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
-              </svg>
-            </div>
-            <div>
-              <h1 className="text-4xl font-bold text-white">Email Campaign</h1>
-              <p className="text-sm text-gray-400 mt-1">Send personalized emails to your customers or use templates</p>
-            </div>
-          </div>
-        </div>
+    <div className="flex flex-col">
+      <PageHeader h1="Email Campaign" h2="Send personalized emails to your customers or use templates" color="#22532b" img="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"></PageHeader>
 
-        <div className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* Content - Scrollable */}
+      <div className="flex-1 overflow-y-auto scrollbar-dark min-h-0">
+        <section className="flex flex-col justify-start items-center gap-6 px-8 py-6">
+          <div className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Compose Email Section */}
           <div>
             <div className="flex items-center gap-2 mb-4">
@@ -58,15 +48,6 @@ export default function EmailPage() {
             </div>
 
             <div className="bg-zinc-800 rounded-lg border-2 border-zinc-700 p-6 shadow-lg">
-              {sent && (
-                <div className="mb-6 p-4 bg-green-600/20 border border-green-400 rounded-lg flex items-center gap-3 animate-pulse">
-                  <svg className="w-5 h-5 text-green-400 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
-                  </svg>
-                  <p className="text-green-400 font-semibold">Email sent successfully!</p>
-                </div>
-              )}
-
               <div className="space-y-4">
                 {/* Recipient Select */}
                 <div className="flex flex-col gap-2">
@@ -133,7 +114,7 @@ export default function EmailPage() {
                     value={formData.message} 
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })} 
                     placeholder="Write your message here..."
-                    rows={9}
+                    rows={6}
                     className="bg-zinc-700/50 text-white rounded-lg px-3 py-2 border border-zinc-600 hover:border-zinc-500 focus:border-orange-400 focus:outline-none resize-none text-sm transition-colors placeholder-gray-500"
                   />
                 </div>
@@ -208,8 +189,19 @@ export default function EmailPage() {
               </p>
             </div>
           </div>
-        </div>
-      </section>
+          </div>
+        </section>
+      </div>
+
+      <SuccessDialog 
+        isOpen={isEmailSentDialogOpen}
+        onClose={() => setIsEmailSentDialogOpen(false)}
+        title="Email sent!"
+        message="Your email has been successfully sent."
+        detailLabel="Recipient"
+        detailValue={sentToEmail}
+        buttonText="Done"
+      />
     </div>
   );
 }

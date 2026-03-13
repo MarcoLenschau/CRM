@@ -4,7 +4,7 @@ import { useState } from 'react';
 import ShowEventDialog from '../dialogs/ShowEventDialog/ShowEventDialog';
 import AllEventsDialog from '../dialogs/AllEventsDialog/AllEventsDialog';
 import CreateEventDialog from '../dialogs/CreateEventDialog/CreateEventDialog';
-import EventCreatedDialog from '../dialogs/EventCreatedDialog/EventCreatedDialog';
+import SuccessDialog from '../dialogs/SuccessDialog/SuccessDialog';
 import { event } from '@/app/db';
 import { Event } from '@/app/interfaces/event.interface';
 import { Month } from '@/app/type/month.type';
@@ -107,8 +107,15 @@ export default function Calendar({height=100, width=100}: {height?: number, widt
           setIsEventCreatedOpen(true);
         }}/>
       
-      <EventCreatedDialog isOpen={isEventCreatedOpen} onClose={() => setIsEventCreatedOpen(false)} eventName={createdEventInfo.name} 
-        eventDate={createdEventInfo.date}/>
+      <SuccessDialog 
+        isOpen={isEventCreatedOpen} 
+        onClose={() => setIsEventCreatedOpen(false)} 
+        title="Event created!"
+        message="Your event has been successfully created."
+        detailLabel="Event name"
+        detailValue={createdEventInfo.name}
+        buttonText="Done"
+      />
     </div>
   );
 }

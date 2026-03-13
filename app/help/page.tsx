@@ -15,7 +15,7 @@ export default function HelpPage() {
           <section>
             <h2 className="text-2xl font-semibold text-white mb-4 flex items-center gap-2">
               <svg className="w-6 h-6 text-blue-400" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                <path d=""/>
               </svg>
               Getting Started
             </h2>
@@ -121,7 +121,6 @@ export default function HelpPage() {
               Tips & Tricks
             </h2>
             <ul className="space-y-2 ml-4">
-              <li>💡 Use color-coded priorities to focus on what's most important</li>
               <li>💡 Set reminders by creating high-priority events</li>
               <li>💡 Use email templates for quick and professional communication</li>
               <li>💡 Check the Activity Feed to track all your CRM interactions</li>
@@ -136,7 +135,6 @@ export default function HelpPage() {
             <div className="space-y-4">
               <div className="bg-zinc-800 rounded-lg p-4">
                 <h3 className="font-semibold text-white mb-2">Q: How do I add a new customer?</h3>
-                <p className="text-sm">A: Click the "New Customer" button in Quick Actions, fill in their information, and click Save.</p>
               </div>
               <div className="bg-zinc-800 rounded-lg p-4">
                 <h3 className="font-semibold text-white mb-2">Q: Can I edit events after creating them?</h3>
@@ -161,9 +159,6 @@ export default function HelpPage() {
           <section>
             <h2 className="text-2xl font-semibold text-white mb-4">Need More Help?</h2>
             <div className="bg-blue-900/20 rounded-lg border-2 border-blue-700 p-6">
-              <p className="mb-4">
-                If you can't find the answer to your question, don't hesitate to contact our support team:
-              </p>
               <div className="space-y-2">
                 <p>📧 <strong>Email:</strong> support@crm.com</p>
                 <p>💬 <strong>Live Chat:</strong> Available 24/7 on our website</p>

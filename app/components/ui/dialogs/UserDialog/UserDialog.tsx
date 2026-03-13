@@ -3,8 +3,8 @@
 interface UserDialogProps {
   isOpen: boolean;
   editingId: number | null;
-  newUser: { name: string; email: string };
-  onUserChange: (user: { name: string; email: string }) => void;
+  newUser: { name: string; email: string; isAdmin?: boolean };
+  onUserChange: (user: { name: string; email: string; isAdmin?: boolean }) => void;
   onSave: () => void;
   onCancel: () => void;
 }
@@ -71,7 +71,39 @@ export default function UserDialog({
           {/* Divider */}
           <div className="h-px bg-zinc-700 my-2"></div>
 
-          {/* Buttons */}
+          {/* Role Toggle */}
+          <div>
+            <label className="text-white font-semibold text-sm uppercase tracking-wide block mb-2">Role</label>
+            <div className="flex gap-2">
+              <button
+                onClick={() => onUserChange({ ...newUser, isAdmin: false })}
+                className={`flex-1 py-2 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2 text-sm border ${
+                  !newUser.isAdmin
+                    ? 'bg-blue-900 border-blue-800 text-white'
+                    : 'bg-zinc-700/30 border-zinc-600 text-gray-300 hover:border-zinc-500'
+                }`}>
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                </svg>
+                User
+              </button>
+              <button
+                onClick={() => onUserChange({ ...newUser, isAdmin: true })}
+                className={`flex-1 py-2 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2 text-sm border ${
+                  newUser.isAdmin
+                    ? 'bg-purple-700 border-purple-600 text-white'
+                    : 'bg-zinc-700/30 border-zinc-600 text-gray-300 hover:border-zinc-500'
+                }`}>
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>
+                </svg>
+                Admin
+              </button>
+            </div>
+          </div>
+
+          {/* Divider */}
+          <div className="h-px bg-zinc-700 my-2"></div>
           <div className="flex gap-3 pt-2">
             <button
               onClick={onSave}
