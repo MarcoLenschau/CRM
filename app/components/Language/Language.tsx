@@ -10,26 +10,53 @@ export default function Language({setHourMode}: {setHourMode: Dispatch<SetStateA
   const [selectedLanguage, setLanguage] = useState(countries[0]);
   const [open, setOpen] = useState(false);
   return (
-    <div className="relative flex flex-col gap-4 w-64">
-        <section className="flex justify-center items-center gap-2 h-12 border rounded-2xl" onClick={() => setOpen(!open)}>
-            <section className="flex gap-2">
-                <img src={`/flags/${selectedLanguage.code}.svg`} className="w-8" alt={selectedLanguage.code}/>
-                <span>{selectedLanguage.name}</span>
-            </section>
-            <svg className="w-8 h-8" fill="black" stroke="currentColor"viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-            </svg>
-        </section>  
-        <section className={`absolute top-13 w-full flex flex-col justify-center items-center gap-2 p-4 border bg-zinc-900 rounded-2xl ${open ? "" : "hidden"}`}>
-            {countries.map((countrie, index) =>  { 
-                return (
-                    <section key={index} className="flex gap-2 items-center w-30" onClick={() => { setLanguage(countrie), setOpen(false), setHourMode(countrie.code === "GB")}}>
-                        <img src={`/flags/${countrie.code}.svg`} className="w-8" alt={countrie.code}/>
-                        <span>{countrie.name}</span>
-                    </section>
-                )
-            })}
-        </section>
+    <div className="relative flex flex-col gap-2">
+        <button 
+          onClick={() => setOpen(!open)}
+          className="flex justify-between items-center gap-2 h-10 px-4 bg-zinc-800 border-2 border-zinc-500 rounded-lg hover:border-zinc-400 transition-colors shadow-lg group"
+        >
+          <div className="flex items-center gap-2 min-w-0">
+            <img src={`/flags/${selectedLanguage.code}.svg`} className="w-5 h-5 flex-shrink-0" alt={selectedLanguage.code}/>
+            <span className="text-sm font-semibold text-white">{selectedLanguage.code}</span>
+          </div>
+          <svg 
+            className={`w-4 h-4 text-gray-400 transition-transform ${open ? 'rotate-180' : ''}`} 
+            fill="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path d="M7 10l5 5 5-5z"/>
+          </svg>
+        </button>
+
+        {open && (
+          <div className="absolute top-12 right-0 w-48 bg-zinc-800 border-2 border-zinc-500 rounded-lg shadow-xl z-50 overflow-hidden backdrop-blur-sm">
+            <div className="p-1">
+              {countries.map((country, index) => (
+                <button
+                  key={index}
+                  onClick={() => {
+                    setLanguage(country);
+                    setOpen(false);
+                    setHourMode(country.code === "GB");
+                  }}
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-md transition-all ${
+                    selectedLanguage.code === country.code
+                      ? "bg-zinc-700/50 border-l-2 border-zinc-500"
+                      : "hover:bg-zinc-700/50"
+                  }`}
+                >
+                  <img src={`/flags/${country.code}.svg`} className="w-5 h-5" alt={country.code}/>
+                  <span className="text-sm font-medium text-white">{country.name}</span>
+                  {selectedLanguage.code === country.code && (
+                    <svg className="w-4 h-4 text-zinc-400 ml-auto" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                    </svg>
+                  )}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
     </div>
   )
 }

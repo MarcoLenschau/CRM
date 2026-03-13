@@ -1,10 +1,16 @@
 export default function ImpressPage() {
   return (
-    <div className="min-h-screen bg-slate-950 text-white">
-      <div className="max-w-4xl mx-auto px-6 py-12">
-        <h1 className="text-4xl font-bold mb-8 text-blue-400">Impressum</h1>
-        
-        <div className="space-y-6 text-gray-300">
+    <div className="w-full h-full flex flex-col overflow-hidden">
+      {/* Header */}
+      <div className="border border-zinc-700 py-6 text-center">
+        <h1 className="text-4xl font-bold text-blue-400">Impressum</h1>
+        <p className="text-sm text-gray-400 mt-2">Legal Information</p>
+      </div>
+      
+      {/* Scrollable Content */}
+      <div className="flex-1 overflow-y-auto scrollbar-dark">
+        <div className="max-w-4xl mx-auto px-6 py-8">
+          <div className="space-y-6 text-gray-300">
           <section>
             <h2 className="text-2xl font-semibold text-white mb-3">Company Information</h2>
             <p>
@@ -108,10 +114,11 @@ export default function ImpressPage() {
           </section>
         </div>
 
-        <div className="mt-12 pt-6 border-t border-zinc-700">
-          <p className="text-sm text-gray-400">
+        <div className="mt-8 pt-6 border-t border-zinc-700 mb-8">
+          <p className="text-xs text-gray-500">
             Last updated: March 13, 2026
           </p>
+        </div>
         </div>
       </div>
     </div>

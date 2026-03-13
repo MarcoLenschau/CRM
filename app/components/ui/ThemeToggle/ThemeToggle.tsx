@@ -2,18 +2,43 @@ import { useState, useEffect, SetStateAction, Dispatch } from "react";
 
 export default function ThemeToggle() {
   const [setTheme, theme]: [Dispatch<SetStateAction<string>>, string] = SetDefaultTheme();
+  
   return (
-    <section className="relative flex items-center w-30 h-10 bg-zinc-900 rounded-3xl cursor-pointer border">
-      <section className="relative flex w-full justify-between px-3">
-        <div className={`absolute top-[-2] w-15 h-9 rounded-3xl ${theme === "dark" ? "right-0 bg-blue-900/80" : "left-0 bg-yellow-400/80"}`}></div>
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 16 16" onClick={() => setTheme("light")} className="cursor-pointer hover:scale-110">
-          <path d="M8 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8M8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0m0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13m8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5M3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8m10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0m-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0m9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707M4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708"/>
+    <button
+      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+      className="relative inline-flex items-center w-16 h-8 rounded-full bg-zinc-700 border-2 border-zinc-600 hover:border-zinc-500 transition-all duration-300 shadow-lg"
+      aria-label="Toggle theme"
+    >
+      {/* Slider background */}
+      <div
+        className={`absolute inset-0.5 rounded-full transition-all duration-300 ${
+          theme === "dark" ? "bg-zinc-600/50" : "bg-zinc-600/50"
+        }`}
+      />
+
+      {/* Sun icon (left side) */}
+      <div className="absolute left-1.5 flex items-center justify-center w-6 h-6">
+        <svg className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 3v1m0 16v1m9-9h-1m-16 0H1m15.364 1.636l.707.707M6.343 17.657l.707.707M17.657 6.343l.707-.707M6.343 6.343l.707-.707M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0z" />
         </svg>
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 16 16" onClick={() => setTheme("dark")} className="cursor-pointer hover:scale-110">
-          <path d="M6 .278a.77.77 0 0 1 .08.858 7.2 7.2 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277q.792-.001 1.533-.16a.79.79 0 0 1 .81.316.73.73 0 0 1-.031.893A8.35 8.35 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.75.75 0 0 1 6 .278"/>
-        </svg>      
-      </section>
-    </section>
+      </div>
+
+      {/* Moon icon (right side) */}
+      <div className="absolute right-1.5 flex items-center justify-center w-6 h-6">
+        <svg className="w-5 h-5 text-gray-300" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+        </svg>
+      </div>
+
+      {/* Animated thumb */}
+      <div
+        className={`absolute top-0.5 w-6 h-6 rounded-full transition-all duration-300 bg-white shadow-lg ${
+          theme === "dark"
+            ? "left-1"
+            : "right-1"
+        }`}
+      />
+    </button>
   );
 }
 

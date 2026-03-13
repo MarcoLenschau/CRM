@@ -5,6 +5,10 @@
   @apply text-white;
 }
 
+body {
+  overflow: hidden;
+}
+
 a:hover {
   @apply filter brightness-200;
 }
