@@ -1,8 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import AppointmentDialog from '../dialogs/AppointmentDialog/AppointmentDialog';
+import ShowEventDialog from '../dialogs/ShowEventDialog/ShowEventDialog';
+import AllEventsDialog from '../dialogs/AllEventsDialog/AllEventsDialog';
+import CreateEventDialog from '../dialogs/CreateEventDialog/CreateEventDialog';
+import EventCreatedDialog from '../dialogs/EventCreatedDialog/EventCreatedDialog';
 import { event } from '@/app/db';
+import { Event } from '@/app/interfaces/event.interface';
 import { Month } from '@/app/type/month.type';
 import { Weekday } from '@/app/type/weekday.type';
 
@@ -16,10 +20,15 @@ import { Weekday } from '@/app/type/weekday.type';
  *
  * @returns {JSX.Element} The rendered calendar component.
  */
-export default function Calendar({width=150, height=100}: {height?: number, width?: number}) {
+export default function Calendar({height=100}: {height?: number}) {
   const [displayDate, setDisplayDate] = useState(new Date());
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+  const [isEventDialogOpen, setIsEventDialogOpen] = useState(false);
+  const [isCreateEventDialogOpen, setIsCreateEventDialogOpen] = useState(false);
+  const [isEventCreatedOpen, setIsEventCreatedOpen] = useState(false);
+  const [createdEventInfo, setCreatedEventInfo] = useState({ name: '', date: '' });
   const month = displayDate.getMonth();
   const year = displayDate.getFullYear();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -38,6 +47,11 @@ export default function Calendar({width=150, height=100}: {height?: number, widt
   const isToday = (d: number) => d === now.getDate() && month === now.getMonth() && year === now.getFullYear();
   const getEventsForDay = (day: number) => event.filter(e => e.time.getDate() === day && e.time.getMonth() === month && e.time.getFullYear() === year);
   const handleDayClick = (d: {day: number, isCurrentMonth: boolean}) => d.isCurrentMonth && (setSelectedDay(d.day), setIsDialogOpen(true));
+  const handleEventClick = (e: React.MouseEvent, evt: typeof event[0]) => {
+    e.stopPropagation();
+    setSelectedEvent(evt);
+    setIsEventDialogOpen(true);
+  };
 
   return (
     <div>
@@ -60,8 +74,8 @@ export default function Calendar({width=150, height=100}: {height?: number, widt
                 <span className={`text-sm ${!dayObj.isCurrentMonth ? 'text-gray-400' : ''}`}>{dayObj.day}</span>
               </div>
               {dayEvents.length > 0 && (
-                <div className="text-xs mt-auto text-orange-400 space-y-0.5">
-                  {displayedEvents.map(e => <div key={e.id} className="truncate">{e.name}</div>)}
+                <div className="text-xs text-orange-400 space-y-0.5">
+                  {displayedEvents.map(e => <div key={e.id} onClick={(evt) => handleEventClick(evt, e)} className="truncate cursor-pointer hover:text-orange-300 hover:underline">{e.name}</div>)}
                   {moreCount > 0 && <div className="text-orange-500 font-semibold">+{moreCount}</div>}
                 </div>
               )}
@@ -69,8 +83,32 @@ export default function Calendar({width=150, height=100}: {height?: number, widt
           );
         })}
       </section>
-      <AppointmentDialog isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)}
-        onSubmit={() => setIsDialogOpen(false)} selectedDate={selectedDay || undefined}/>
+      
+      <AllEventsDialog isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)} selectedDay={selectedDay || 0} month={month} year={year}
+        onEventClick={(evt) => {
+          setSelectedEvent(evt);
+          setIsEventDialogOpen(true);
+        }}
+        onAddEventClick={() => {
+          setIsDialogOpen(false);
+          setIsCreateEventDialogOpen(true);
+        }}/>
+      
+      {selectedEvent && <ShowEventDialog isOpen={isEventDialogOpen} onClose={() => setIsEventDialogOpen(false)} selectedEvent={selectedEvent}/>}
+      
+      <CreateEventDialog isOpen={isCreateEventDialogOpen} onClose={() => setIsCreateEventDialogOpen(false)} 
+        selectedDay={selectedDay || 0} month={month} year={year}
+        onSubmit={(eventData) => {
+          setIsCreateEventDialogOpen(false);
+          setCreatedEventInfo({ 
+            name: eventData.name, 
+            date: `${selectedDay}. ${new Date(year, month).toLocaleString('de-DE', { month: 'long' })} ${year} ${eventData.time}` 
+          });
+          setIsEventCreatedOpen(true);
+        }}/>
+      
+      <EventCreatedDialog isOpen={isEventCreatedOpen} onClose={() => setIsEventCreatedOpen(false)} eventName={createdEventInfo.name} 
+        eventDate={createdEventInfo.date}/>
     </div>
   );
 }
