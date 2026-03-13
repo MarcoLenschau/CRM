@@ -8,9 +8,9 @@ export const db: User[] = [
 ];
 
 export const event = [
-    { id: 1, name: "Event 1", description: "Description for Event 1", time: new Date("2026-03-01T10:00:00")},
-    { id: 2, name: "Event 2", description: "Description for Event 2", time: new Date("2026-03-01T10:00:00")},
-    { id: 3, name: "Event 3", description: "Description for Event 3", time: new Date("2026-03-01T10:00:00")},
-    { id: 4, name: "Event 4", description: "Description for Event 4", time: new Date("2026-03-01T10:00:00")},
-    // { id: 5, name: "Event 5", description: "Description for Event 5", time: new Date("2026-03-01T10:00:00")}
+    { id: 1, name: "Event 1", description: "Description for Event 1", time: new Date("2026-03-01T10:00:00"), prio: "high" as const},
+    { id: 2, name: "Event 2", description: "Description for Event 2", time: new Date("2026-03-01T10:00:00"), prio: "medium" as const},
+    { id: 3, name: "Event 3", description: "Description for Event 3", time: new Date("2026-03-01T10:00:00"), prio: "low" as const},
+    { id: 4, name: "Event 4", description: "Description for Event 4", time: new Date("2026-03-01T10:00:00"), prio: "high" as const},
+    { id: 5, name: "Event 5", description: "Description for Event 5", time: new Date("2026-03-01T10:00:00"), prio: "medium" as const}
 ];

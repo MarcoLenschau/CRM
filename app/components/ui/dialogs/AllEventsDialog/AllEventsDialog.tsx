@@ -29,7 +29,7 @@ export default function AllEventsDialog({ isOpen, onClose, selectedDay, month, y
           <div className="space-y-2 max-h-66 overflow-y-auto scrollbar-dark pr-4">
             {dayEvents.map(evt => (
               <div key={evt.id} onClick={() => { onEventClick?.(evt); onClose(); }}
-                className="bg-zinc-700 hover:bg-zinc-600 p-3 rounded-lg cursor-pointer border-l-4 border-orange-400 transition-colors">
+                className={`bg-zinc-700 hover:bg-zinc-600 p-3 rounded-lg cursor-pointer transition-colors border-l-4 ${evt.prio === 'high' ? 'border-red-500' : evt.prio === 'medium' ? 'border-yellow-500' : 'border-green-500'}`}>
                 <p className="text-orange-400 font-semibold text-sm">{evt.name}</p>
                 <p className="text-gray-300 text-xs">{evt.time.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })}</p>
                 <p className="text-gray-400 text-xs mt-1">{evt.description}</p>

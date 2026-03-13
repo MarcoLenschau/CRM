@@ -2,8 +2,9 @@
 
 import { useState } from 'react';
 import { EventFormData } from '@/app/interfaces/event.interface';
+import { Month } from '@/app/type/month.type';
 
-const MONTH_NAMES = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
+const MONTH_NAMES: Month[] = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
 
 interface CreateEventDialogProps {
   isOpen: boolean;
@@ -18,6 +19,7 @@ export default function CreateEventDialog({ isOpen, onClose, onSubmit, selectedD
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [time, setTime] = useState('10:00');
+  const [prio, setPrio] = useState<'low' | 'medium' | 'high'>('medium');
 
   if (!isOpen) return null;
 
@@ -26,10 +28,11 @@ export default function CreateEventDialog({ isOpen, onClose, onSubmit, selectedD
       alert('Bitte geben Sie einen Event-Namen ein');
       return;
     }
-    onSubmit({ name, description, time });
+    onSubmit({ name, description, time, prio });
     setName('');
     setDescription('');
     setTime('10:00');
+    setPrio('medium');
   };
 
   return (
@@ -55,6 +58,16 @@ export default function CreateEventDialog({ isOpen, onClose, onSubmit, selectedD
               className="w-full bg-zinc-700 text-white rounded-lg px-3 py-2 border border-zinc-600 cursor-pointer"/>
           </section>
           
+          <section className="flex flex-col gap-1 relative">
+            <label htmlFor="event-prio" className="text-white text-sm">Priorität</label>
+            <select id="event-prio" value={prio} onChange={(e) => setPrio(e.target.value as 'low' | 'medium' | 'high')}
+              className="w-full bg-zinc-700 text-white rounded-lg px-2 py-2 border border-zinc-600 cursor-pointer text-sm">
+              <option value="low">Niedrig</option>
+              <option value="medium">Mittel</option>
+              <option value="high">Hoch</option>
+            </select>
+          </section>
+
           <section className="flex flex-col gap-1">
             <label htmlFor="event-description" className="text-white text-sm">Bemerkung</label>
             <textarea id="event-description" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Bemerkung..." rows={3} 
