@@ -1,5 +1,5 @@
-export default function Main({children}: {children: React.ReactNode}) {
+export default function Main({children, isAuthPage}: {children: React.ReactNode, isAuthPage?: boolean}) {
   return (
-    <main className="h-full">{children}</main>
+    <main className={"h-full bg-zinc-800"}>{children}</main>
   );
 }
