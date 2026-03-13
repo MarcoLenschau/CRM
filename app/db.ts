@@ -1,5 +1,6 @@
 import { User } from "./interfaces/user.interface";
 import { Customer } from "./interfaces/customer.interface";
+import { AuditLog } from "./interfaces/auditlog.interface";
 
 export const db: User[] = [
     { id: 1, name: "John Doe", email: "john.doe@example.com" },
@@ -56,4 +57,22 @@ export const emailTemplates = [
         subject: 'Thank You for Your Business',
         body: 'Hello,\n\nThank you so much for choosing us. We truly appreciate your business and look forward to working with you.\n\nPlease don\'t hesitate to reach out if you need anything.\n\nBest regards'
     }
+];
+
+export const auditLogs: AuditLog[] = [
+    { id: 1, timestamp: new Date("2026-03-13T14:30:00"), user: "John Doe", action: "CREATE", entity: "Customer", entityName: "TechStart GmbH", description: "Created new customer: TechStart GmbH", status: "SUCCESS", ipAddress: "192.168.1.100" },
+    { id: 2, timestamp: new Date("2026-03-13T14:15:00"), user: "Jane Smith", action: "UPDATE", entity: "Customer", entityName: "Green Solutions AG", description: "Updated customer status to active", status: "SUCCESS", ipAddress: "192.168.1.101" },
+    { id: 3, timestamp: new Date("2026-03-13T13:45:00"), user: "Alice Johnson", action: "DELETE", entity: "User", entityName: "Bob Brown", description: "Deleted user account", status: "SUCCESS", ipAddress: "192.168.1.102" },
+    { id: 4, timestamp: new Date("2026-03-13T13:20:00"), user: "Bob Brown", action: "LOGIN", entity: "Account", entityName: "Bob Brown", description: "User logged in", status: "SUCCESS", ipAddress: "192.168.1.103" },
+    { id: 5, timestamp: new Date("2026-03-13T12:50:00"), user: "John Doe", action: "EXPORT", entity: "Customer", entityName: "All Customers", description: "Exported 8 customers to CSV", status: "SUCCESS", ipAddress: "192.168.1.100" },
+    { id: 6, timestamp: new Date("2026-03-13T12:30:00"), user: "Jane Smith", action: "CREATE", entity: "Email", entityName: "Follow-up Email", description: "Created new email template", status: "SUCCESS", ipAddress: "192.168.1.101" },
+    { id: 7, timestamp: new Date("2026-03-13T12:00:00"), user: "Alice Johnson", action: "LOGIN", entity: "Account", entityName: "Alice Johnson", description: "User logged in", status: "SUCCESS", ipAddress: "192.168.1.102" },
+    { id: 8, timestamp: new Date("2026-03-13T11:45:00"), user: "Bob Brown", action: "UPDATE", entity: "Settings", entityName: "User Settings", description: "Updated notification preferences", status: "SUCCESS", ipAddress: "192.168.1.103" },
+    { id: 9, timestamp: new Date("2026-03-13T11:15:00"), user: "John Doe", action: "VIEW", entity: "Customer", entityName: "Digital Ventures", description: "Viewed customer details", status: "SUCCESS", ipAddress: "192.168.1.100" },
+    { id: 10, timestamp: new Date("2026-03-13T10:30:00"), user: "Jane Smith", action: "DELETE", entity: "Email", entityName: "Old Template", description: "Deleted old email template", status: "SUCCESS", ipAddress: "192.168.1.101" },
+    { id: 11, timestamp: new Date("2026-03-13T10:00:00"), user: "Alice Johnson", action: "IMPORT", entity: "Customer", entityName: "Bulk Import", description: "Imported 5 customers from file", status: "SUCCESS", ipAddress: "192.168.1.102" },
+    { id: 12, timestamp: new Date("2026-03-13T09:45:00"), user: "Bob Brown", action: "CREATE", entity: "Event", entityName: "Team Meeting", description: "Created new calendar event", status: "SUCCESS", ipAddress: "192.168.1.103" },
+    { id: 13, timestamp: new Date("2026-03-12T16:20:00"), user: "John Doe", action: "UPDATE", entity: "User", entityName: "Jane Smith", description: "Updated user role to Admin", status: "SUCCESS", ipAddress: "192.168.1.100" },
+    { id: 14, timestamp: new Date("2026-03-12T15:30:00"), user: "Jane Smith", action: "LOGIN", entity: "Account", entityName: "Jane Smith", description: "User logged in", status: "SUCCESS", ipAddress: "192.168.1.101" },
+    { id: 15, timestamp: new Date("2026-03-12T14:15:00"), user: "Alice Johnson", action: "LOGOUT", entity: "Account", entityName: "Alice Johnson", description: "User logged out", status: "SUCCESS", ipAddress: "192.168.1.102" },
 ];

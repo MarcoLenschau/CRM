@@ -2,7 +2,7 @@ import Links from "../Links/Links";
 import Juridical from "../Juridical/Juridical";
 
 export default function Sidebar({isUserLogedIn}: {isUserLogedIn: boolean}) {
-  const linksArray = ["Dashboard", "Customers", "Users", "Email", "Calendar", "Help"];
+  const linksArray = ["Dashboard", "Customers", "Users", "Email", "Calendar", "Settings", "Help", "Log"];
   const linksArrayWithoutLogin = ["Login", "Register"];
   return (
     <aside className="flex flex-col justify-between bg-zinc-800 border-r-2 border-zinc-600 w-56 h-screen p-6">
