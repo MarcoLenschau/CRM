@@ -2,7 +2,9 @@
 
 import { useState } from 'react';
 import AppointmentDialog from '../dialogs/AppointmentDialog/AppointmentDialog';
-import { Appointment } from '@/app/type/appointment';
+import { event } from '@/app/db';
+import { Month } from '@/app/type/month.type';
+import { Weekday } from '@/app/type/weekday.type';
 
 /**
  * A functional React component that renders a calendar UI with the ability to navigate between months
@@ -18,30 +20,24 @@ export default function Calendar({width=25, height=25}: {width?: number, height?
   const [displayDate, setDisplayDate] = useState(new Date());
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
-  const now = new Date();
   const month = displayDate.getMonth();
   const year = displayDate.getFullYear();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const firstDay = new Date(year, month, 1).getDay();
-  const weekdays = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
-  const monthNames = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
   const totalCells = Math.ceil((daysInMonth + firstDay) / 7) * 7;
-  const calendarDays = [...Array(firstDay).fill(null), ...Array.from({length: daysInMonth}, (_, i) => i + 1), ...Array(totalCells - firstDay - daysInMonth).fill(null)];
-  const isToday = (day: number | null) => day === now.getDate() && month === now.getMonth() && year === now.getFullYear();
-
-  /**
-  * Handles the click event on a day in the calendar.
-  * If a valid day is clicked, it sets the selected day and opens a dialog.
-  *
-  * @param day - The day that was clicked, or null if no day was selected.
-  */
-  const handleDayClick = (day: number | null) => day ? (setSelectedDay(day), setIsDialogOpen(true)) : null;
-  /**
-  * Handles the submission of an appointment.
-  * 
-  * @param appointment - The appointment object containing the details of the submitted appointment.
-  */
-  const handleAppointmentSubmit = (appointment: Appointment) => setIsDialogOpen(false);
+  const weekdays: Weekday[] = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr' , 'Sa'];
+  const monthNames: Month[] = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
+  
+  const calendarDays = Array.from({length: totalCells}, (_, i) => {
+    const day = i - firstDay + 1;
+    const isCurrentMonth = day > 0 && day <= daysInMonth;
+    return {day: isCurrentMonth ? day : day <= 0 ? day + new Date(year, month, 0).getDate() : day - daysInMonth, isCurrentMonth, weekday: weekdays[i % 7]};
+  });
+  
+  const now = new Date();
+  const isToday = (d: number) => d === now.getDate() && month === now.getMonth() && year === now.getFullYear();
+  const getEventsForDay = (day: number) => event.filter(e => e.time.getDate() === day && e.time.getMonth() === month && e.time.getFullYear() === year);
+  const handleDayClick = (d: {day: number, isCurrentMonth: boolean}) => d.isCurrentMonth && (setSelectedDay(d.day), setIsDialogOpen(true));
 
   return (
     <div>
@@ -51,20 +47,30 @@ export default function Calendar({width=25, height=25}: {width?: number, height?
         <button onClick={() => setDisplayDate(new Date(year, month + 1))} className="text-2xl font-bold hover:brightness-150">→</button>
       </div>
       <section className="grid grid-cols-7 border-2 border-zinc-500 bg-zinc-700" style={{gridAutoRows: `${height * 4}px`}}>
-        {calendarDays.map((day, index) => (
-          <div key={index} style={{width: `${width * 4}px`}} onClick={() => handleDayClick(day)} className={`border-2 ${day === null ? 'bg-zinc-800 border-zinc-700' : isToday(day) ? 'bg-zinc-700 border-zinc-500' : 'bg-zinc-800 border-zinc-700'} 
-          cursor-pointer font-bold text-xl flex flex-col items-center justify-center hover:brightness-150`}>
-            {day && (
-              <>
-                <span className="text-sm">{weekdays[index % 7]}</span>
-                <span>{day}</span>
-              </>
-            )}
-          </div>
-        ))}
+        {calendarDays.map((dayObj) => {
+          const dayEvents = dayObj.isCurrentMonth ? getEventsForDay(dayObj.day) : [];
+          const maxEvents = 2;
+          const displayedEvents = dayEvents.slice(0, maxEvents);
+          const moreCount = Math.max(0, dayEvents.length - maxEvents);
+          return (
+            <div key={`${dayObj.day}-${dayObj.weekday}`} style={{width: `${width * 4}px`}} onClick={() => handleDayClick(dayObj)} className={`border-2 ${!dayObj.isCurrentMonth ? 'bg-zinc-700 border-gray-500' : isToday(dayObj.day) ? 'bg-zinc-700 border-zinc-500' : 'bg-zinc-800 border-zinc-700'} 
+              cursor-pointer font-bold flex flex-col p-1 h-full`}>
+              <div className="flex justify-between items-start mb-1">
+                <span className={`text-xs ${!dayObj.isCurrentMonth ? 'text-gray-400' : ''}`}>{dayObj.weekday}</span>
+                <span className={`text-sm ${!dayObj.isCurrentMonth ? 'text-gray-400' : ''}`}>{dayObj.day}</span>
+              </div>
+              {dayEvents.length > 0 && (
+                <div className="text-xs mt-auto text-orange-400 space-y-0.5">
+                  {displayedEvents.map(e => <div key={e.id} className="truncate">{e.name}</div>)}
+                  {moreCount > 0 && <div className="text-orange-500 font-semibold">+{moreCount}</div>}
+                </div>
+              )}
+            </div>
+          );
+        })}
       </section>
       <AppointmentDialog isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)}
-        onSubmit={handleAppointmentSubmit} selectedDate={selectedDay || undefined}/>
+        onSubmit={() => setIsDialogOpen(false)} selectedDate={selectedDay || undefined}/>
     </div>
   );
 }
