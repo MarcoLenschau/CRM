@@ -10,6 +10,7 @@ import QuickTip from '@/app/components/ui/QuickTip/QuickTip';
 import PageHeader from '../components/ui/PageHeader/PageHeader';
 import SearchBar from '@/app/components/ui/SearchBar/SearchBar';
 import Table from '@/app/components/ui/Table/Table';
+import StatCard from '@/app/components/ui/StatCard/StatCard';
 
 export default function UsersPage() {
   const [users, setUsers] = useState(db);
@@ -101,42 +102,50 @@ export default function UsersPage() {
       <div className="flex-1 overflow-y-auto scrollbar-dark min-h-0">
         <section className="flex flex-col justify-start items-center gap-6 px-8 py-6">
           <div className="w-full max-w-5xl space-y-6">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="bg-gradient-to-br from-zinc-800 to-zinc-900 rounded-lg border-2 border-blue-600/30 p-4 hover:border-blue-600/60 transition-colors">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="bg-blue-900/40 rounded-lg p-2">
-                  <svg className="w-5 h-5 text-blue-400" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-                  </svg>
-                </div>
-                <span className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Total Users</span>
-              </div>
-              <p className="text-3xl font-bold text-blue-400">{users.length}</p>
-            </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <StatCard
+              label="Total Users"
+              value={users.length}
+              color="blue"
+              icon={
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                </svg>
+              }
+            />
 
-            <div className="bg-gradient-to-br from-zinc-800 to-zinc-900 rounded-lg border-2 border-green-600/30 p-4 hover:border-green-600/60 transition-colors">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="bg-green-900/40 rounded-lg p-2">
-                  <svg className="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
-                  </svg>
-                </div>
-                <span className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Active</span>
-              </div>
-              <p className="text-3xl font-bold text-green-400">{users.length}</p>
-            </div>
+            <StatCard
+              label="Active"
+              value={users.length}
+              color="green"
+              icon={
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                </svg>
+              }
+            />
 
-            <div className="bg-gradient-to-br from-zinc-800 to-zinc-900 rounded-lg border-2 border-purple-600/30 p-4 hover:border-purple-600/60 transition-colors">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="bg-purple-900/40 rounded-lg p-2">
-                  <svg className="w-5 h-5 text-purple-400" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M15.5 1h-8C6.12 1 5 2.12 5 3.5v17C5 21.88 6.12 23 7.5 23h8c1.38 0 2.5-1.12 2.5-2.5v-17C18 2.12 16.88 1 15.5 1zm-4 21c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4.5-4H7V4h9v14z"/>
-                  </svg>
-                </div>
-                <span className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Search Results</span>
-              </div>
-              <p className="text-3xl font-bold text-purple-400">{filteredUsers.length}</p>
-            </div>
+            <StatCard
+              label="Search Results"
+              value={filteredUsers.length}
+              color="purple"
+              icon={
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M15.5 1h-8C6.12 1 5 2.12 5 3.5v17C5 21.88 6.12 23 7.5 23h8c1.38 0 2.5-1.12 2.5-2.5v-17C18 2.12 16.88 1 15.5 1zm-4 21c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4.5-4H7V4h9v14z"/>
+                </svg>
+              }
+            />
+
+            <StatCard
+              label="Admins"
+              value={users.filter(u => u.isAdmin).length}
+              color="orange"
+              icon={
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>
+                </svg>
+              }
+            />
           </div>
 
           {/* Search & Action Bar */}
