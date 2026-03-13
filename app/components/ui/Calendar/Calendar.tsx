@@ -16,7 +16,7 @@ import { Weekday } from '@/app/type/weekday.type';
  *
  * @returns {JSX.Element} The rendered calendar component.
  */
-export default function Calendar({width=25, height=25}: {width?: number, height?: number}) {
+export default function Calendar({width=150, height=100}: {height?: number, width?: number}) {
   const [displayDate, setDisplayDate] = useState(new Date());
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
@@ -41,19 +41,19 @@ export default function Calendar({width=25, height=25}: {width?: number, height?
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-4 px-4">
+      <div className="flex items-center justify-between mb-4 px-4 w-150">
         <button onClick={() => setDisplayDate(new Date(year, month - 1))} className="text-2xl font-bold hover:brightness-150">←</button>
         <h2 className="text-xl font-bold">{monthNames[month]} {year}</h2>
         <button onClick={() => setDisplayDate(new Date(year, month + 1))} className="text-2xl font-bold hover:brightness-150">→</button>
       </div>
-      <section className="grid grid-cols-7 border-2 border-zinc-500 bg-zinc-700" style={{gridAutoRows: `${height * 4}px`}}>
+      <section className="grid grid-cols-7 border-2 border-zinc-500 bg-zinc-700" style={{gridAutoRows: `${height}px`}}>
         {calendarDays.map((dayObj) => {
           const dayEvents = dayObj.isCurrentMonth ? getEventsForDay(dayObj.day) : [];
           const maxEvents = 2;
           const displayedEvents = dayEvents.slice(0, maxEvents);
           const moreCount = Math.max(0, dayEvents.length - maxEvents);
           return (
-            <div key={`${dayObj.day}-${dayObj.weekday}`} style={{width: `${width * 4}px`}} onClick={() => handleDayClick(dayObj)} className={`border-2 ${!dayObj.isCurrentMonth ? 'bg-zinc-700 border-gray-500' : isToday(dayObj.day) ? 'bg-zinc-700 border-zinc-500' : 'bg-zinc-800 border-zinc-700'} 
+            <div key={`${dayObj.day}-${dayObj.weekday}`} onClick={() => handleDayClick(dayObj)} className={`border-2 ${!dayObj.isCurrentMonth ? 'bg-zinc-700 border-gray-500' : isToday(dayObj.day) ? 'bg-zinc-700 border-zinc-500' : 'bg-zinc-800 border-zinc-700'} 
               cursor-pointer font-bold flex flex-col p-1 h-full`}>
               <div className="flex justify-between items-start mb-1">
                 <span className={`text-xs ${!dayObj.isCurrentMonth ? 'text-gray-400' : ''}`}>{dayObj.weekday}</span>
