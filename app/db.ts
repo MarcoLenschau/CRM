@@ -1,10 +1,22 @@
 import { User } from "./interfaces/user.interface";
+import { Customer } from "./interfaces/customer.interface";
 
 export const db: User[] = [
     { id: 1, name: "John Doe", email: "john.doe@example.com" },
     { id: 2, name: "Jane Smith", email: "jane.smith@example.com" },
     { id: 3, name: "Alice Johnson", email: "alice.johnson@example.com" },
     { id: 4, name: "Bob Brown", email: "bob.brown@example.com" }
+];
+
+export const customers: Customer[] = [
+    { id: 1, name: "TechStart GmbH", email: "contact@techstart.de", phone: "+49 30 123456", company: "TechStart GmbH", status: "active", createdAt: new Date("2026-01-15"), assignedUserId: 1 },
+    { id: 2, name: "Green Solutions AG", email: "info@greensolutions.de", phone: "+49 40 654321", company: "Green Solutions AG", status: "active", createdAt: new Date("2026-02-10"), assignedUserId: 1 },
+    { id: 3, name: "Digital Ventures", email: "sales@digitalventures.de", phone: "+49 69 987654", company: "Digital Ventures", status: "active", createdAt: new Date("2026-01-20"), assignedUserId: 2 },
+    { id: 4, name: "InnovateHub Munich", email: "hello@innovatehub.de", phone: "+49 89 555888", company: "InnovateHub Munich", status: "pending", createdAt: new Date("2026-03-05"), assignedUserId: 2 },
+    { id: 5, name: "CloudFirst Systems", email: "contact@cloudfirst.de", phone: "+49 221 111222", company: "CloudFirst Systems", status: "active", createdAt: new Date("2026-02-28"), assignedUserId: 3 },
+    { id: 6, name: "DataDrive Analytics", email: "team@datadrive.de", phone: "+49 341 333444", company: "DataDrive Analytics", status: "inactive", createdAt: new Date("2025-11-12"), assignedUserId: 3 },
+    { id: 7, name: "SecureNet Solutions", email: "support@securenet.de", phone: "+49 511 777888", company: "SecureNet Solutions", status: "active", createdAt: new Date("2026-02-01"), assignedUserId: 4 },
+    { id: 8, name: "Future Logistics Inc", email: "logistics@future.de", phone: "+49 201 999111", company: "Future Logistics Inc", status: "active", createdAt: new Date("2026-03-01"), assignedUserId: 4 }
 ];
 
 export const activity = [
