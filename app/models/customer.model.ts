@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { CustomerStatus } from "@/app/enums/status.enum";
 
 const customerSchema = new mongoose.Schema({
     name: {
@@ -19,6 +20,9 @@ const customerSchema = new mongoose.Schema({
     },
     status: {
         type: String,
+        enum: Object.values(CustomerStatus),
+        default: CustomerStatus.ACTIVE,
+        required: true
     },
     assignedUserId: {
         type: String,

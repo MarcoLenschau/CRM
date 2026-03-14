@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Customer } from '@/app/interfaces/customer.interface';
+import { CustomerStatus } from '@/app/enums/status.enum';
 import Link from 'next/link';
 import DeleteConfirmDialog from '@/app/components/ui/dialogs/DeleteConfirmDialog/DeleteConfirmDialog';
 import SuccessDialog from '@/app/components/ui/dialogs/SuccessDialog/SuccessDialog';
@@ -11,25 +12,38 @@ import Table from '@/app/components/ui/Table/Table';
 import StatCard from '@/app/components/ui/StatCard/StatCard';
 
 // Status Badge Component
-function StatusBadge({ status }: { status?: string }) {
-  const colors: Record<string, string> = {
-    active: 'bg-green-900/30 border-green-700/50 text-green-300',
-    inactive: 'bg-red-900/30 border-red-700/50 text-red-300',
-    pending: 'bg-yellow-900/30 border-yellow-700/50 text-yellow-300',
+function StatusBadge({ status }: { status: CustomerStatus }) {
+  const colors: Record<CustomerStatus, string> = {
+    [CustomerStatus.ACTIVE]: 'bg-green-900/30 border-green-700/50 text-green-300',
+    [CustomerStatus.INACTIVE]: 'bg-red-900/30 border-red-700/50 text-red-300',
+    [CustomerStatus.PENDING]: 'bg-yellow-900/30 border-yellow-700/50 text-yellow-300',
   };
   
-  const icons: Record<string, string> = {
-    active: 'M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z',
-    inactive: 'M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z',
-    pending: 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11z',
+  const icons: Record<CustomerStatus, string> = {
+    [CustomerStatus.ACTIVE]: 'M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z',
+    [CustomerStatus.INACTIVE]: 'M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z',
+    [CustomerStatus.PENDING]: 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11z',
+  };
+
+  const getLabel = (stat: CustomerStatus) => {
+    switch (stat) {
+      case CustomerStatus.ACTIVE:
+        return 'Active';
+      case CustomerStatus.INACTIVE:
+        return 'Inactive';
+      case CustomerStatus.PENDING:
+        return 'Pending';
+      default:
+        return 'Active';
+    }
   };
 
   return (
-    <span className={`inline-flex items-center gap-1 border ${colors[status || 'active']} px-3 py-1 rounded-full text-xs font-semibold`}>
+    <span className={`inline-flex items-center gap-1 border ${colors[status]} px-3 py-1 rounded-full text-xs font-semibold`}>
       <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
-        <path d={icons[status || 'active']} />
+        <path d={icons[status]} />
       </svg>
-      {status?.charAt(0).toUpperCase()}{status?.slice(1)}
+      {getLabel(status)}
     </span>
   );
 }
@@ -62,7 +76,7 @@ function TableActions({ customerId, customerName, onDelete }: { customerId: stri
 // Main Component
 export default function CustomersContent({ initialCustomers }: { initialCustomers: Customer[] }) {
   const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'inactive' | 'pending'>('all');
+  const [statusFilter, setStatusFilter] = useState<'all' | CustomerStatus>('all');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleteCustomerId, setDeleteCustomerId] = useState<string | null>(null);
   const [deleteCustomerName, setDeleteCustomerName] = useState('');
@@ -73,9 +87,9 @@ export default function CustomersContent({ initialCustomers }: { initialCustomer
 
   // Calculate stats
   const totalCustomers = initialCustomers.length;
-  const activeCount = initialCustomers.filter((c: Customer) => c.status === 'active').length;
-  const pendingCount = initialCustomers.filter((c: Customer) => c.status === 'pending').length;
-  const inactiveCount = initialCustomers.filter((c: Customer) => c.status === 'inactive').length;
+  const activeCount = initialCustomers.filter((c: Customer) => c.status === CustomerStatus.ACTIVE).length;
+  const pendingCount = initialCustomers.filter((c: Customer) => c.status === CustomerStatus.PENDING).length;
+  const inactiveCount = initialCustomers.filter((c: Customer) => c.status === CustomerStatus.INACTIVE).length;
 
   // Filter customers
   const filteredCustomers = initialCustomers.filter((customer: Customer) => {
@@ -146,13 +160,13 @@ export default function CustomersContent({ initialCustomers }: { initialCustomer
       >
         <select
           value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value as 'all' | 'active' | 'inactive' | 'pending')}
+          onChange={(e) => setStatusFilter(e.target.value as 'all' | CustomerStatus)}
           className="bg-zinc-700/50 border border-zinc-600 rounded-lg px-4 py-2.5 text-white min-w-max"
         >
           <option value="all">All Status</option>
-          <option value="active">Active</option>
-          <option value="pending">Pending</option>
-          <option value="inactive">Inactive</option>
+          <option value={CustomerStatus.ACTIVE}>Active</option>
+          <option value={CustomerStatus.PENDING}>Pending</option>
+          <option value={CustomerStatus.INACTIVE}>Inactive</option>
         </select>
       </SearchBar>
 

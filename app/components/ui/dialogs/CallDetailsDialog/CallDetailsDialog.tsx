@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import SuccessDialog from '../SuccessDialog/SuccessDialog';
+import { LogStatus } from '@/app/enums/status.enum';
 
 interface Customer {
   id: string;
@@ -9,7 +10,7 @@ interface Customer {
   email: string;
   phone?: string;
   company?: string;
-  status?: string;
+  status: LogStatus;
   assignedUserId?: string;
 }
 

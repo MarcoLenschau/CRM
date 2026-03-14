@@ -1,12 +1,12 @@
+import { LogStatus } from '@/app/enums/status.enum';
+
 export interface AuditLog {
+  _id?: string;
   userID: string;
-  timestamp: Date;
-  user: string;
-  action: 'CREATE' | 'UPDATE' | 'DELETE' | 'VIEW' | 'LOGIN' | 'LOGOUT' | 'EXPORT' | 'IMPORT';
-  entity: 'Customer' | 'User' | 'Email' | 'Event' | 'Settings' | 'Account';
-  entityName: string;
+  action: string;
+  entity: string;
+  status: LogStatus;
   description: string;
-  status: 'SUCCESS' | 'FAILED' | 'WARNING';
-  ipAddress: string;
-  [key: string]: unknown;
+  createdAt?: string;
+  updatedAt?: string;
 }

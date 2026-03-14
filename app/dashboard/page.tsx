@@ -1,10 +1,8 @@
-'use client';
-
 import AllEventsTemplate from '@/app/components/AllEventsTemplate/AllEventsTemplate';
 import QuickActionsTemplate from '@/app/components/QuickActionsTemplate/QuickActionsTemplate';
 import ActivityFeedTemplate from '@/app/components/ActivityFeedTemplate/ActivityFeedTemplate';
 
-export default function Dashboard() {
+export default async function Dashboard() {
   return (
     <div className="p-6 overflow-y-auto">
       <section className="flex flex-col justify-center items-center gap-6">

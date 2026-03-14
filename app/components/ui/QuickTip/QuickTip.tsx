@@ -1,5 +1,31 @@
 import { QuickTipProps } from '@/app/interfaces/quicktip.interface';
 
+interface QuickTipTooltipProps {
+  text: string;
+  tooltipText: string;
+  color?: 'blue' | 'orange' | 'green' | 'red' | 'yellow';
+}
+
+const colorMap = {
+  blue: 'bg-blue-700/50 hover:bg-blue-600 text-blue-300',
+  orange: 'bg-orange-700/50 hover:bg-orange-600 text-orange-300',
+  green: 'bg-green-700/50 hover:bg-green-600 text-green-300',
+  red: 'bg-red-700/50 hover:bg-red-600 text-red-300',
+  yellow: 'bg-yellow-700/50 hover:bg-yellow-600 text-yellow-300',
+};
+
+export function QuickTipTooltip({ text, tooltipText, color = 'blue' }: QuickTipTooltipProps) {
+  return (
+    <div className="group relative inline-flex items-center gap-1">
+      <button className={`w-5 h-5 rounded-full ${colorMap[color]} text-xs font-bold flex items-center justify-center transition-colors flex-shrink-0`}>?</button>
+      <span>{text}</span>
+      <div className="hidden group-hover:block absolute right-0 top-6 w-48 bg-zinc-800 text-xs text-gray-300 p-2 rounded border border-zinc-600 z-10 shadow-lg">
+        {tooltipText}
+      </div>
+    </div>
+  );
+}
+
 export default function QuickTip({ text, width = 'w-full' }: QuickTipProps) {
   return (
     <div className={`bg-zinc-800 rounded-lg border-2 border-zinc-700 p-5 backdrop-blur-sm ${width}`}>

@@ -1,5 +1,6 @@
 import mongodb from "@/app/utils/mongodb"
 import Customes from "@/app/models/customer.model"
+import { CustomerStatus } from "@/app/enums/status.enum"
 
 export async function POST(request: Request): Promise<Response> {
   try {
@@ -10,7 +11,7 @@ export async function POST(request: Request): Promise<Response> {
       email: body.email,
       phone: body.phone,
       company: body.company,
-      status: body.status,
+      status: body.status || CustomerStatus.ACTIVE,
       assignedUserId: body.assignedUserId
     });
     return Response.json({ 
@@ -20,7 +21,7 @@ export async function POST(request: Request): Promise<Response> {
         email: body.email,
         phone: body.phone,
         company: body.company,
-        status: body.status,
+        status: body.status || CustomerStatus.ACTIVE,
         assignedUserId: body.assignedUserId
       }
     }, { status: 200 });
@@ -44,7 +45,7 @@ export async function GET(): Promise<Response> {
           email: user.email,
           phone: user.phone,
           company: user.company,
-          status: user.status,
+          status: user.status || CustomerStatus.ACTIVE,
           assignedUserId: user.assignedUserId
         }))
       }, { status: 200 });
