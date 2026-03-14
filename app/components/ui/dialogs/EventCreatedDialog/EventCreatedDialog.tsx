@@ -1,11 +1,6 @@
 'use client';
 
-interface EventCreatedDialogProps {
-  isOpen: boolean;
-  onClose: () => void;
-  eventName?: string;
-  eventDate?: string;
-}
+import { EventCreatedDialogProps } from '@/app/interfaces/eventcreateddialog.interface';
 
 export default function EventCreatedDialog({ isOpen, onClose, eventName, eventDate }: EventCreatedDialogProps) {
   if (!isOpen) return null;

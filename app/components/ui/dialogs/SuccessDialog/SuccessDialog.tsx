@@ -1,14 +1,4 @@
-'use client';
-
-interface SuccessDialogProps {
-  isOpen: boolean;
-  onClose: () => void;
-  title: string;
-  message: string;
-  detailLabel?: string;
-  detailValue?: string;
-  buttonText?: string;
-}
+import { SuccessDialogProps } from '@/app/interfaces/successdialog.interface';
 
 export default function SuccessDialog({ 
   isOpen, 

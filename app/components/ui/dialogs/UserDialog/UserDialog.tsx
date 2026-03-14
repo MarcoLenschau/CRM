@@ -1,13 +1,6 @@
 'use client';
 
-interface UserDialogProps {
-  isOpen: boolean;
-  editingId: number | null;
-  newUser: { name: string; email: string; isAdmin?: boolean };
-  onUserChange: (user: { name: string; email: string; isAdmin?: boolean }) => void;
-  onSave: () => void;
-  onCancel: () => void;
-}
+import { UserDialogProps } from '@/app/interfaces/userdialog.interface';
 
 export default function UserDialog({
   isOpen,
@@ -15,7 +8,7 @@ export default function UserDialog({
   newUser,
   onUserChange,
   onSave,
-  onCancel,
+  onClose,
 }: UserDialogProps) {
   if (!isOpen) return null;
 
@@ -115,7 +108,7 @@ export default function UserDialog({
               {editingId ? 'Update User' : 'Save User'}
             </button>
             <button
-              onClick={onCancel}
+              onClick={onClose}
               className="flex-1 bg-zinc-600 hover:bg-zinc-500 active:bg-zinc-700 text-white py-3 rounded-lg font-semibold transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
             >
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">

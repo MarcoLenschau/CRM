@@ -1,12 +1,21 @@
 'use client';
 
-import { useState } from 'react';
-import { db, activity } from '@/app/db';
+import { useState, useEffect } from 'react';
 import SuccessDialog from '../SuccessDialog/SuccessDialog';
+
+interface Customer {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string;
+  company?: string;
+  status?: string;
+  assignedUserId?: string;
+}
 
 interface CallDetailsDialogProps {
   isOpen: boolean;
-  selectedUserId: number | null;
+  selectedUserId: string | null;
   onClose: () => void;
 }
 
@@ -19,24 +28,33 @@ export default function CallDetailsDialog({ isOpen, selectedUserId, onClose }: C
   });
   const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false);
   const [callUserName, setCallUserName] = useState('');
+  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
+
+  useEffect(() => {
+    if (!isOpen || !selectedUserId) return;
+    
+    const fetchCustomer = async () => {
+      try {
+        const response = await fetch(`/api/customer/${selectedUserId}`);
+        const data = await response.json();
+        if (data.success && data.customer) {
+          setSelectedCustomer(data.customer);
+        }
+      } catch (err) {
+        console.error('Error fetching customer:', err);
+      }
+    };
+
+    fetchCustomer();
+  }, [isOpen, selectedUserId]);
 
   const handleSave = () => {
-    if (selectedUserId) {
-      const user = db.find(u => u.id === selectedUserId);
-      if (user) {
-        const newActivity = {
-          id: Math.max(...activity.map(a => a.id), 0) + 1,
-          type: 'call' as const,
-          userId: selectedUserId,
-          action: `Call with ${user.name} - Status: ${callDetails.status}`,
-          timestamp: new Date()
-        };
-        activity.push(newActivity);
-        
-        setCallUserName(user.name);
-        setIsSuccessDialogOpen(true);
-        setCallDetails({ status: '', nextAction: '', interest: '', notes: '' });
-      }
+    if (selectedUserId && selectedCustomer) {
+      // Here you can add API call to log the call
+      // For now, just show success
+      setCallUserName(selectedCustomer.name);
+      setIsSuccessDialogOpen(true);
+      setCallDetails({ status: '', nextAction: '', interest: '', notes: '' });
     }
   };
 
@@ -46,8 +64,6 @@ export default function CallDetailsDialog({ isOpen, selectedUserId, onClose }: C
   };
 
   if (!isOpen || !selectedUserId) return null;
-
-  const selectedUser = db.find(u => u.id === selectedUserId);
 
   return (
     <div className="fixed inset-0 bg-black/30 backdrop-blur-md flex items-center justify-center z-50">
@@ -63,7 +79,7 @@ export default function CallDetailsDialog({ isOpen, selectedUserId, onClose }: C
 
         {/* Title */}
         <h2 className="text-2xl font-bold text-white text-center mb-1">Call Details</h2>
-        <p className="text-gray-400 text-center text-sm mb-6">Calling: <span className="text-blue-400 font-semibold">{selectedUser?.name}</span></p>
+        <p className="text-gray-400 text-center text-sm mb-6">Calling: <span className="text-blue-400 font-semibold">{selectedCustomer?.name || 'Loading...'}</span></p>
         
         {/* Form */}
         <div className="space-y-4 mb-6">

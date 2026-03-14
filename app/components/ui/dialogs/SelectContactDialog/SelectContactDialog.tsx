@@ -1,14 +1,39 @@
 'use client';
 
-import { db } from '@/app/db';
-
-interface SelectContactDialogProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSelectUser: (userId: number) => void;
-}
+import { useState, useEffect } from 'react';
+import { Customer } from '@/app/interfaces/customer.interface';
+import { SelectContactDialogProps } from '@/app/interfaces/selectcontactdialog.interface';
 
 export default function SelectContactDialog({ isOpen, onClose, onSelectUser }: SelectContactDialogProps) {
+  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      fetchCustomers();
+    }
+  }, [isOpen]);
+
+  const fetchCustomers = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await fetch('/api/customer');
+      const data = await response.json();
+      if (data.success && data.customers) {
+        setCustomers(data.customers);
+      } else {
+        setError('Failed to load customers');
+      }
+    } catch (err) {
+      setError('Error loading customers');
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -29,10 +54,25 @@ export default function SelectContactDialog({ isOpen, onClose, onSelectUser }: S
         
         {/* Contacts List */}
         <div className="space-y-2 mb-6 max-h-96 overflow-y-auto scrollbar-dark">
-          {db.map(user => (
+          {loading && (
+            <div className="text-center text-gray-400 py-4">
+              Loading customers...
+            </div>
+          )}
+          {error && (
+            <div className="text-center text-red-400 py-4">
+              {error}
+            </div>
+          )}
+          {!loading && customers.length === 0 && !error && (
+            <div className="text-center text-gray-400 py-4">
+              No customers found
+            </div>
+          )}
+          {customers.map(customer => (
             <button
-              key={user.id}
-              onClick={() => onSelectUser(user.id)}
+              key={customer.id}
+              onClick={() => onSelectUser(customer.id)}
               className="w-full p-4 rounded-lg bg-zinc-700/50 hover:bg-zinc-600/70 text-white text-left transition-all border border-zinc-600 hover:border-blue-500/50 cursor-pointer group">
               <div className="flex items-center gap-3">
                 <div className="bg-blue-900/40 rounded-full p-2 group-hover:bg-blue-900/60 transition-colors">
@@ -41,8 +81,8 @@ export default function SelectContactDialog({ isOpen, onClose, onSelectUser }: S
                   </svg>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-white truncate">{user.name}</p>
-                  <p className="text-sm text-gray-400 truncate">{user.email}</p>
+                  <p className="font-semibold text-white truncate">{customer.name}</p>
+                  <p className="text-sm text-gray-400 truncate">{customer.email}</p>
                 </div>
                 <svg className="w-5 h-5 text-gray-500 group-hover:text-blue-400 transition-colors flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M8.59 16.34l4.58-4.59-4.58-4.59L10 5.75l6 6-6 6z"/>

@@ -1,9 +1,4 @@
-'use client';
-
-interface QuickTipProps {
-  text: string;
-  width?: string;
-}
+import { QuickTipProps } from '@/app/interfaces/quicktip.interface';
 
 export default function QuickTip({ text, width = 'w-full' }: QuickTipProps) {
   return (

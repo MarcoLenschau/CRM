@@ -1,13 +1,4 @@
-'use client';
-
-import { ReactNode } from 'react';
-
-interface StatCardProps {
-  label: string;
-  value: number | string;
-  icon: ReactNode;
-  color: 'blue' | 'green' | 'purple' | 'orange' | 'red' | 'cyan' | 'pink' | 'indigo';
-}
+import { StatCardProps } from '@/app/interfaces/statcard.interface';
 
 const colorMap = {
   blue: {

@@ -1,13 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { db, activity } from '@/app/db';
+import { NewCustomerDialogProps } from '@/app/interfaces/newcustomerdialog.interface';
 import SuccessDialog from '../SuccessDialog/SuccessDialog';
-
-interface NewCustomerDialogProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
 
 export default function NewCustomerDialog({ isOpen, onClose }: NewCustomerDialogProps) {
   const [newCustomer, setNewCustomer] = useState({
@@ -20,24 +15,20 @@ export default function NewCustomerDialog({ isOpen, onClose }: NewCustomerDialog
   const [createdCustomerName, setCreatedCustomerName] = useState('');
 
   const handleSave = () => {
-    if (newCustomer.name.trim() && newCustomer.email.trim()) {
-      const maxId = Math.max(...db.map(u => u.id), 0);
-      const customer = {
-        id: maxId + 1,
-        name: newCustomer.name,
-        email: newCustomer.email
-      };
-      db.push(customer);
-      
-      const newActivity = {
-        id: Math.max(...activity.map(a => a.id)) + 1,
-        type: 'new_contact' as const,
-        userId: customer.id,
-        action: `New customer added: ${newCustomer.name}`,
-        timestamp: new Date()
-      };
-      activity.push(newActivity);
-      
+    if (newCustomer.name.trim() && newCustomer.email.trim() && newCustomer.company.trim() && newCustomer.phone.trim()) {
+      fetch('/api/customer', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name: newCustomer.name,
+          email: newCustomer.email,
+          company: newCustomer.company,
+          phone: newCustomer.phone,
+          assignedUserId: 1
+        })
+      });
       setCreatedCustomerName(newCustomer.name);
       setIsSuccessDialogOpen(true);
       setNewCustomer({ name: '', email: '', company: '', phone: '' });

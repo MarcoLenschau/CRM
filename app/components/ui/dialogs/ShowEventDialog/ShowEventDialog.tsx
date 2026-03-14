@@ -1,12 +1,6 @@
 'use client';
 
-import { Event } from '@/app/interfaces/event.interface';
-
-interface ShowEventDialogProps {
-  isOpen: boolean;
-  onClose: () => void;
-  selectedEvent: Event;
-}
+import { ShowEventDialogProps } from '@/app/interfaces/showeventdialog.interface';
 
 export default function ShowEventDialog({ isOpen, onClose, selectedEvent }: ShowEventDialogProps) {
   if (!isOpen) return null;

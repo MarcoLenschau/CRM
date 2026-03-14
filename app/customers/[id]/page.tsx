@@ -21,7 +21,7 @@ export default function CustomerDetailPage() {
     phone: '', 
     company: '', 
     status: 'active' as 'active' | 'inactive' | 'pending',
-    assignedUserId: 0 
+    assignedUserId: '' 
   });
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false);
@@ -41,7 +41,7 @@ export default function CustomerDetailPage() {
             phone: found.phone || '',
             company: found.company || '',
             status: (found.status as 'active' | 'inactive' | 'pending') || 'active',
-            assignedUserId: Number(found.assignedUserId || 0)
+            assignedUserId: found.assignedUserId || ''
           });
         } else if (response.status === 404) {
           setCustomer(null);
@@ -84,8 +84,7 @@ export default function CustomerDetailPage() {
 
   const getAssignedUserName = () => {
     if (!editForm.assignedUserId) return 'Unassigned';
-    const user = users.find(u => u.id === editForm.assignedUserId);
-    return user?.name || 'Unassigned';
+    return 'Assigned to: ' + editForm.assignedUserId;
   };
 
   const getStatusColor = (status?: string) => {
@@ -290,10 +289,10 @@ export default function CustomerDetailPage() {
                   {isEditing ? (
                     <select
                       value={editForm.assignedUserId}
-                      onChange={(e) => setEditForm({ ...editForm, assignedUserId: parseInt(e.target.value) })}
+                      onChange={(e) => setEditForm({ ...editForm, assignedUserId: e.target.value })}
                       className="w-full bg-zinc-700/50 text-white rounded-lg px-3 py-2 border border-zinc-600 hover:border-zinc-500 focus:border-orange-400 focus:outline-none transition-colors text-sm cursor-pointer"
                     >
-                      <option value="0">Unassigned</option>
+                      <option value="">Unassigned</option>
                       {users.map(user => (
                         <option key={user.id} value={user.id}>{user.name}</option>
                       ))}
@@ -352,7 +351,7 @@ export default function CustomerDetailPage() {
                             phone: customer.phone || '',
                             company: customer.company || '',
                             status: (customer.status as 'active' | 'inactive' | 'pending') || 'active',
-                            assignedUserId: Number(customer.assignedUserId || 0)
+                            assignedUserId: customer.assignedUserId || ''
                           });
                         }}
                         className="flex-1 bg-zinc-700 hover:bg-zinc-600 text-white py-2 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2 text-sm">
@@ -430,7 +429,7 @@ export default function CustomerDetailPage() {
         isOpen={showDeleteConfirm}
         userName={customer.name}
         onConfirm={handleDeleteCustomer}
-        onCancel={() => setShowDeleteConfirm(false)}
+        onClose={() => setShowDeleteConfirm(false)}
       />
 
       <SuccessDialog 

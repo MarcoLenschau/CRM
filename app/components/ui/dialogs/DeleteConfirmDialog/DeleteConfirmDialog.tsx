@@ -1,17 +1,12 @@
 'use client';
 
-interface DeleteConfirmDialogProps {
-  isOpen: boolean;
-  userName: string;
-  onConfirm: () => void;
-  onCancel: () => void;
-}
+import { DeleteConfirmDialogProps } from '@/app/interfaces/deleteconfirmdialog.interface';
 
 export default function DeleteConfirmDialog({
   isOpen,
   userName,
   onConfirm,
-  onCancel,
+  onClose,
 }: DeleteConfirmDialogProps) {
   if (!isOpen) return null;
 
@@ -38,7 +33,7 @@ export default function DeleteConfirmDialog({
             Yes, Delete
           </button>
           <button
-            onClick={onCancel}
+            onClick={onClose}
             className="flex-1 bg-zinc-600 hover:bg-zinc-500 text-white py-2 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2"
           >
             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">

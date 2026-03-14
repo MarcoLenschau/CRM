@@ -1,5 +1,3 @@
-'use client';
-
 import { activity } from '@/app/db';
 
 const ACTIVITY_ICONS = {

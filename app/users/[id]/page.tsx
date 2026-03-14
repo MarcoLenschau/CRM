@@ -336,7 +336,7 @@ export default function UserDetailPage() {
         isOpen={showDeleteConfirm}
         userName={user.name}
         onConfirm={handleDeleteUser}
-        onCancel={() => setShowDeleteConfirm(false)}
+        onClose={() => setShowDeleteConfirm(false)}
       />
 
       <SuccessDialog 

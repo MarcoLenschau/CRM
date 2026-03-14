@@ -1,17 +1,7 @@
 'use client';
 
 import { event } from '@/app/db';
-import { Event } from '@/app/interfaces/event.interface';
-
-interface AllEventsDialogProps {
-  isOpen: boolean;
-  onClose: () => void;
-  selectedDay: number;
-  month: number;
-  year: number;
-  onEventClick?: (evt: Event) => void;
-  onAddEventClick?: () => void;
-}
+import { AllEventsDialogProps } from '@/app/interfaces/alleventsdialog.interface';
 
 export default function AllEventsDialog({ isOpen, onClose, selectedDay, month, year, onEventClick, onAddEventClick }: AllEventsDialogProps) {
   if (!isOpen) return null;

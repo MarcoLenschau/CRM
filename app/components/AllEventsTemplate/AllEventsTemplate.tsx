@@ -1,5 +1,3 @@
-'use client';
-
 import { event } from '@/app/db';
 
 export default function AllEventsTemplate() {

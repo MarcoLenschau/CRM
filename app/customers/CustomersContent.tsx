@@ -169,7 +169,7 @@ export default function CustomersContent({ initialCustomers }: { initialCustomer
                 render: (_, row) => (
                   <Link href={`/customers/${row.id}`}>
                     <span className="text-blue-400 hover:text-blue-300 cursor-pointer font-semibold underline transition-colors">
-                      #{row.id}
+                      {row.id}
                     </span>
                   </Link>
                 ),
@@ -221,7 +221,7 @@ export default function CustomersContent({ initialCustomers }: { initialCustomer
         isOpen={showDeleteConfirm}
         userName={deleteCustomerName}
         onConfirm={handleConfirmDelete}
-        onCancel={() => {
+        onClose={() => {
           setShowDeleteConfirm(false);
           setDeleteCustomerId(null);
           setDeleteCustomerName('');

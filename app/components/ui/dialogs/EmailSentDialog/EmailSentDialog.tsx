@@ -1,10 +1,6 @@
 'use client';
 
-interface EmailSentDialogProps {
-  isOpen: boolean;
-  onClose: () => void;
-  recipientEmail?: string;
-}
+import { EmailSentDialogProps } from '@/app/interfaces/emailsentdialog.interface';
 
 export default function EmailSentDialog({ isOpen, onClose, recipientEmail }: EmailSentDialogProps) {
   if (!isOpen) return null;

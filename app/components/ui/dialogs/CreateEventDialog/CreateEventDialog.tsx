@@ -1,19 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { EventFormData } from '@/app/interfaces/event.interface';
-import { Month } from '@/app/type/month.type';
-
-const MONTH_NAMES: Month[] = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
-
-interface CreateEventDialogProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSubmit: (eventData: EventFormData) => void;
-  selectedDay: number;
-  month: number;
-  year: number;
-}
+import { CreateEventDialogProps } from '@/app/interfaces/createeventdialog.interface';
 
 export default function CreateEventDialog({ isOpen, onClose, onSubmit, selectedDay, month, year }: CreateEventDialogProps) {
   const [name, setName] = useState('');

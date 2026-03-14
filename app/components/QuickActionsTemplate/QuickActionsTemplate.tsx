@@ -13,7 +13,7 @@ export default function QuickActionsTemplate() {
   const [showNewCustomerModal, setShowNewCustomerModal] = useState(false);
   const [showSelectContactModal, setShowSelectContactModal] = useState(false);
   const [showCallDetailsModal, setShowCallDetailsModal] = useState(false);
-  const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
 
   // Handlers
   const handleNewCustomer = () => setShowNewCustomerModal(true);
@@ -22,7 +22,7 @@ export default function QuickActionsTemplate() {
     setShowSelectContactModal(true);
   };
 
-  const handleSelectUser = (userId: number) => {
+  const handleSelectUser = (userId: string) => {
     setSelectedUserId(userId);
     setShowSelectContactModal(false);
     setShowCallDetailsModal(true);
