@@ -11,15 +11,15 @@ const dbConnect = async () => {
   if (cache.con) {
     console.log("Connection sucess");
     return cache.con;
-  } else if (!cache.promise) {
+  }
+  
+  if (!cache.promise) {
     const options = {
       bufferCommands: false
     };
-    cache.promise = mongoose.connect(process.env.MONGODB_URI, options).then(mongoose => {
-      console.log("DB connection started")
-      return mongoose;
-    });
+    cache.promise = mongoose.connect(process.env.MONGODB_URI, options);
   }
+  
   cache.con = await cache.promise;
   return cache.con;
 };
