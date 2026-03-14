@@ -101,16 +101,16 @@ export default function Table<T extends Record<string, unknown>>({
               </tr>
             </thead>
             <tbody>
-              {data.map((row, index) => {
-                const rowKey = ((row as Record<string, unknown>).id as string | number) || index;
+              {data.map((row, rowIndex) => {
+                const rowKey = ((row as Record<string, unknown>).id as string | number) || rowIndex;
                 return (
                   <tr
                     key={String(rowKey)}
                     className="border-b border-zinc-700/30 hover:bg-zinc-700/20 transition-colors"
                   >
-                    {columns.map((column) => (
+                    {columns.map((column, colIndex) => (
                       <td
-                        key={`${String(rowKey)}-${String(column.key)}`}
+                        key={`row-${rowIndex}-col-${colIndex}`}
                         className={`${getPaddingClass(column.align)} ${getAlignClass(column.align)} ${column.className || ''}`}
                       >
                         {column.render

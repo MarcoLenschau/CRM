@@ -1,11 +1,11 @@
 export interface Customer {
-    id: number;
+    id: string | number;
     name: string;
     email: string;
     phone?: string;
     company?: string;
     status?: 'active' | 'inactive' | 'pending';
     createdAt?: Date;
-    assignedUserId?: number;
+    assignedUserId?: string | number;
     [key: string]: unknown;
 }

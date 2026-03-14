@@ -41,7 +41,7 @@ export default function CustomerDetailPage() {
             phone: found.phone || '',
             company: found.company || '',
             status: (found.status as 'active' | 'inactive' | 'pending') || 'active',
-            assignedUserId: found.assignedUserId || 0
+            assignedUserId: Number(found.assignedUserId || 0)
           });
         }
       } catch (error) {
@@ -347,7 +347,7 @@ export default function CustomerDetailPage() {
                             phone: customer.phone || '',
                             company: customer.company || '',
                             status: (customer.status as 'active' | 'inactive' | 'pending') || 'active',
-                            assignedUserId: customer.assignedUserId || 0
+                            assignedUserId: Number(customer.assignedUserId || 0)
                           });
                         }}
                         className="flex-1 bg-zinc-700 hover:bg-zinc-600 text-white py-2 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2 text-sm">
