@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { NewCustomerDialogProps } from '@/app/interfaces/newcustomerdialog.interface';
+import { logEvent } from '@/app/utils/api';
 import SuccessDialog from '../SuccessDialog/SuccessDialog';
 
 export default function NewCustomerDialog({ isOpen, onClose }: NewCustomerDialogProps) {
@@ -16,24 +17,31 @@ export default function NewCustomerDialog({ isOpen, onClose }: NewCustomerDialog
 
   const handleSave = () => {
     if (newCustomer.name.trim() && newCustomer.email.trim() && newCustomer.company.trim() && newCustomer.phone.trim()) {
-      fetch('/api/customer', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          name: newCustomer.name,
-          email: newCustomer.email,
-          company: newCustomer.company,
-          phone: newCustomer.phone,
-          assignedUserId: 1
-        })
+      postData('/api/customer', 'CREATE', 'Customer', `Customer "${newCustomer.name}" created`, {
+        name: newCustomer.name,
+        email: newCustomer.email,
+        company: newCustomer.company,
+        phone: newCustomer.phone,
+        assignedUserId: 1
       });
       setCreatedCustomerName(newCustomer.name);
       setIsSuccessDialogOpen(true);
       setNewCustomer({ name: '', email: '', company: '', phone: '' });
     } else {
       alert('Please fill in name and email');
+    }
+  };
+
+  const postData = async ( path: string, action: string, entity: string, description: string, data: unknown) => {
+    try {
+      await fetch(path, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      await logEvent('user123', action, entity, "SUCCESS", description, false);
+    } catch (err) {
+      await logEvent('user123', action, entity, 'FAILED', `${description} - Error: ${(err as Error).message}`, true);
     }
   };
 

@@ -1,5 +1,5 @@
 export interface AuditLog {
-  id: number;
+  userID: string;
   timestamp: Date;
   user: string;
   action: 'CREATE' | 'UPDATE' | 'DELETE' | 'VIEW' | 'LOGIN' | 'LOGOUT' | 'EXPORT' | 'IMPORT';
