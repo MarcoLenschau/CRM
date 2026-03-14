@@ -5,18 +5,23 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     try {
       const { id } = await params;
       await mongodb.dbConnect(); 
-      const users = await Customes.find({}).lean();
-      const user = users.find((u) => u._id.toString() === id);
+      const user = await Customes.findById(id).lean();
+      
+      if (!user) {
+        return Response.json({ 
+          success: false,
+          error: "Customer not found"
+        }, { status: 404 });
+      }
+      
       return Response.json({ 
-        success: true,
-        user: {
-          name: user.name,
-          email: user.email,
-          phone: user.phone,
-          company: user.company,
-          status: user.status,
-          assignedUserId: user.assignedUserId
-        }
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        company: user.company,
+        status: user.status,
+        assignedUserId: user.assignedUserId
       }, { status: 200 });
     } catch {
       return Response.json({ 

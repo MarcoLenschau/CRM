@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-import { customers } from '@/app/db';
 import { db as users } from '@/app/db';
 import SuccessDialog from '@/app/components/ui/dialogs/SuccessDialog/SuccessDialog';
 import DeleteConfirmDialog from '@/app/components/ui/dialogs/DeleteConfirmDialog/DeleteConfirmDialog';
@@ -11,7 +10,7 @@ import { Customer } from '@/app/interfaces/customer.interface';
 export default function CustomerDetailPage() {
   const router = useRouter();
   const params = useParams();
-  const customerId = typeof params.id === 'string' ? parseInt(params.id) : 0;
+  const customerId = typeof params.id === 'string' ? params.id : '';
 
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -32,10 +31,11 @@ export default function CustomerDetailPage() {
   useEffect(() => {
     const fetchCustomer = async () => {
       try {
-        const found = customers.find(c => c.id === customerId);
-        if (found) {
+        const response = await fetch(`/api/customer/${customerId}`);
+        if (response.ok) {
+          const found = await response.json();
           setCustomer(found);
-        setEditForm({
+          setEditForm({
             name: found.name,
             email: found.email,
             phone: found.phone || '',
@@ -43,15 +43,20 @@ export default function CustomerDetailPage() {
             status: (found.status as 'active' | 'inactive' | 'pending') || 'active',
             assignedUserId: Number(found.assignedUserId || 0)
           });
+        } else if (response.status === 404) {
+          setCustomer(null);
         }
       } catch (error) {
         console.error('Error fetching customer:', error);
+        setCustomer(null);
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchCustomer();
+    if (customerId) {
+      fetchCustomer();
+    }
   }, [customerId]);
 
   const handleSaveEdit = async () => {

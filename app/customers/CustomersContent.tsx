@@ -162,7 +162,18 @@ export default function CustomersContent({ initialCustomers }: { initialCustomer
         <div className="flex-1">
           <Table<Customer>
             columns={[
-              "id",
+              {
+                key: 'id',
+                label: 'ID',
+                align: 'left',
+                render: (_, row) => (
+                  <Link href={`/customers/${row.id}`}>
+                    <span className="text-blue-400 hover:text-blue-300 cursor-pointer font-semibold underline transition-colors">
+                      #{row.id}
+                    </span>
+                  </Link>
+                ),
+              },
               "company",
               "email",
               {
