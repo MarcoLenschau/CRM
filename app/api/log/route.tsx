@@ -39,3 +39,19 @@ export async function POST(request: Request): Promise<Response> {
     }, { status: 400 });
   }
 }
+
+export async function GET(): Promise<Response> {
+  try {
+    await mongodb.dbConnect(); 
+    const logs = await Log.find({}).lean();
+    return Response.json({ 
+      success: true,
+      logs: logs
+    }, { status: 200 });
+  } catch {
+    return Response.json({ 
+      success: false,
+      error: "Failed to fetch logs"
+    }, { status: 400 });
+  }
+}

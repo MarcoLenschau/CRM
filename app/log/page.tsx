@@ -1,21 +1,38 @@
 'use client';
 
-import { useState } from 'react';
-import { auditLogs } from '@/app/db';
+import { useState, useEffect } from 'react';
 import PageHeader from '@/app/components/ui/PageHeader/PageHeader';
 import SearchBar from '@/app/components/ui/SearchBar/SearchBar';
 import StatCard from '@/app/components/ui/StatCard/StatCard';
+import { AuditLog } from '@/app/interfaces/auditlog.interface';
 
 export default function AuditLogPage() {
+  const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [actionFilter, setActionFilter] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<string>('all');
 
-  const filteredLogs = auditLogs.filter(log => {
+  useEffect(() => {
+    const fetchLogs = async () => {
+      try {
+        const response = await fetch('/api/log');
+        const data = await response.json();
+        if (data.success && data.logs) {
+          setAuditLogs(data.logs);
+        }
+      } catch (err) {
+        console.error('Failed to fetch logs:', err);
+      }
+    };
+
+    fetchLogs();
+  }, []);
+
+  const filteredLogs = auditLogs.filter((log: AuditLog) => {
     const matchesSearch = 
-      log.user.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      log.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      log.entityName.toLowerCase().includes(searchTerm.toLowerCase());
+      (log.userID?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+      (log.description?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+      (log.entity?.toLowerCase() || '').includes(searchTerm.toLowerCase());
     
     const matchesAction = actionFilter === 'all' || log.action === actionFilter;
     const matchesStatus = statusFilter === 'all' || log.status === statusFilter;
@@ -24,14 +41,15 @@ export default function AuditLogPage() {
   });
 
   const actionCounts = {
-    CREATE: auditLogs.filter(l => l.action === 'CREATE').length,
-    UPDATE: auditLogs.filter(l => l.action === 'UPDATE').length,
-    DELETE: auditLogs.filter(l => l.action === 'DELETE').length,
-    SUCCESS: auditLogs.filter(l => l.status === 'SUCCESS').length,
+    CREATE: auditLogs.filter((l: AuditLog) => l.action === 'CREATE').length,
+    UPDATE: auditLogs.filter((l: AuditLog) => l.action === 'UPDATE').length,
+    DELETE: auditLogs.filter((l: AuditLog) => l.action === 'DELETE').length,
+    SUCCESS: auditLogs.filter((l: AuditLog) => l.status === 'SUCCESS').length,
   };
 
   const getStatusColor = (status: string) => {
-    switch(status) {
+    const normalizedStatus = status?.toUpperCase() || '';
+    switch(normalizedStatus) {
       case 'SUCCESS': return 'text-green-400 bg-green-900/30 border-green-700/50';
       case 'FAILED': return 'text-red-400 bg-red-900/30 border-red-700/50';
       case 'WARNING': return 'text-yellow-400 bg-yellow-900/30 border-yellow-700/50';
@@ -149,30 +167,38 @@ export default function AuditLogPage() {
               <table className="w-full text-sm">
                 <thead className="bg-zinc-700/50 border-b border-zinc-600 sticky top-0 z-10">
                   <tr>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">ID</th>
                     <th className="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Timestamp</th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">User</th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">User ID</th>
                     <th className="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Action</th>
                     <th className="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Entity</th>
                     <th className="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Description</th>
                     <th className="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Status</th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">IP Address</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-zinc-700">
                   {filteredLogs.length > 0 ? (
                     filteredLogs.map((log, index) => (
-                      <tr key={log.id} className={`hover:bg-zinc-700/30 transition-colors ${index % 2 === 0 ? 'bg-transparent' : 'bg-zinc-800/20'}`}>
-                        <td className="px-6 py-4 whitespace-nowrap text-gray-300">
-                          {log.timestamp.toLocaleString('de-DE')}
+                      <tr key={log._id} className={`hover:bg-zinc-700/30 transition-colors ${index % 2 === 0 ? 'bg-transparent' : 'bg-zinc-800/20'}`}>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <a 
+                            href={`/log/${log._id}`}
+                            className="text-blue-400 hover:text-blue-300 underline text-xs font-mono break-all transition-colors"
+                          >
+                            {log._id || '-'}
+                          </a>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-gray-300 text-sm">
+                          {log.createdAt ? new Date(log.createdAt).toLocaleString('de-DE') : '-'}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span className="inline-flex items-center gap-2 text-white font-medium">
                             <div className="w-2 h-2 rounded-full bg-blue-400"></div>
-                            {log.user}
+                            {log.userID}
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-green-900/30 border border-green-700/50 text-green-300">
+                          <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-green-900/30 border border-green-700/50 text-green-300 uppercase">
                             <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
                               <path d={getActionIcon(log.action)} />
                             </svg>
@@ -186,15 +212,12 @@ export default function AuditLogPage() {
                           <span className="text-gray-300 truncate max-w-xs inline-block">{log.description}</span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold border ${getStatusColor(log.status)}`}>
-                            {log.status === 'SUCCESS' && <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>}
-                            {log.status === 'FAILED' && <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>}
-                            {log.status === 'WARNING' && <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>}
+                          <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold border uppercase ${getStatusColor(log.status)}`}>
+                            {log.status?.toUpperCase() === 'SUCCESS' && <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>}
+                            {log.status?.toUpperCase() === 'FAILED' && <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>}
+                            {log.status?.toUpperCase() === 'WARNING' && <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>}
                             {log.status}
                           </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-gray-400 text-xs font-mono">
-                          {log.ipAddress}
                         </td>
                       </tr>
                     ))

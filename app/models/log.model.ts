@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { LogStatus } from "../enums/status.enum";
 
 const logSchema = new mongoose.Schema({
     userID: {
@@ -16,6 +17,7 @@ const logSchema = new mongoose.Schema({
     },
     status: {
         type: String,
+        enum: LogStatus,
         required: true
     },
     description: {
