@@ -168,6 +168,38 @@ const login = async(email: string, password: string, setErrorDialog: Dispatch<Se
     return;
   }
 
-  // Simulate API call
-  setErrorDialog("✅ Login successful!"); 
+  try {
+    const response = await fetch("/api/auth", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ email, password })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      setErrorDialog(data.error || "Login failed. Please try again.");
+      return;
+    }
+
+    // Token im SessionStorage und als Cookie speichern
+    if (data.token) {
+      sessionStorage.setItem("authToken", data.token);
+      
+      // Optional: User Info auch speichern
+      sessionStorage.setItem("userEmail", email);
+      
+      // Token auch als Cookie speichern (damit Middleware es sieht)
+      // Cookie wird automatisch mit jedem Request mitgeschickt
+      document.cookie = `token=${data.token}; path=/; SameSite=Strict`;
+      
+      // Weiterleitung zum Dashboard nach erfolgreichem Login
+      window.location.href = "/dashboard";
+    }
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred";
+    setErrorDialog(`Error: ${errorMessage}`);
+  }
 };

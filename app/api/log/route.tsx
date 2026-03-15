@@ -1,5 +1,6 @@
 import mongodb from "@/app/utils/mongodb"
 import Log from "@/app/models/log.model"
+import { protectRoute } from "@/app/utils/protectRoute"
 
 /**
  * Handles POST requests to log user actions into the database.
@@ -13,6 +14,10 @@ import Log from "@/app/models/log.model"
  */
 export async function POST(request: Request): Promise<Response> {
   try {
+    const protection = await protectRoute(request, true);
+    if (!protection.isValid) {
+      return protection.error!;
+    }
     const body = await request.json();
     await mongodb.dbConnect(); 
     await Log.insertMany({
@@ -40,8 +45,12 @@ export async function POST(request: Request): Promise<Response> {
   }
 }
 
-export async function GET(): Promise<Response> {
+export async function GET(request: Request): Promise<Response> {
   try {
+    const protection = await protectRoute(request, true);
+    if (!protection.isValid) {
+      return protection.error!;
+    }
     await mongodb.dbConnect(); 
     const logs = await Log.find({}).lean();
     return Response.json({ 

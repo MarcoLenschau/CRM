@@ -28,7 +28,9 @@ export default function UserDetailPage() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await fetch(`/api/user/${userId}`);
+        const response = await fetch(`/api/user/${userId}`, {
+          credentials: 'include'
+        });
         const data = await response.json();
         setUser(data);
         setEditForm({ name: data.name, email: data.email, isAdmin: data.isAdmin || false });

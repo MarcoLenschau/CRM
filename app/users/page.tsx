@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { User } from '@/app/interfaces/user.interface';
+import { triggerActivityUpdate } from '@/app/utils/api';
 import UserDialog from '@/app/components/ui/dialogs/UserDialog/UserDialog';
 import DeleteConfirmDialog from '@/app/components/ui/dialogs/DeleteConfirmDialog/DeleteConfirmDialog';
 import SuccessDialog from '@/app/components/ui/dialogs/SuccessDialog/SuccessDialog';
@@ -26,13 +27,18 @@ export default function UsersPage() {
   const [successDetail, setSuccessDetail] = useState('');
   const [successTitle, setSuccessTitle] = useState('User added!');
 
-  // Lade Users beim Laden der Seite
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await fetch('/api/user');
+        const res = await fetch('/api/user', {
+          credentials: 'include'
+        });
         const data = await res.json();
-        setUsers(data);
+        if (data.users) {
+          setUsers(data.users);
+        } else if (Array.isArray(data)) {
+          setUsers(data);
+        }
       } catch (error) {
         console.error('Error loading users:', error);
       }
@@ -42,9 +48,15 @@ export default function UsersPage() {
 
   const loadUsers = async () => {
     try {
-      const res = await fetch('/api/user');
+      const res = await fetch('/api/user', {
+        credentials: 'include'
+      });
       const data = await res.json();
-      setUsers(data);
+      if (data.users) {
+        setUsers(data.users);
+      } else if (Array.isArray(data)) {
+        setUsers(data);
+      }
     } catch (error) {
       console.error('Error loading users:', error);
     }
@@ -64,10 +76,12 @@ export default function UsersPage() {
           const res = await fetch(`/api/user/${editingId}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
             body: JSON.stringify(newUser)
           });
           if (res.ok) {
             loadUsers();
+            triggerActivityUpdate();
             setSuccessTitle('User updated!');
             setSuccessMessage('User has been successfully updated.');
             setSuccessDetail(newUser.name);
@@ -79,10 +93,12 @@ export default function UsersPage() {
           const res = await fetch('/api/user', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
             body: JSON.stringify(newUser)
           });
           if (res.ok) {
             loadUsers();
+            triggerActivityUpdate();
             setSuccessTitle('User added!');
             setSuccessMessage('New user has been successfully added.');
             setSuccessDetail(newUser.name);
@@ -111,9 +127,13 @@ export default function UsersPage() {
   const handleConfirmDelete = async () => {
     if (deleteUserId) {
       try {
-        const res = await fetch(`/api/user/${deleteUserId}`, { method: 'DELETE' });
+        const res = await fetch(`/api/user/${deleteUserId}`, { 
+          method: 'DELETE',
+          credentials: 'include'
+        });
         if (res.ok) {
           loadUsers();
+          triggerActivityUpdate();
           setShowDeleteConfirm(false);
           setSuccessTitle('User deleted!');
           setSuccessMessage('User has been successfully deleted.');

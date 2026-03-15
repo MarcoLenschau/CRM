@@ -154,8 +154,8 @@ export default function CustomerDetailCard({
                 className="w-full bg-zinc-700/60 text-white rounded-xl px-4 py-3 border border-zinc-500 hover:border-zinc-400 focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/30 transition-all text-base cursor-pointer appearance-none"
               >
                 <option value="">Unassigned</option>
-                {users.map(user => (
-                  <option key={user.id} value={String(user.id)}>{user.name}</option>
+                {users.map((user) => (
+                  <option key={String(user._id || user.id)} value={String(user._id || user.id)}>{user.name}</option>
                 ))}
               </select>
             ) : (

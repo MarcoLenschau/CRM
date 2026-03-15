@@ -1,4 +1,27 @@
 /**
+ * Helper function to add Authorization token to fetch headers if available in sessionStorage
+ * 
+ * Only for client-side code, as sessionStorage is not available on the server
+ * 
+ * @param headers - Existing headers object
+ * @returns Headers object with Authorization token if available
+ */
+export const getAuthHeaders = (headers: HeadersInit = {}): HeadersInit => {
+  const headersObj = { ...headers };
+  if (typeof window !== 'undefined') {
+    const token = sessionStorage.getItem('authToken');
+    if (token) {
+      return {
+        ...headersObj,
+        'Authorization': `Bearer ${token}`
+      };
+    }
+  }
+  
+  return headersObj;
+};
+
+/**
  * Logs an action performed by a user to the server.
  *
  * @param userID - The unique identifier of the user performing the action.
@@ -13,7 +36,19 @@
 export const logEvent = async (userID: string, action: string, entity: string, status: string, description: string, error: boolean) => {
   await fetch('/api/log', {
      method: 'POST',
-     headers: { 'Content-Type': 'application/json' },
+     headers: getAuthHeaders({ 'Content-Type': 'application/json' }),
      body: JSON.stringify({ userID, action, entity, status, description, error })
    });
-}
+  
+  // Trigger activity feed update
+  triggerActivityUpdate();
+};
+
+/**
+ * Triggers an activity update event to refresh the activity feed in real-time
+ */
+export const triggerActivityUpdate = () => {
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('activityUpdated'));
+  }
+};

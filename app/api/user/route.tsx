@@ -32,3 +32,24 @@ export async function GET(request: Request): Promise<Response> {
     return Response.json({error: "Failed to fetch users"}, {status: 400});
   }
 }
+
+export async function POST(request: Request): Promise<Response> {
+  try {
+    const protection = await protectRoute(request, true);
+    if (!protection.isValid) {
+      return protection.error!;
+    }
+    const body = await request.json();
+    await mongodb.dbConnect();
+    const newUser = await UserModel.create({
+      name: body.name,
+      email: body.email,
+      hash: body.password,
+      isAdmin: body.isAdmin || false
+    });
+    return Response.json({success: true, user: newUser}, {status: 201});
+  }
+  catch {
+    return Response.json({error: "Failed to create user"}, {status: 400});
+  }
+}

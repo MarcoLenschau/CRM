@@ -1,12 +1,13 @@
 "use client";
 
-import { Dispatch, SetStateAction, useState } from "react";
-import ErrorDialog from "../components/ui/dialogs/ErrorDialog/ErrorDialog";
+import { useSearchParams } from "next/navigation";
+import { useState } from "react";
 
 export type Status = Promise<{status: number}>;
 
 export default function Register() {
-  const [errorDialogMessage, setErrorDialog] = useState("");
+  const searchParams = useSearchParams();
+  const [toastMessage, setToastMessage] = useState(searchParams.get("error") || "");
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
@@ -33,8 +34,6 @@ export default function Register() {
       <div className="flex-1 overflow-y-auto scrollbar-dark">
         <section className="flex flex-col justify-center items-center gap-4 px-8 py-8">
           <div className="w-120">
-            {/* Error Dialog */}
-            {errorDialogMessage !== "" && <ErrorDialog text={errorDialogMessage} setErrorDialog={setErrorDialog}/>}
 
             {/* Register Card */}
             <div className="rounded-xl border-2 border-zinc-700 p-6">
@@ -49,7 +48,7 @@ export default function Register() {
               {/* Form */}
               <form onSubmit={(e) => {
                 e.preventDefault();
-                register(email, name, password, passwordRepeat, setErrorDialog);
+                register(email, name, password, passwordRepeat);
               }} className="space-y-3">
                 {/* Email Field */}
                 <div>
@@ -160,19 +159,17 @@ export default function Register() {
   );
 }
 
-const register = async(email: string, name: string, password: string, passwordRepeat: string, setErrorDialog: Dispatch<SetStateAction<string>>): Promise<void> => {
+const register = async(email: string, name: string, password: string, passwordRepeat: string): Promise<void> => {
   if (password !== passwordRepeat) {
-    setErrorDialog("Passwords do not match");
+    console.error("Passwords do not match");
     return;
   }
   
   if (!email || !name || !password) {
-    setErrorDialog("Please fill in all fields");
+    console.error("Please fill in all fields");
     return;
   }
-
   const response = await fetchData(name, email, password);
-  setErrorDialog(response.status === 200 ? "✅ User created successfully!" : response.status === 400 ? "❌ User already exists" : "❌ Error creating user"); 
 };
 
 const fetchData = async(name: string, email: string, password: string): Status => {

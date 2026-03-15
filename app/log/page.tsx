@@ -15,7 +15,9 @@ export default function AuditLogPage() {
   useEffect(() => {
     const fetchLogs = async () => {
       try {
-        const response = await fetch('/api/log');
+        const response = await fetch('/api/log', {
+          credentials: 'include'
+        });
         const data = await response.json();
         if (data.success && data.logs) {
           setAuditLogs(data.logs);

@@ -1,9 +1,30 @@
+'use client';
+
+import { useEffect, useState } from 'react';
 import { Event } from "@/app/interfaces/event.interface";
 
-export default async function AllEventsTemplate() {
-  const eventResponse: Response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/event`);
-  const event: Event[] = await eventResponse.json();
-  const sortedEvents = event.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+export default function AllEventsTemplate() {
+  const [sortedEvents, setSortedEvents] = useState<Event[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const eventResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/event`, {
+          credentials: 'include'
+        });
+        const event: Event[] = await eventResponse.json();
+        const sorted = event.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+        setSortedEvents(sorted);
+      } catch (error) {
+        console.error('Error fetching events:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEvents();
+  }, []);
 
   const getPrioConfig = (prio: string) => {
     switch(prio) {
@@ -13,6 +34,14 @@ export default async function AllEventsTemplate() {
       default: return { label: prio, color: 'border-gray-400', textColor: 'text-gray-400' };
     }
   };
+
+  if (loading) {
+    return (
+      <div className="bg-zinc-800 rounded-lg border-2 border-zinc-500 p-6 w-full max-w-2xl">
+        <p className="text-gray-400">Loading events...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-zinc-800 rounded-lg border-2 border-zinc-500 p-6 w-full max-w-2xl">

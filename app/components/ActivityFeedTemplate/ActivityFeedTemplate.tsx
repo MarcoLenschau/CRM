@@ -1,3 +1,6 @@
+'use client';
+
+import { useEffect, useState } from 'react';
 import { AuditLog } from '@/app/interfaces/auditlog.interface';
 
 const getActivityIcon = (entity: string): string => {
@@ -14,27 +17,52 @@ const getActivityIcon = (entity: string): string => {
   return iconMap[entity.toLowerCase()] || iconMap['default'];
 };
 
-export default async function ActivityFeedTemplate() {
-  let sortedActivity: AuditLog[] = [];
-  
-  try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/log`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json"
-      },
-    });
-    
-    if (response.ok) {
-      const data = await response.json();
-      sortedActivity = Array.isArray(data) ? data : (data.data || data.logs || []);
-      console.log('Activity data loaded:', sortedActivity.length, 'items');
-    } else {
-      console.error('API Error:', response.status);
+export default function ActivityFeedTemplate() {
+  const [sortedActivity, setSortedActivity] = useState<AuditLog[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch Activity Function
+  const fetchActivity = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/log`, {
+        method: "GET",
+        credentials: 'include'
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        const activities = Array.isArray(data) ? data : (data.data || data.logs || []);
+        setSortedActivity(activities);
+        console.log('Activity data loaded:', activities.length, 'items');
+      } else {
+        console.error('API Error:', response.status);
+      }
+    } catch (error) {
+      console.error('Fetch error:', error);
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    console.error('Fetch error:', error);
-  }
+  };
+
+  // Initial Load
+  useEffect(() => {
+    fetchActivity();
+  }, []);
+
+  // Listen for activity updates from other components
+  useEffect(() => {
+    const handleActivityUpdate = () => {
+      console.log('Activity update event received');
+      fetchActivity();
+    };
+
+    // Listen to custom event
+    window.addEventListener('activityUpdated', handleActivityUpdate);
+
+    return () => {
+      window.removeEventListener('activityUpdated', handleActivityUpdate);
+    };
+  }, []);
 
   const getTimeAgo = (date: Date) => {
     const now = new Date();
@@ -49,6 +77,14 @@ export default async function ActivityFeedTemplate() {
     if (diffDays < 7) return `${diffDays}d ago`;
     return date.toLocaleDateString('de-DE');
   };
+
+  if (loading) {
+    return (
+      <div className="bg-zinc-800 rounded-lg border-2 border-zinc-500 p-6 w-full max-w-2xl">
+        <p className="text-gray-400">Loading activity...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-zinc-800 rounded-lg border-2 border-zinc-500 p-6 w-full max-w-2xl">
