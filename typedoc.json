@@ -1,0 +1,16 @@
+{
+  "entryPoints": ["app"],
+  "entryPointStrategy": "expand",
+  "out": "docs/typedoc",
+  "exclude": ["**/node_modules/**", "**/.next/**", "**/dist/**"],
+  "excludePrivate": true,
+  "excludeInternal": false,
+  "excludeProtected": false,
+  "theme": "default",
+  "readme": "README.md",
+  "includeVersion": true,
+  "name": "CRM Documentation",
+  "searchInComments": true,
+  "hideGenerator": false,
+  "treatWarningsAsErrors": false
+}

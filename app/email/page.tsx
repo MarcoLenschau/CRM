@@ -63,8 +63,8 @@ export default function EmailPage() {
                     onChange={(e) => setFormData({ ...formData, to: e.target.value })}
                     className="bg-zinc-700/50 text-white rounded-lg px-3 py-2 border border-zinc-600 hover:border-zinc-500 focus:border-orange-400 focus:outline-none text-sm cursor-pointer transition-colors">
                     <option value="">Select customer...</option>
-                    {db.map(customer => (
-                      <option key={customer.id} value={customer.email}>
+                    {db.map((customer, index) => (
+                      <option key={index} value={customer.email}>
                         {customer.name} ({customer.email})
                       </option>
                     ))}
