@@ -26,7 +26,7 @@ We are committed to a respectful and inclusive environment. All contributions mu
 - ✅ **Constructiveness**: Provide helpful and factual feedback
 - ✅ **Transparency**: Be open about your challenges and ideas
 
-Violations can be reported to [security@example.com].
+Violations can be reported to [contact@marco-lenschau.de].
 
 ---
 
@@ -532,7 +532,7 @@ git push --force-with-lease
 
 ## Support
 
-- 📧 Email: [your-email@example.com]
+- 📧 Email: [contact@marco-lenschau.de]
 - 💬 Discussions: [GitHub Discussions]
 - 📚 Docs: [./docs](./docs)
 
