@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { db } from '@/app/db';
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { User } from '@/app/interfaces/user.interface';
 import UserDialog from '@/app/components/ui/dialogs/UserDialog/UserDialog';
 import DeleteConfirmDialog from '@/app/components/ui/dialogs/DeleteConfirmDialog/DeleteConfirmDialog';
@@ -13,12 +13,12 @@ import Table from '@/app/components/ui/Table/Table';
 import StatCard from '@/app/components/ui/StatCard/StatCard';
 
 export default function UsersPage() {
-  const [users, setUsers] = useState(db);
+  const [users, setUsers] = useState<User[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [newUser, setNewUser] = useState({ name: '', email: '', isAdmin: false });
-  const [editingId, setEditingId] = useState<number | null>(null);
-  const [deleteUserId, setDeleteUserId] = useState<number | null>(null);
+  const [newUser, setNewUser] = useState({ name: '', email: '', password: '', isAdmin: false });
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [deleteUserId, setDeleteUserId] = useState<string | null>(null);
   const [deleteUserName, setDeleteUserName] = useState('');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false);
@@ -26,72 +26,119 @@ export default function UsersPage() {
   const [successDetail, setSuccessDetail] = useState('');
   const [successTitle, setSuccessTitle] = useState('User added!');
 
-  const filteredUsers = users.filter(user =>
-    user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchTerm.toLowerCase())
+  // Lade Users beim Laden der Seite
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const res = await fetch('/api/user');
+        const data = await res.json();
+        setUsers(data);
+      } catch (error) {
+        console.error('Error loading users:', error);
+      }
+    };
+    fetchUsers();
+  }, []);
+
+  const loadUsers = async () => {
+    try {
+      const res = await fetch('/api/user');
+      const data = await res.json();
+      setUsers(data);
+    } catch (error) {
+      console.error('Error loading users:', error);
+    }
+  };
+
+  const filteredUsers = users.filter(u => 
+    u.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    u.email?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleAddUser = () => {
-    if (newUser.name.trim() && newUser.email.trim()) {
-      if (editingId !== null) {
-        // Edit existing user
-        setUsers(users.map(u => u.id === editingId ? { ...u, name: newUser.name, email: newUser.email, isAdmin: newUser.isAdmin || false } : u));
-        setSuccessTitle('User updated!');
-        setSuccessMessage('User has been successfully updated.');
-        setSuccessDetail(newUser.name);
-        setIsSuccessDialogOpen(true);
-        setEditingId(null);
-      } else {
-        // Add new user
-        const maxId = Math.max(...users.map(u => u.id), 0);
-        const user = {
-          id: maxId + 1,
-          name: newUser.name,
-          email: newUser.email,
-          isAdmin: newUser.isAdmin || false
-        };
-        setUsers([...users, user]);
-        setSuccessTitle('User added!');
-        setSuccessMessage('New user has been successfully added.');
-        setSuccessDetail(newUser.name);
-        setIsSuccessDialogOpen(true);
+
+  const handleAddUser = async () => {
+    if (newUser.name.trim() && newUser.email.trim() && newUser.password.trim()) {
+      try {
+        if (editingId !== null) {
+          // Edit existing user
+          const res = await fetch(`/api/user/${editingId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newUser)
+          });
+          if (res.ok) {
+            loadUsers();
+            setSuccessTitle('User updated!');
+            setSuccessMessage('User has been successfully updated.');
+            setSuccessDetail(newUser.name);
+            setIsSuccessDialogOpen(true);
+            setEditingId(null);
+          }
+        } else {
+          // Add new user
+          const res = await fetch('/api/user', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newUser)
+          });
+          if (res.ok) {
+            loadUsers();
+            setSuccessTitle('User added!');
+            setSuccessMessage('New user has been successfully added.');
+            setSuccessDetail(newUser.name);
+            setIsSuccessDialogOpen(true);
+          } else {
+            alert('Error adding user');
+          }
+        }
+        setNewUser({ name: '', email: '', password: '', isAdmin: false });
+        setShowForm(false);
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Error saving user');
       }
-      setNewUser({ name: '', email: '', isAdmin: false });
-      setShowForm(false);
     } else {
       alert('⚠️ Please fill in all fields');
     }
   };
 
-  const handleDeleteUser = (id: number, name: string) => {
+  const handleDeleteUser = (id: string, name: string) => {
     setDeleteUserId(id);
     setDeleteUserName(name);
     setShowDeleteConfirm(true);
   };
 
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = async () => {
     if (deleteUserId) {
-      setUsers(users.filter(u => u.id !== deleteUserId));
-      setShowDeleteConfirm(false);
-      setSuccessTitle('User deleted!');
-      setSuccessMessage('User has been successfully deleted.');
-      setSuccessDetail(deleteUserName);
-      setIsSuccessDialogOpen(true);
-      setDeleteUserId(null);
-      setDeleteUserName('');
+      try {
+        const res = await fetch(`/api/user/${deleteUserId}`, { method: 'DELETE' });
+        if (res.ok) {
+          loadUsers();
+          setShowDeleteConfirm(false);
+          setSuccessTitle('User deleted!');
+          setSuccessMessage('User has been successfully deleted.');
+          setSuccessDetail(deleteUserName);
+          setIsSuccessDialogOpen(true);
+          setDeleteUserId(null);
+          setDeleteUserName('');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Error deleting user');
+      }
     }
   };
 
-  const handleEditUser = (user: { id: number; name: string; email: string; isAdmin?: boolean }) => {
-    setNewUser({ name: user.name, email: user.email, isAdmin: user.isAdmin || false });
-    setEditingId(user.id);
+  const handleEditUser = (user: User) => {
+    setNewUser({ name: user.name, email: user.email, password: '', isAdmin: user.isAdmin || false });
+    setEditingId(user._id || null);
     setShowForm(true);
   };
 
   const handleCancelForm = () => {
     setShowForm(false);
     setEditingId(null);
-    setNewUser({ name: '', email: '', isAdmin: false });
+    setNewUser({ name: '', email: '', password: '', isAdmin: false });
   };
 
   return (
@@ -171,9 +218,9 @@ export default function UsersPage() {
             isOpen={showForm}
             editingId={editingId}
             newUser={newUser}
-            onUserChange={(user) => setNewUser({ name: user.name, email: user.email, isAdmin: user.isAdmin || false })}
+            onUserChange={(user) => setNewUser({ ...newUser, name: user.name, email: user.email, isAdmin: user.isAdmin || false })}
             onSave={handleAddUser}
-            onCancel={handleCancelForm}
+            onClose={handleCancelForm}
           />
 
           {/* Delete Confirmation Dialog */}
@@ -181,11 +228,7 @@ export default function UsersPage() {
             isOpen={showDeleteConfirm}
             userName={deleteUserName}
             onConfirm={handleConfirmDelete}
-            onCancel={() => {
-              setShowDeleteConfirm(false);
-              setDeleteUserId(null);
-              setDeleteUserName('');
-            }}
+            onClose={() => setShowDeleteConfirm(false)}
           />
 
             {/* Users Table & Quick Tip */}
@@ -194,9 +237,17 @@ export default function UsersPage() {
               <div className="w-full">
                 <Table<User>
                   columns={[
-                    'id',
-                    'name',
-                    'email',
+                    {
+                      key: "_id",
+                      label: "ID",
+                      render: (value) => (
+                        <Link href={`/users/${value}`} className="text-blue-400 hover:text-blue-300 underline font-semibold">
+                          {value as string}
+                        </Link>
+                      )
+                    },
+                    "name",
+                    "email",
                     {
                       key: 'isAdmin',
                       label: 'Role',
@@ -220,7 +271,7 @@ export default function UsersPage() {
                       ),
                     },
                     {
-                      key: 'id',
+                      key: '_id',
                       label: 'Actions',
                       align: 'center',
                       render: (_, row) => (
@@ -235,7 +286,7 @@ export default function UsersPage() {
                             Edit
                           </button>
                           <button
-                            onClick={() => handleDeleteUser(row.id, row.name)}
+                            onClick={() => handleDeleteUser(row._id as string, row.name)}
                             className="bg-red-900/40 hover:bg-red-800/60 text-red-300 hover:text-red-200 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors flex items-center gap-1 border border-red-700/50 hover:border-red-600"
                           >
                             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">

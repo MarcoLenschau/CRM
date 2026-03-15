@@ -6,7 +6,7 @@ import SuccessDialog from '@/app/components/ui/dialogs/SuccessDialog/SuccessDial
 import DeleteConfirmDialog from '@/app/components/ui/dialogs/DeleteConfirmDialog/DeleteConfirmDialog';
 
 interface User {
-  id: number;
+  _id: string;
   name: string;
   email: string;
   isAdmin?: boolean;
@@ -15,7 +15,7 @@ interface User {
 export default function UserDetailPage() {
   const router = useRouter();
   const params = useParams();
-  const userId = typeof params.id === 'string' ? parseInt(params.id) : 0;
+  const userId = typeof params.id === 'string' ? params.id : '';
 
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -28,7 +28,7 @@ export default function UserDetailPage() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await fetch(`/api/users/${userId}`);
+        const response = await fetch(`/api/user/${userId}`);
         const data = await response.json();
         setUser(data);
         setEditForm({ name: data.name, email: data.email, isAdmin: data.isAdmin || false });
@@ -38,8 +38,9 @@ export default function UserDetailPage() {
         setIsLoading(false);
       }
     };
-
-    fetchUser();
+    if (userId) {
+      fetchUser();
+    }
   }, [userId]);
 
   const handleSaveEdit = async () => {
@@ -128,7 +129,7 @@ export default function UserDetailPage() {
                   </svg>
                 </div>
                 <h2 className="text-2xl font-bold text-white">{user.name}</h2>
-                <p className="text-gray-400 text-xs mt-1">User ID: #{user.id}</p>
+                <p className="text-gray-400 text-xs mt-1">User ID: #{user._id}</p>
               </div>
 
               {/* User Information */}
