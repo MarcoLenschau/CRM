@@ -1,0 +1,67 @@
+name: Generate & Upload CRM Documentation
+
+on:
+  push:
+    branches:
+      - main
+      - master
+      - feauture/create-main-stucture
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate TypeDoc documentation (HTML)
+        run: npx typedoc --treatWarningsAsErrors false
+
+      - name: Generate TypeDoc documentation (Markdown)
+        run: npx typedoc -c typedoc-markdown.json --treatWarningsAsErrors false
+
+      - name: Create ZIP archive
+        run: |
+          cd docs
+          zip -r typedoc-api-docs.zip typedoc-md/
+          cd ..
+          mv docs/typedoc-api-docs.zip .
+
+      - name: Get current date
+        id: date
+        run: echo "DATE=$(date +'%Y-%m-%d_%H-%M-%S')" >> $GITHUB_OUTPUT
+
+      - name: Upload to Releases
+        uses: softprops/action-gh-release@v1
+        with:
+          files: typedoc-api-docs.zip
+          tag_name: docs-${{ steps.date.outputs.DATE }}
+          name: CRM-Documentation-V.0.1.0 - ${{ steps.date.outputs.DATE }}
+          body: |
+            ## CRM Documentation V.0.1.0 (Markdown)
+            
+              This ZIP file contains the complete CRM documentation in Markdown format. 
+              Each function is explained in detail here.            
+            ```
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Deploy to gh-pages branch
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: './docs/typedoc'
+          cname: false
