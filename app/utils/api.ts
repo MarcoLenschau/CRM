@@ -17,7 +17,6 @@ export const getAuthHeaders = (headers: HeadersInit = {}): HeadersInit => {
       };
     }
   }
-  
   return headersObj;
 };
 
@@ -39,8 +38,6 @@ export const logEvent = async (userID: string, action: string, entity: string, s
      headers: getAuthHeaders({ 'Content-Type': 'application/json' }),
      body: JSON.stringify({ userID, action, entity, status, description, error })
    });
-  
-  // Trigger activity feed update
   triggerActivityUpdate();
 };
 
@@ -48,7 +45,31 @@ export const logEvent = async (userID: string, action: string, entity: string, s
  * Triggers an activity update event to refresh the activity feed in real-time
  */
 export const triggerActivityUpdate = () => {
-  if (typeof window !== 'undefined') {
+  if (typeof window !== "undefined") {
     window.dispatchEvent(new CustomEvent('activityUpdated'));
   }
+};
+
+/**
+ * Helper function for server-side fetch requests with authentication token from cookies
+ * 
+ * @param url - The URL to fetch
+ * @param options - Fetch options (method, body, etc.)
+ * @returns Response from the fetch
+ */
+export const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
+  const { cookies } = await import('next/headers');
+  const cookieStore = await cookies();
+  const token = cookieStore.get('token')?.value;
+  const headers: HeadersInit = new Headers(options.headers);
+  headers.set('Content-Type', 'application/json');
+  
+  if (token) {
+    headers.set('Authorization', `Bearer ${token}`);
+  }
+  
+  return fetch(url, {
+    ...options,
+    headers,
+  });
 };

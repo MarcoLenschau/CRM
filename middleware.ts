@@ -18,16 +18,21 @@ export function middleware(request: NextRequest) {
   const token = request.cookies.get("token")?.value;
   const pathname = request.nextUrl.pathname;
   
-  const protectedRoutes = ["/dashboard", "/customers", "/settings", "/users", "/admin"];
+  const protectedRoutes = ["/dashboard", "/customers", "/settings", "/users", "/admin", "/calendar", "/email"];
   const adminRoutes = ["/users", "/log"];
+  const publicRoutes = ["/help", "/impress", "/privacy"];
   
   const isProtected = protectedRoutes.some((route) => pathname.startsWith(route));
+  const isPublic = publicRoutes.some((route) => pathname.startsWith(route));
   const isAdminRoute = adminRoutes.some((route) => pathname.startsWith(route));
   
+  // Allow public routes without token
+  if (isPublic) {
+    return NextResponse.next();
+  }
+  
   if (isProtected && !token) {
-    const loginUrl = new URL("/register", request.url);
-    loginUrl.searchParams.set("error", "Please login to continue");
-    return NextResponse.redirect(loginUrl);
+    return NextResponse.redirect(new URL("/", request.url));
   }
   
   if (isAdminRoute && token) {

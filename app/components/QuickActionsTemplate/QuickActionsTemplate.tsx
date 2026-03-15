@@ -30,8 +30,27 @@ export default function QuickActionsTemplate() {
 
   const handleEmail = () => router.push('/email');
   
-  const handleLogout = () => {
-    alert('👋 Logged out successfully!');
+  const handleLogout = async () => {
+    try {
+      // Call logout endpoint to clear cookie on server
+      await fetch('/api/logout', { method: 'POST' });
+      
+      // Clear client-side token storage
+      sessionStorage.removeItem('authToken');
+      localStorage.removeItem('authToken');
+      
+      // Trigger logout event for Container to update
+      window.dispatchEvent(new Event('logoutEvent'));
+      
+      // Redirect to home page
+      router.push('/');
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Still redirect even if API call fails
+      sessionStorage.removeItem('authToken');
+      window.dispatchEvent(new Event('logoutEvent'));
+      router.push('/');
+    }
   };
 
   return (

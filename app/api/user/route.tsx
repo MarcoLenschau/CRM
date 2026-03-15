@@ -20,7 +20,7 @@ import { protectRoute } from "@/app/utils/protectRoute"
  */
 export async function GET(request: Request): Promise<Response> {
   try {
-    const protection = await protectRoute(request, true);
+    const protection = await protectRoute(request, false);
     if (!protection.isValid) {
       return protection.error!;
     }

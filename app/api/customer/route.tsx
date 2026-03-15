@@ -1,9 +1,14 @@
 import mongodb from "@/app/utils/mongodb"
 import Customes from "@/app/models/customer.model"
 import { CustomerStatus } from "@/app/enums/status.enum"
+import { protectRoute } from "@/app/utils/protectRoute"
 
 export async function POST(request: Request): Promise<Response> {
   try {
+    const protection = await protectRoute(request, false);
+    if (!protection.isValid) {
+      return protection.error!;
+    }
     const body = await request.json();
     await mongodb.dbConnect(); 
     await Customes.insertMany({
@@ -33,8 +38,12 @@ export async function POST(request: Request): Promise<Response> {
   }
 }
 
-export async function GET(): Promise<Response> {
+export async function GET(request: Request): Promise<Response> {
     try {
+      const protection = await protectRoute(request, false);
+      if (!protection.isValid) {
+        return protection.error!;
+      }
       await mongodb.dbConnect(); 
       const users = await Customes.find({}).lean();
       return Response.json({ 

@@ -1,10 +1,11 @@
 import { Customer } from '@/app/interfaces/customer.interface';
 import PageHeader from '../components/ui/PageHeader/PageHeader';
 import CustomersContent from './CustomersContent';
+import { fetchWithAuth } from '@/app/utils/api';
 
 async function fetchCustomers(): Promise<Customer[]> {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/customer`);
+    const response = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/customer`);
     
     if (!response.ok) {
       console.error('Failed to fetch customers');

@@ -1,9 +1,21 @@
 import Links from "../Links/Links";
 import Juridical from "../Juridical/Juridical";
 
-export default function Sidebar({isUserLogedIn}: {isUserLogedIn: boolean}) {
-  const linksArray = ["Dashboard", "Customers", "Users", "Email", "Calendar", "Settings", "Help", "Log"];
-  const linksArrayWithoutLogin = ["Login", "Register"];
+export default function Sidebar({isUserLogedIn, isAdmin = false}: {isUserLogedIn: boolean; isAdmin?: boolean}) {
+  // Filter links based on user role
+  const allLinks = ["Dashboard", "Customers", "Users", "Email", "Calendar", "Settings", "Log", "Help"];
+  
+  // Only show Users and Log for admin users
+  const linksArray = isUserLogedIn 
+    ? allLinks.filter(link => {
+        if (!isAdmin && (link === "Users" || link === "Log")) {
+          return false;
+        }
+        return true;
+      })
+    : ["Login", "Register", "Help"];
+  
+  const linksArrayWithoutLogin = ["Login", "Register", "Help"];
   return (
     <aside className="flex flex-col justify-between bg-zinc-800 border-r-2 border-zinc-600 w-56 h-screen p-6">
       <div>

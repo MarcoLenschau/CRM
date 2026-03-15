@@ -69,52 +69,62 @@ export default function UsersPage() {
 
 
   const handleAddUser = async () => {
-    if (newUser.name.trim() && newUser.email.trim() && newUser.password.trim()) {
-      try {
-        if (editingId !== null) {
-          // Edit existing user
-          const res = await fetch(`/api/user/${editingId}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify(newUser)
-          });
-          if (res.ok) {
-            loadUsers();
-            triggerActivityUpdate();
-            setSuccessTitle('User updated!');
-            setSuccessMessage('User has been successfully updated.');
-            setSuccessDetail(newUser.name);
-            setIsSuccessDialogOpen(true);
-            setEditingId(null);
-          }
-        } else {
-          // Add new user
-          const res = await fetch('/api/user', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify(newUser)
-          });
-          if (res.ok) {
-            loadUsers();
-            triggerActivityUpdate();
-            setSuccessTitle('User added!');
-            setSuccessMessage('New user has been successfully added.');
-            setSuccessDetail(newUser.name);
-            setIsSuccessDialogOpen(true);
-          } else {
-            alert('Error adding user');
-          }
-        }
-        setNewUser({ name: '', email: '', password: '', isAdmin: false });
-        setShowForm(false);
-      } catch (error) {
-        console.error('Error:', error);
-        alert('Error saving user');
+    const isNameValid = newUser.name.trim();
+    const isEmailValid = newUser.email.trim();
+    const isPasswordValid = newUser.password.trim();
+    
+    if (editingId !== null) {
+      if (!isNameValid || !isEmailValid) {
+        alert('⚠️ Please fill in name and email');
+        return;
       }
     } else {
-      alert('⚠️ Please fill in all fields');
+      if (!isNameValid || !isEmailValid || !isPasswordValid) {
+        alert('⚠️ Please fill in all fields (Name, Email, Password)');
+        return;
+      }
+    }
+
+    try {
+      if (editingId !== null) {
+        const res = await fetch(`/api/user/${editingId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify(newUser)
+        });
+        if (res.ok) {
+          loadUsers();
+          triggerActivityUpdate();
+          setSuccessTitle('User updated!');
+          setSuccessMessage('User has been successfully updated.');
+          setSuccessDetail(newUser.name);
+          setIsSuccessDialogOpen(true);
+          setEditingId(null);
+        }
+      } else {
+        const res = await fetch('/api/user', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify(newUser)
+        });
+        if (res.ok) {
+          loadUsers();
+          triggerActivityUpdate();
+          setSuccessTitle('User added!');
+          setSuccessMessage('New user has been successfully added.');
+          setSuccessDetail(newUser.name);
+          setIsSuccessDialogOpen(true);
+        } else {
+          alert('Error adding user');
+        }
+      }
+      setNewUser({ name: '', email: '', password: '', isAdmin: false });
+      setShowForm(false);
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Error saving user');
     }
   };
 
@@ -238,7 +248,7 @@ export default function UsersPage() {
             isOpen={showForm}
             editingId={editingId}
             newUser={newUser}
-            onUserChange={(user) => setNewUser({ ...newUser, name: user.name, email: user.email, isAdmin: user.isAdmin || false })}
+            onUserChange={(user) => setNewUser({ ...newUser, name: user.name, email: user.email, password: user.password || '', isAdmin: user.isAdmin || false })}
             onSave={handleAddUser}
             onClose={handleCancelForm}
           />

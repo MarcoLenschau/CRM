@@ -3,10 +3,21 @@ import PageHeader from "../components/ui/PageHeader/PageHeader";
 import QuickTip from "../components/ui/QuickTip/QuickTip";
 import { Event, EventResponse } from "../interfaces/event.interface";
 import { Prio } from "../enums/prio.enum";
+import { fetchWithAuth } from "../utils/api";
 
 export default async function CalendarPage() {
-  const response: Response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/event`);
-  const events: EventResponse = await response.json();
+  let events: EventResponse = { events: [], success: true };
+  
+  try {
+    const response: Response = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/event`);
+    if (response.ok) {
+      events = await response.json();
+    } else {
+      console.error('Failed to fetch events:', response.status);
+    }
+  } catch (error) {
+    console.error('Error fetching events:', error);
+  }
   
   return (
     <div className="flex flex-col">

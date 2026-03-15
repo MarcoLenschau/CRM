@@ -60,6 +60,19 @@ export default function UserDialog({
               className="bg-zinc-700/50 text-white rounded-lg px-4 py-3 border border-zinc-600 placeholder-gray-500 focus:border-blue-400 focus:bg-zinc-700 focus:outline-none transition-all"
             />
           </div>
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center justify-between">
+              <label className="text-white font-semibold text-sm uppercase tracking-wide">Password</label>
+              {editingId && <span className="text-xs text-gray-400">(optional)</span>}
+            </div>
+            <input
+              type="password"
+              value={newUser.password}
+              onChange={(e) => onUserChange({ ...newUser, password: e.target.value })}
+              placeholder="••••••••"
+              className="bg-zinc-700/50 text-white rounded-lg px-4 py-3 border border-zinc-600 placeholder-gray-500 focus:border-blue-400 focus:bg-zinc-700 focus:outline-none transition-all"
+            />
+          </div>
 
           {/* Divider */}
           <div className="h-px bg-zinc-700 my-2"></div>

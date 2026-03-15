@@ -2,9 +2,14 @@ import mongodb from "@/app/utils/mongodb"
 import Event from "@/app/models/event.model"
 import Log from "@/app/models/log.model"
 import { Event as EventInterace } from "@/app/interfaces/event.interface";
+import { protectRoute } from "@/app/utils/protectRoute"
 
 export async function POST(request: Request): Promise<Response> {
   try {
+    const protection = await protectRoute(request, false);
+    if (!protection.isValid) {
+      return protection.error!;
+    }
     const body = await request.json();
     await mongodb.dbConnect(); 
     await Event.insertMany({
@@ -32,8 +37,12 @@ export async function POST(request: Request): Promise<Response> {
   }
 }
 
-export async function GET() {
+export async function GET(request: Request): Promise<Response> {
   try {
+    const protection = await protectRoute(request, false);
+    if (!protection.isValid) {
+      return protection.error!;
+    }
     await mongodb.dbConnect();
     const events = await Event.find({}).lean();
     return Response.json({

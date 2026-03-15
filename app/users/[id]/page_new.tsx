@@ -11,7 +11,6 @@ interface User {
   email: string;
   isAdmin?: boolean;
   createdAt?: string;
-  updatedAt?: string;
 }
 
 interface EditFormData {
@@ -59,7 +58,7 @@ export default function UserDetailPage() {
     }
   }, [userId]);
 
-  const handleSaveEdit = async () => {
+  const handleSaveEdit = () => {
     if (editForm.name.trim() && editForm.email.trim()) {
       setUser({ ...user!, ...editForm });
       setSuccessTitle('User Updated!');
@@ -71,7 +70,7 @@ export default function UserDetailPage() {
     }
   };
 
-  const handleDeleteUser = async () => {
+  const handleDeleteUser = () => {
     setShowDeleteConfirm(false);
     setSuccessTitle('User Deleted!');
     setSuccessMessage('User has been successfully deleted.');
@@ -92,7 +91,7 @@ export default function UserDetailPage() {
     );
   }
 
-  if (!user){
+  if (!user) {
     return (
       <div className="flex flex-col justify-center items-center h-full gap-4">
         <div className="bg-red-900/30 rounded-full p-4 border border-red-700/50">
@@ -154,7 +153,7 @@ export default function UserDetailPage() {
                     <p className="text-xs text-gray-400">ID: {user._id}</p>
                   </div>
                 </div>
-                {!isEditing&&(
+                {!isEditing && (
                   <div className="flex gap-2">
                     <button 
                       onClick={() => setIsEditing(true)}
@@ -176,7 +175,7 @@ export default function UserDetailPage() {
                 )}
               </div>
 
-              {/* User Information Grid */}
+              {/* User Information */}
               <div className="space-y-4 mb-6">
                 {/* Name */}
                 <div>
@@ -299,9 +298,9 @@ export default function UserDetailPage() {
 
       <SuccessDialog 
         isOpen={isSuccessDialogOpen}
+        onClose={() => setIsSuccessDialogOpen(false)}
         title={successTitle}
         message={successMessage}
-        onClose={() => setIsSuccessDialogOpen(false)}
       />
     </div>
   );
