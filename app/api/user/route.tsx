@@ -1,6 +1,7 @@
 import mongodb from "@/app/utils/mongodb"
 import UserModel from "@/app/models/user.model"
 import { protectRoute } from "@/app/utils/protectRoute"
+import bcryptjs from "bcryptjs"
 
 /**
  * Fetch all users from database.
@@ -37,10 +38,17 @@ export async function POST(request: Request): Promise<Response> {
     }
     const body = await request.json();
     await mongodb.dbConnect();
+    
+    if (!body.password) {
+      return Response.json({error: "Password is required"}, {status: 400});
+    }
+    
+    const hashedPassword = await bcryptjs.hash(body.password, 10);
+    
     const newUser = await UserModel.create({
       name: body.name,
       email: body.email,
-      hash: body.password,
+      hash: hashedPassword,
       isAdmin: body.isAdmin || false
     });
     return Response.json({success: true, user: newUser}, {status: 201});
