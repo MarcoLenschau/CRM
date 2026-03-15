@@ -1,7 +1,9 @@
-import { event } from '@/app/db';
+import { Event } from "@/app/interfaces/event.interface";
 
-export default function AllEventsTemplate() {
-  const sortedEvents = [...event].sort((a, b) => a.time.getTime() - b.time.getTime());
+export default async function AllEventsTemplate() {
+  const eventResponse: Response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/event`);
+  const event: Event[] = await eventResponse.json();
+  const sortedEvents = event.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
 
   const getPrioConfig = (prio: string) => {
     switch(prio) {
@@ -23,7 +25,7 @@ export default function AllEventsTemplate() {
           {sortedEvents.map(evt => {
             const config = getPrioConfig(evt.prio);
             return (
-              <div key={evt.id} className={`bg-zinc-700 hover:bg-zinc-600 p-4 rounded-lg border-l-4 transition-colors ${config.color}`}>
+              <div key={evt._id} className={`bg-zinc-700 hover:bg-zinc-600 p-4 rounded-lg border-l-4 transition-colors ${config.color}`}>
                 <div className="flex justify-between items-start mb-2">
                   <h3 className="text-white font-semibold">{evt.name}</h3>
                   <span className={`text-sm font-semibold ${config.textColor}`}>
@@ -32,8 +34,8 @@ export default function AllEventsTemplate() {
                 </div>
                 <p className="text-gray-300 text-sm mb-2">{evt.description}</p>
                 <div className="flex justify-between items-center text-xs text-gray-400">
-                  <span>{evt.time.toLocaleDateString('en-US')}</span>
-                  <span>{evt.time.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}</span>
+                  <span>{new Date(evt.createdAt).toLocaleDateString('en-US')}</span>
+                  <span>{new Date(evt.createdAt).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}</span>
                 </div>
               </div>
             );
