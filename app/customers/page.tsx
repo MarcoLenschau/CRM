@@ -4,7 +4,7 @@ import CustomersContent from './CustomersContent';
 
 async function fetchCustomers(): Promise<Customer[]> {
   try {
-    const response = await fetch('http://localhost:3001/api/customer', {
+    const response = await fetch(`${process.env.API_URL}/customer`, {
       cache: 'no-store',
     });
     

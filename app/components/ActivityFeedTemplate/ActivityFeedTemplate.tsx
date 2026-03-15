@@ -18,12 +18,11 @@ export default async function ActivityFeedTemplate() {
   let sortedActivity: AuditLog[] = [];
   
   try {
-    const response = await fetch("http://localhost:3001/api/log" , {
+    const response = await fetch(`${process.env.API_URL}/log`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json"
       },
-      cache: 'no-store'
     });
     
     if (response.ok) {
