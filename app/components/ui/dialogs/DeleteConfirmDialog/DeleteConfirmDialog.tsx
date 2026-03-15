@@ -20,7 +20,9 @@ export default function DeleteConfirmDialog({
         </div>
         <h2 className="text-2xl font-bold text-white mb-2 text-center">Delete User</h2>
         <p className="text-gray-300 text-center mb-6">
-          Are you sure you want to delete <span className="font-semibold text-white">&quot;{userName}&quot;</span>? This action cannot be undone.
+          Are you sure you want to delete <span className="font-semibold text-white">&quot;{userName}&quot;</span>?
+          <br />
+          <span className="text-red-400 font-semibold">This action cannot be undone.</span>
         </p>
         <div className="flex gap-2">
           <button

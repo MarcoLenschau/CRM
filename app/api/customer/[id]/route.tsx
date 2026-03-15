@@ -1,6 +1,13 @@
 import mongodb from "@/app/utils/mongodb"
 import Customes from "@/app/models/customer.model"
 
+/**
+ * Fetch a customer by ID.
+ *
+ * @param request - HTTP request object.
+ * @param context.params - Promise resolving to {id: string}.
+ * @returns JSON response with customer data or 404 error.
+ */
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }): Promise<Response> {
     try {
       const { id } = await params;

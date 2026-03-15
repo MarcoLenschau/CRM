@@ -3,14 +3,10 @@ import Log from "@/app/models/log.model"
 import { protectRoute } from "@/app/utils/protectRoute"
 
 /**
- * Handles POST requests to log user actions into the database.
+ * Create an audit log entry (admin only).
  *
- * @param {Request} request - The incoming HTTP request containing the log data in JSON format.
- * @returns {Promise<Response>} A promise that resolves to an HTTP response:
- * - On success: Returns a JSON response with the logged user action and a status of 200.
- * - On failure: Returns a JSON response with an error message and a status of 400.
- *
- * @throws Will throw an error if the request body cannot be parsed as JSON or if the database operation fails.
+ * @param request - HTTP request with log data (userID, action, entity, status, description).
+ * @returns JSON response with logged entry.
  */
 export async function POST(request: Request): Promise<Response> {
   try {
@@ -45,6 +41,12 @@ export async function POST(request: Request): Promise<Response> {
   }
 }
 
+/**
+ * Fetch all audit log entries.
+ *
+ * @param request - HTTP request object with authentication token.
+ * @returns JSON response with logs array.
+ */
 export async function GET(request: Request): Promise<Response> {
   try {
     const protection = await protectRoute(request, false);

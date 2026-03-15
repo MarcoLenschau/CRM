@@ -12,6 +12,7 @@ export type { TokenPayload };
 export const authenticateRequest = (request: Request): TokenPayload | null => {
   // Try to get token from Authorization header first
   let token = request.headers.get("authorization")?.split(" ")[1];
+  console.log("📌 Auth attempt - Header token:", token ? "Found" : "Not found");
   
   // If not found, try to get from cookies
   if (!token) {
@@ -21,11 +22,14 @@ export const authenticateRequest = (request: Request): TokenPayload | null => {
       const tokenCookie = cookies.find(c => c.startsWith('token='));
       if (tokenCookie) {
         token = tokenCookie.substring('token='.length);
+        console.log("📌 Auth attempt - Cookie token found");
       }
     }
   }
   
-  return token ? verifyToken(token) : null;
+  const verified = token ? verifyToken(token) : null;
+  console.log("📌 Auth attempt - Token verified:", verified ? "Yes" : "No");
+  return verified;
 };
 
 /**

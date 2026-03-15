@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 /**
- * Handles logout by clearing the authentication token cookie
- * 
- * @param _request - The incoming HTTP request
- * @returns Response that clears the token cookie
+ * Logout user by clearing authentication token
+ *
+ * @param {NextRequest} _request - HTTP request
+ * @returns {Promise<NextResponse>} Success response with cleared token cookie
  */
 export async function POST(_request: NextRequest): Promise<NextResponse> {
   try {

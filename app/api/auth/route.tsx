@@ -4,19 +4,10 @@ import bcryptjs from "bcryptjs";
 import { generateToken, verifyToken } from "@/app/utils/jwt";
 
 /**
- * Handles the POST request for user authentication.
- * 
- * This function processes a login request by validating the provided email and password,
- * checking the credentials against the database, and generating a token for successful authentication.
- * 
- * @param {Request} request - The incoming HTTP request object containing the user's login details.
- * @returns {Promise<Response>} A promise that resolves to an HTTP response:
- * - 200: If authentication is successful, returns a JSON object with a success flag and a token.
- * - 400: If the email or password is missing, returns a JSON object with an error message.
- * - 401: If the email or password is invalid, returns a JSON object with an error message.
- * - 500: If an unexpected error occurs, returns a JSON object with an error message and details.
- * 
- * @throws {Error} If there is an issue with the database connection or other unexpected errors.
+ * Authenticate user with email and password
+ *
+ * @param {Request} request - HTTP request with email and password in body
+ * @returns {Promise<Response>} Success response with JWT token or error
  */
 export async function POST(request: Request): Promise<Response> {
   try {
@@ -40,23 +31,10 @@ export async function POST(request: Request): Promise<Response> {
 }
 
 /**
- * Handles GET requests for authentication.
+ * Verify authentication token
  *
- * This function verifies the provided authorization token from the request headers.
- * If the token is valid, it returns the decoded user information along with their admin status.
- * If the token is invalid, expired, or not provided, it returns an appropriate error response.
- *
- * @param {Request} request - The incoming HTTP request object.
- * @returns {Promise<Response>} A promise that resolves to an HTTP response object.
- *
- * Response Codes:
- * - 200: Token is valid, user information is returned.
- * - 400: Token is not provided in the request headers.
- * - 401: Token is invalid or expired.
- * - 500: An error occurred during token verification.
- *
- * Error Details:
- * - If an error occurs during token verification, the error message is included in the response.
+ * @param {Request} request - HTTP request with Authorization header
+ * @returns {Promise<Response>} User info if valid or error response
  */
 export async function GET(request: Request): Promise<Response> {
   try {

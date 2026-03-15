@@ -14,8 +14,12 @@ export const generateToken = (payload: Record<string, string | number | boolean>
 
 export const verifyToken = (token: string): TokenPayload | null => {
   try {
-    return jwt.verify(token, SECRET) as TokenPayload;
-  } catch {
+    console.log("🔐 Verifying token with SECRET length:", process.env.JWT_SECRET?.length);
+    const verified = jwt.verify(token, SECRET) as TokenPayload;
+    console.log("🔐 Token verified successfully:", verified.email);
+    return verified;
+  } catch (error) {
+    console.log("🔐 Token verification failed:", error instanceof Error ? error.message : String(error));
     return null;
   }
 };

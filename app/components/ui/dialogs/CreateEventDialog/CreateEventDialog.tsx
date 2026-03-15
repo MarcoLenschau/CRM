@@ -17,7 +17,11 @@ export default function CreateEventDialog({ isOpen, onClose, onSubmit, selectedD
       alert('Bitte geben Sie einen Event-Namen ein');
       return;
     }
-    onSubmit({ name, description, time, prio });
+    const eventDate = new Date(year, month, selectedDay);
+    const [hours, minutes] = time.split(':');
+    eventDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+    
+    onSubmit({ name, description, time, prio, eventDate });
     setName('');
     setDescription('');
     setTime('10:00');
@@ -32,7 +36,7 @@ export default function CreateEventDialog({ isOpen, onClose, onSubmit, selectedD
           <section className="flex flex-col gap-1">
             <label htmlFor="event-name" className="text-white text-sm">Event Name</label>
             <input id="event-name" type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Event Name"
-              className="w-full bg-zinc-700 text-white rounded-lg px-3 py-2 border border-zinc-600 okki aber text-sm"/>
+              className="w-full bg-zinc-700 text-white rounded-lg px-3 py-2 border border-zinc-600 text-sm"/>
           </section>
           
           <section className="flex flex-col gap-1">

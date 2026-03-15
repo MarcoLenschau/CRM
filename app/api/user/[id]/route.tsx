@@ -2,12 +2,11 @@ import mongodb from "@/app/utils/mongodb"
 import UserModel from "@/app/models/user.model"
 
 /**
- * Handles the GET request to fetch a user by their ID.
+ * Fetch a user by ID (excluding password hash).
  *
- * @param {Request} request - The incoming HTTP request object.
- * @param {Object} context - The context object containing route parameters.
- * @param {Promise<{ id: string }>} context.params - A promise resolving to an object with the user ID.
- * @returns {Promise<Response>} A promise that resolves to an HTTP response.
+ * @param request - HTTP request object.
+ * @param context.params - Promise resolving to {id: string}.
+ * @returns JSON response with user data or 404 error.
  */
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }): Promise<Response> {
   try {
@@ -27,15 +26,11 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 }
 
 /**
- * Handles the HTTP PUT request to update a user by their ID.
+ * Update a user by ID with new data.
  *
- * @param request - The incoming HTTP request object.
- * @param params - An object containing the route parameters.
- * @param params.params - A promise that resolves to an object containing the user ID.
- * @returns A promise that resolves to an HTTP response:
- * - 200: If the user is successfully updated, returns the updated user data.
- * - 404: If the user with the specified ID is not found.
- * - 400: If the request is invalid or an error occurs during processing.
+ * @param request - HTTP request with update body.
+ * @param context.params - Promise resolving to {id: string}.
+ * @returns JSON response with updated user or error.
  */
 export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }): Promise<Response> {
   try {
@@ -54,15 +49,11 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 }
 
 /**
- * Handles the DELETE request to delete a user by their ID.
+ * Delete a user by ID from database.
  *
- * @param request - The incoming HTTP request object.
- * @param context - An object containing route parameters.
- * @param context.params - A promise resolving to an object with the `id` of the user to be deleted. 
- * @returns A promise that resolves to an HTTP response:
- * - 200: If the user was successfully deleted.
- * - 404: If the user with the specified ID was not found.
- * - 400: If there was an error processing the request.
+ * @param request - HTTP request object.
+ * @param context.params - Promise resolving to {id: string}.
+ * @returns JSON response with success message or error.
  */
 export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }): Promise<Response> {
   try {

@@ -1,11 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ShowEventDialog from '../dialogs/ShowEventDialog/ShowEventDialog';
 import AllEventsDialog from '../dialogs/AllEventsDialog/AllEventsDialog';
 import CreateEventDialog from '../dialogs/CreateEventDialog/CreateEventDialog';
 import SuccessDialog from '../dialogs/SuccessDialog/SuccessDialog';
-import { Event } from '@/app/interfaces/event.interface';
+import type { Event } from '@/app/interfaces/event.interface';
 import { Month } from '@/app/type/month.type';
 import { Weekday } from '@/app/type/weekday.type';
 
@@ -22,6 +22,7 @@ import { Weekday } from '@/app/type/weekday.type';
  */
 export default function Calendar({height=100, width=100, events=[]}: {height?: number, width?: number, events?: Event[]}) {
   const [displayDate, setDisplayDate] = useState(new Date());
+  const [calendarEvents, setCalendarEvents] = useState<Event[]>(events);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
@@ -29,6 +30,32 @@ export default function Calendar({height=100, width=100, events=[]}: {height?: n
   const [isCreateEventDialogOpen, setIsCreateEventDialogOpen] = useState(false);
   const [isEventCreatedOpen, setIsEventCreatedOpen] = useState(false);
   const [createdEventInfo, setCreatedEventInfo] = useState({ name: '', date: '' });
+  
+  /**
+   * Listen to eventsUpdated event and refresh calendar events.
+   * Fetches latest events from API when event list changes.
+   */
+  useEffect(() => {
+    const handleEventsUpdated = async () => {
+      console.log('📢 Calendar: Events updated event received - refreshing');
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/event`, {
+          credentials: 'include'
+        });
+        if (response.ok) {
+          const newEvents = await response.json();
+          console.log('📊 Calendar: Loaded', newEvents.length, 'events');
+          setCalendarEvents(newEvents);
+        }
+      } catch (error) {
+        console.error('❌ Calendar: Error fetching events:', error);
+      }
+    };
+
+    window.addEventListener('eventsUpdated', handleEventsUpdated);
+    return () => window.removeEventListener('eventsUpdated', handleEventsUpdated);
+  }, []);
+  
   const month = displayDate.getMonth();
   const year = displayDate.getFullYear();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -45,7 +72,7 @@ export default function Calendar({height=100, width=100, events=[]}: {height?: n
   
   const now = new Date();
   const isToday = (d: number) => d === now.getDate() && month === now.getMonth() && year === now.getFullYear();
-  const getEventsForDay = (day: number) => events.filter(e => {
+  const getEventsForDay = (day: number) => calendarEvents.filter(e => {
     const eventDate = new Date(e.createdAt);
     return eventDate.getDate() === day && eventDate.getMonth() === month && eventDate.getFullYear() === year;
   });
@@ -90,7 +117,7 @@ export default function Calendar({height=100, width=100, events=[]}: {height?: n
         })}
       </section>
       
-      <AllEventsDialog isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)} selectedDay={selectedDay || 0} month={month} year={year} events={events}
+      <AllEventsDialog isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)} selectedDay={selectedDay || 0} month={month} year={year} events={calendarEvents}
         onEventClick={(evt) => {
           setSelectedEvent(evt);
           setIsEventDialogOpen(true);
@@ -104,13 +131,44 @@ export default function Calendar({height=100, width=100, events=[]}: {height?: n
       
       <CreateEventDialog isOpen={isCreateEventDialogOpen} onClose={() => setIsCreateEventDialogOpen(false)} 
         selectedDay={selectedDay || 0} month={month} year={year}
-        onSubmit={(eventData) => {
-          setIsCreateEventDialogOpen(false);
-          setCreatedEventInfo({ 
-            name: eventData.name, 
-            date: `${selectedDay}. ${new Date(year, month).toLocaleString('de-DE', { month: 'long' })} ${year} ${eventData.time}` 
-          });
-          setIsEventCreatedOpen(true);
+        onSubmit={async (eventData) => {
+          try {
+            console.log("🎯 Creating event:", eventData);
+            const userEmail = typeof window !== 'undefined' ? sessionStorage.getItem('userEmail') || 'unknown' : 'unknown';
+            console.log("👤 Using userEmail:", userEmail);
+            
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/event`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              credentials: 'include',
+              body: JSON.stringify({
+                userID: userEmail,
+                name: eventData.name,
+                description: eventData.description || '',
+                prio: eventData.prio,
+                eventDate: eventData.eventDate?.toISOString() || new Date().toISOString()
+              })
+            });
+            
+            if (response.ok) {
+              console.log("✅ Event created successfully");
+              setIsCreateEventDialogOpen(false);
+              setCreatedEventInfo({ 
+                name: eventData.name, 
+                date: `${selectedDay}. ${new Date(year, month).toLocaleString('de-DE', { month: 'long' })} ${year} ${eventData.time}` 
+              });
+              setIsEventCreatedOpen(true);
+              // Refresh events by reloading page or dispatching event
+              window.dispatchEvent(new Event('eventsUpdated'));
+            } else {
+              const errorData = await response.json();
+              console.error("❌ Failed to create event:", response.status, errorData);
+              alert(`Event erstellen fehlgeschlagen: ${errorData.details || errorData.error}`);
+            }
+          } catch (error) {
+            console.error("❌ Error creating event:", error);
+            alert('Fehler beim Erstellen des Events');
+          }
         }}/>
       
       <SuccessDialog 

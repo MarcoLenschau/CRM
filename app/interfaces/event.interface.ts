@@ -20,4 +20,5 @@ export interface EventFormData {
   description: string;
   time: string;
   prio: Prio;
+  eventDate?: Date;
 }

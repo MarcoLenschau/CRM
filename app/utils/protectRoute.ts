@@ -15,9 +15,18 @@ export const protectRoute = async (request: Request, requireAdminRole: boolean =
 
   const decoded = authenticateRequest(request);
   if (!decoded) {
+    const authHeader = request.headers.get("authorization");
+    const cookieHeader = request.headers.get("cookie");
     return {
       error: Response.json(
-        { success: false, error: "Unauthorized - No token provided" },
+        { 
+          success: false, 
+          error: "Unauthorized - No token provided",
+          debug: {
+            hasAuthHeader: !!authHeader,
+            hasCookieHeader: !!cookieHeader
+          }
+        },
         { status: 401 }
       ),
       isValid: false,

@@ -3,20 +3,10 @@ import UserModel from "@/app/models/user.model"
 import { protectRoute } from "@/app/utils/protectRoute"
 
 /**
- * Handles the GET request to fetch all users from the database.
- * 
- * This function performs the following steps:
- * 1. Validates the request using the `protectRoute` function to ensure the user has proper access.
- * 2. Connects to the MongoDB database.
- * 3. Retrieves all users from the `UserModel` collection, excluding their password hashes.
- * 4. Returns the list of users in a JSON response with a success status.
- * 
- * If any step fails, an appropriate error response is returned.
- * 
- * @param request - The incoming HTTP request object.
- * @returns A promise that resolves to an HTTP response:
- * - On success: A JSON response containing the list of users and a status of 200.
- * - On failure: A JSON response with an error message and a status of 400.
+ * Fetch all users from database.
+ *
+ * @param request - HTTP request object with authentication token.
+ * @returns JSON response with users array (excluding password hashes).
  */
 export async function GET(request: Request): Promise<Response> {
   try {
@@ -33,6 +23,12 @@ export async function GET(request: Request): Promise<Response> {
   }
 }
 
+/**
+ * Create a new user (admin only).
+ *
+ * @param request - HTTP request with user data (name, email, password, isAdmin).
+ * @returns JSON response with created user object.
+ */
 export async function POST(request: Request): Promise<Response> {
   try {
     const protection = await protectRoute(request, true);

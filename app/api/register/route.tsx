@@ -3,6 +3,12 @@ import UserModel from "@/app/models/user.model"
 import { User } from "@/app/interfaces/user.interface";
 import bcryptjs from "bcryptjs";
 
+/**
+ * Register a new user
+ *
+ * @param {Request} request - HTTP request with user data in body
+ * @returns {Promise<Response>} Created user or error response
+ */
 export async function POST(request: Request): Promise<Response> {
   try {
     const body: User = await request.json();
@@ -29,6 +35,12 @@ export async function POST(request: Request): Promise<Response> {
   }
 }
 
+/**
+ * Check if email already exists in database
+ *
+ * @param {string} email - Email to check
+ * @returns {Promise<{status: number}>} Status 409 if exists, 200 if available
+ */
 const checkIfEmailExists = async (email: string): Promise<{status: number}> => {
   const users = await UserModel.find({}).lean();
   const emailExists = users.some((user) => user.email === email);
