@@ -1,11 +1,18 @@
-import { Prio } from "../type/prio.type";
+import { Prio } from "../enums/prio.enum";
 
 export interface Event {
-  id: number;
+  _id?: string;
+  userID: string;
   name: string;
   description: string;
-  time: Date;
   prio: Prio;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface EventResponse {
+  success: boolean;
+  events: Event[];
 }
 
 export interface EventFormData {

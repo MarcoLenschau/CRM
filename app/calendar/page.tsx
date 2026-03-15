@@ -1,34 +1,13 @@
 import Calendar from "../components/ui/Calendar/Calendar";
 import PageHeader from "../components/ui/PageHeader/PageHeader";
 import QuickTip from "../components/ui/QuickTip/QuickTip";
-import { event } from "@/app/db";
+import { Event, EventResponse } from "../interfaces/event.interface";
+import { Prio } from "../enums/prio.enum";
 
-export default function CalendarPage() {
-  // Get upcoming events (next 5 events)
-  const upcomingEvents = event
-    .sort((a, b) => a.time.getTime() - b.time.getTime())
-    .slice(0, 5);
-
-  // Get priority color
-  const getPriorityColor = (priority: string) => {
-    switch(priority) {
-      case 'high': return 'bg-red-900/30 border-red-700 text-red-300';
-      case 'medium': return 'bg-yellow-900/30 border-yellow-700 text-yellow-300';
-      case 'low': return 'bg-green-900/30 border-green-700 text-green-300';
-      default: return 'bg-zinc-800 border-zinc-600 text-gray-300';
-    }
-  };
-
-  // Get priority icon
-  const getPriorityIcon = (priority: string) => {
-    switch(priority) {
-      case 'high': return '🔴';
-      case 'medium': return '🟡';
-      case 'low': return '🟢';
-      default: return '⚪';
-    }
-  };
-
+export default async function CalendarPage() {
+  const response = await fetch(`${process.env.API_URL}/event`);
+  const events: EventResponse = await response.json();
+  
   return (
     <div className="flex flex-col">
       <PageHeader h1="Calendar & Events" h2="Manage your events, appointments and schedule" color="#4f0623" img="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zm-5-7h4v4h-4z"></PageHeader>
@@ -40,7 +19,7 @@ export default function CalendarPage() {
           <div className="flex flex-col gap-3 lg:col-span-2">
             {/* Calendar */}
             <div className="bg-zinc-800 rounded-lg border-2 border-zinc-700 p-5 backdrop-blur-sm shadow-xl">
-              <Calendar/>
+              <Calendar events={events.events}/>
             </div>
           </div>
           
@@ -60,7 +39,7 @@ export default function CalendarPage() {
                   <span className="text-xs font-semibold text-gray-300">High Priority</span>
                 </div>
                 <p className="text-2xl font-bold text-red-400">
-                  {event.filter(e => e.prio === 'high').length}
+                  {events.events.filter((e: Event) => e.prio === Prio.HIGH).length}
                 </p>
               </div>
 
@@ -75,7 +54,7 @@ export default function CalendarPage() {
                   <span className="text-xs font-semibold text-gray-300">Medium Priority</span>
                 </div>
                 <p className="text-2xl font-bold text-yellow-400">
-                  {event.filter(e => e.prio === 'medium').length}
+                  {events.events.filter((e: Event) => e.prio === Prio.MEDIUM).length}
                 </p>
               </div>
 
@@ -90,7 +69,7 @@ export default function CalendarPage() {
                   <span className="text-xs font-semibold text-gray-300">Low Priority</span>
                 </div>
                 <p className="text-2xl font-bold text-green-400">
-                  {event.filter(e => e.prio === 'low').length}
+                  {events.events.filter((e: Event) => e.prio === Prio.LOW).length}
                 </p>
               </div>
 
@@ -104,10 +83,10 @@ export default function CalendarPage() {
                   </div>
                   <span className="text-xs font-semibold text-gray-300">Total Events</span>
                 </div>
-                <p className="text-2xl font-bold text-blue-400">{event.length}</p>
+                <p className="text-2xl font-bold text-blue-400">{events.events.length}</p>
               </div>
             </div>
-            <QuickTip text="Click on any day in the calendar to create or view events for that day. Color-coded priorities help you stay organized!" />
+            <QuickTip text="Click on any day in the calendar to create or view events for that day. Color-coded priorities help you stay organized!"/>
           </div>
           </div>
         </section>

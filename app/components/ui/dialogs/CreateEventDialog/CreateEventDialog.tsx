@@ -2,12 +2,13 @@
 
 import { useState } from 'react';
 import { CreateEventDialogProps } from '@/app/interfaces/createeventdialog.interface';
+import { Prio } from '@/app/enums/prio.enum';
 
 export default function CreateEventDialog({ isOpen, onClose, onSubmit, selectedDay, month, year }: CreateEventDialogProps) {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [time, setTime] = useState('10:00');
-  const [prio, setPrio] = useState<'low' | 'medium' | 'high'>('medium');
+  const [prio, setPrio] = useState<Prio>(Prio.MEDIUM);
 
   if (!isOpen) return null;
 
@@ -20,7 +21,7 @@ export default function CreateEventDialog({ isOpen, onClose, onSubmit, selectedD
     setName('');
     setDescription('');
     setTime('10:00');
-    setPrio('medium');
+    setPrio(Prio.MEDIUM);
   };
 
   return (
@@ -48,11 +49,11 @@ export default function CreateEventDialog({ isOpen, onClose, onSubmit, selectedD
           
           <section className="flex flex-col gap-1 relative">
             <label htmlFor="event-prio" className="text-white text-sm">Priorität</label>
-            <select id="event-prio" value={prio} onChange={(e) => setPrio(e.target.value as 'low' | 'medium' | 'high')}
+            <select id="event-prio" value={prio} onChange={(e) => setPrio(e.target.value as Prio)}
               className="w-full bg-zinc-700 text-white rounded-lg px-2 py-2 border border-zinc-600 cursor-pointer text-sm">
-              <option value="low">Niedrig</option>
-              <option value="medium">Mittel</option>
-              <option value="high">Hoch</option>
+              <option value={Prio.LOW}>Niedrig</option>
+              <option value={Prio.MEDIUM}>Mittel</option>
+              <option value={Prio.HIGH}>Hoch</option>
             </select>
           </section>
 

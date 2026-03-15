@@ -5,7 +5,6 @@ import ShowEventDialog from '../dialogs/ShowEventDialog/ShowEventDialog';
 import AllEventsDialog from '../dialogs/AllEventsDialog/AllEventsDialog';
 import CreateEventDialog from '../dialogs/CreateEventDialog/CreateEventDialog';
 import SuccessDialog from '../dialogs/SuccessDialog/SuccessDialog';
-import { event } from '@/app/db';
 import { Event } from '@/app/interfaces/event.interface';
 import { Month } from '@/app/type/month.type';
 import { Weekday } from '@/app/type/weekday.type';
@@ -17,10 +16,11 @@ import { Weekday } from '@/app/type/weekday.type';
  * @param {Object} props - The properties object.
  * @param {number} [props.width=25] - The width of each calendar cell in pixels.
  * @param {number} [props.height=25] - The height of each calendar cell in pixels.
+ * @param {Event[]} [props.events=[]] - The events to display in the calendar.
  *
  * @returns {JSX.Element} The rendered calendar component.
  */
-export default function Calendar({height=100, width=100}: {height?: number, width?: number}) {
+export default function Calendar({height=100, width=100, events=[]}: {height?: number, width?: number, events?: Event[]}) {
   const [displayDate, setDisplayDate] = useState(new Date());
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
@@ -45,9 +45,12 @@ export default function Calendar({height=100, width=100}: {height?: number, widt
   
   const now = new Date();
   const isToday = (d: number) => d === now.getDate() && month === now.getMonth() && year === now.getFullYear();
-  const getEventsForDay = (day: number) => event.filter(e => e.time.getDate() === day && e.time.getMonth() === month && e.time.getFullYear() === year);
+  const getEventsForDay = (day: number) => events.filter(e => {
+    const eventDate = new Date(e.createdAt);
+    return eventDate.getDate() === day && eventDate.getMonth() === month && eventDate.getFullYear() === year;
+  });
   const handleDayClick = (d: {day: number, isCurrentMonth: boolean}) => d.isCurrentMonth && (setSelectedDay(d.day), setIsDialogOpen(true));
-  const handleEventClick = (e: React.MouseEvent, evt: typeof event[0]) => {
+  const handleEventClick = (e: React.MouseEvent, evt: Event) => {
     e.stopPropagation();
     setSelectedEvent(evt);
     setIsEventDialogOpen(true);
@@ -75,7 +78,10 @@ export default function Calendar({height=100, width=100}: {height?: number, widt
               </div>
               {dayEvents.length > 0 && (
                 <div className="text-xs text-orange-400 space-y-0.5">
-                  {displayedEvents.map(e => <div key={e.id} onClick={(evt) => handleEventClick(evt, e)} className="truncate cursor-pointer hover:text-orange-300 hover:underline">{e.name}</div>)}
+                  {displayedEvents.map(e => {
+                    const eventTime = new Date(e.createdAt).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+                    return <div key={e._id} onClick={(evt) => handleEventClick(evt, e)} className="truncate cursor-pointer hover:text-orange-300 hover:underline"><span className="text-gray-400">{eventTime}</span> {e.name}</div>;
+                  })}
                   {moreCount > 0 && <div className="text-orange-500 font-semibold">+{moreCount}</div>}
                 </div>
               )}
@@ -84,7 +90,7 @@ export default function Calendar({height=100, width=100}: {height?: number, widt
         })}
       </section>
       
-      <AllEventsDialog isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)} selectedDay={selectedDay || 0} month={month} year={year}
+      <AllEventsDialog isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)} selectedDay={selectedDay || 0} month={month} year={year} events={events}
         onEventClick={(evt) => {
           setSelectedEvent(evt);
           setIsEventDialogOpen(true);

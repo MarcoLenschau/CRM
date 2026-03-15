@@ -12,11 +12,11 @@ export default function ShowEventDialog({ isOpen, onClose, selectedEvent }: Show
         <div className="space-y-3">
           <div>
             <p className="text-gray-400 text-sm">ID</p>
-            <p className="text-white">#{selectedEvent.id}</p>
+            <p className="text-white">#{selectedEvent._id}</p>
           </div>
           <div>
             <p className="text-gray-400 text-sm">Zeit</p>
-            <p className="text-white">{selectedEvent.time.toLocaleString('de-DE')}</p>
+            <p className="text-white">{new Date(selectedEvent.createdAt).toLocaleString('de-DE')}</p>
           </div>
           <div>
             <p className="text-gray-400 text-sm">Beschreibung</p>
