@@ -28,6 +28,6 @@ const customerSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-}, {timestamps: true});
+}, {timestamps: true, versionKey: false});
 
 export default mongoose.models.Customer || mongoose.model("Customer", customerSchema);

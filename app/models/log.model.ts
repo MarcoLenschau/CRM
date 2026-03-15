@@ -23,6 +23,6 @@ const logSchema = new mongoose.Schema({
     description: {
         type: String,
     },
-}, {timestamps: true});
+}, {timestamps: true, versionKey: false});
 
 export default mongoose.models.Log || mongoose.model("Log", logSchema);

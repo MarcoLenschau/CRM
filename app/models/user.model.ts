@@ -8,7 +8,8 @@ const userSchema = new mongoose.Schema({
     },
     email: {
         type: String,
-        required: true
+        required: true,
+        unique: true,
     },
     hash: {
         type: String,
@@ -18,6 +19,6 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         required: true
     }
-}, {timestamps: true});
+}, {timestamps: true, versionKey: false});
 
 export default mongoose.models.User || mongoose.model("User", userSchema);
