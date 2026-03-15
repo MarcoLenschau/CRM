@@ -32,8 +32,6 @@ interface EditFormData {
 }
 
 export default function UserDetailPage() {
-
-export default function UserDetailPage() {
   const router = useRouter();
   const params = useParams();
   const userId = typeof params.id === 'string' ? params.id : '';
