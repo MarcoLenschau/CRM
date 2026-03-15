@@ -38,21 +38,18 @@ jobs:
 
       - name: Create ZIP archive
         run: |
-          cd docs
-          zip -r typedoc-api-docs.zip typedoc-md/
-          cd ..
-          mv docs/typedoc-api-docs.zip .
+          zip -r CRM-Documentation-V.0.1.0.zip docs/typedoc-md/*
 
-      - name: Get current date
-        id: date
-        run: echo "DATE=$(date +'%Y-%m-%d_%H-%M-%S')" >> $GITHUB_OUTPUT
+      - name: Get commit hash
+        id: commit
+        run: echo "HASH=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
       - name: Upload to Releases
         uses: softprops/action-gh-release@v1
         with:
-          files: typedoc-api-docs.zip
-          tag_name: docs-${{ steps.date.outputs.DATE }}
-          name: CRM-Documentation-V.0.1.0 - ${{ steps.date.outputs.DATE }}
+          files: CRM-Documentation-V.0.1.0.zip
+          tag_name: docs-${{ steps.commit.outputs.HASH }}
+          name: CRM-Documentation-V.0.1.0
           body: |
             ## CRM Documentation V.0.1.0 (Markdown)
             
