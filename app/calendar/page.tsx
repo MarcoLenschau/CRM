@@ -5,7 +5,7 @@ import { Event, EventResponse } from "../interfaces/event.interface";
 import { Prio } from "../enums/prio.enum";
 
 export default async function CalendarPage() {
-  const response = await fetch(`${process.env.API_URL}/event`);
+  const response: Response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/event`);
   const events: EventResponse = await response.json();
   
   return (

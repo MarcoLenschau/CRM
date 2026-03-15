@@ -44,7 +44,7 @@ export default function CustomerDetailPage() {
   useEffect(() => {
     const fetchCustomer = async () => {
       try {
-        const response = await fetch(`${process.env.API_URL}/customer/${customerId}`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/customer/${customerId}`);
         if (response.ok) {
           const found = await response.json();
           setCustomer(found);

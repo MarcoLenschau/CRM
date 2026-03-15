@@ -18,7 +18,7 @@ export default async function ActivityFeedTemplate() {
   let sortedActivity: AuditLog[] = [];
   
   try {
-    const response = await fetch(`${process.env.API_URL}/log`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/log`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json"
