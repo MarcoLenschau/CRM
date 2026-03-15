@@ -31,7 +31,7 @@ jobs:
         run: npx typedoc --treatWarningsAsErrors false
 
       - name: Generate TypeDoc documentation (Markdown)
-        run: npx typedoc -c typedoc-markdown.json --treatWarningsAsErrors false
+        run: npx typedoc --options typedoc-markdown.json --treatWarningsAsErrors false
 
       - name: Create ZIP archive
         run: |
