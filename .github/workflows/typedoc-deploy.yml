@@ -31,10 +31,10 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm install -g typedoc 
+        run: npm ci
 
       - name: Generate TypeDoc documentation
-        run: npx typedoc
+        run: npx typedoc --treatWarningsAsErrors false
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
