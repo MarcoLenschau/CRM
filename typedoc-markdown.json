@@ -1,0 +1,16 @@
+{
+  "entryPoints": ["app"],
+  "entryPointStrategy": "expand",
+  "out": "docs/typedoc-md",
+  "exclude": ["**/node_modules/**", "**/.next/**", "**/dist/**"],
+  "excludePrivate": true,
+  "excludeInternal": false,
+  "excludeProtected": false,
+  "readme": "README.md",
+  "includeVersion": true,
+  "name": "CRM Documentation",
+  "plugin": ["typedoc-plugin-markdown"],
+  "searchInComments": true,
+  "hideGenerator": false,
+  "treatWarningsAsErrors": false
+}
