@@ -10,15 +10,18 @@ import { Month } from '@/app/type/month.type';
 import { Weekday } from '@/app/type/weekday.type';
 
 /**
- * A functional React component that renders a calendar UI with the ability to navigate between months
- * and select specific days. The component also includes a dialog for handling appointments.
+ * Interactive calendar component with month navigation, event management, and dialogs.
+ * Displays calendar grid with configurable cell dimensions and event highlighting.
  *
- * @param {Object} props - The properties object.
- * @param {number} [props.width=25] - The width of each calendar cell in pixels.
- * @param {number} [props.height=25] - The height of each calendar cell in pixels.
- * @param {Event[]} [props.events=[]] - The events to display in the calendar.
- *
- * @returns {JSX.Element} The rendered calendar component.
+ * @param height - Calendar cell height in pixels (optional, defaults to 100)
+ * @param width - Calendar cell width in pixels (optional, defaults to 100)
+ * @param events - Array of events to display in calendar (optional, defaults to [])
+ * @return Rendered calendar with navigation, grid, and event dialogs
+ * @throws Error if events API fails or malformed event data provided; displays empty calendar grid
+ * @category UI
+ * @security Event data validated and sanitized before display, dialog state isolated
+ * @performance Real-time event filtering and dialog state management with memoization
+ * @author Marco Lenschau <contact@marco-lenschau.de>
  */
 export default function Calendar({height=100, width=100, events=[]}: {height?: number, width?: number, events?: Event[]}) {
   const [displayDate, setDisplayDate] = useState(new Date());

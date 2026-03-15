@@ -4,11 +4,17 @@ import Log from "@/app/models/log.model"
 import { protectRoute } from "@/app/utils/protectRoute"
 
 /**
- * Delete an event by ID
+ * Deletes calendar event and logs the action.
+ * Records deletion in audit trail for compliance.
  *
- * @param {Request} request - HTTP request
- * @param {Object} params - Route parameters containing event ID
- * @returns {Promise<Response>} Success message or error
+ * @param request - HTTP request with authentication
+ * @param params - Route parameters with event ID
+ * @return Success message or 404 if not found
+ * @throws {Error} On database deletion errors
+ * @category Event Management
+ * @security Requires authentication, logs all deletions
+ * @performance Direct MongoDB ID deletion plus audit logging
+ * @author Marco Lenschau <contact@marco-lenschau.de>
  */
 export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }): Promise<Response> {
   try {

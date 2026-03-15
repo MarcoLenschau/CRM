@@ -2,11 +2,16 @@ import mongodb from "@/app/utils/mongodb"
 import Customes from "@/app/models/customer.model"
 
 /**
- * Fetch a customer by ID.
+ * Retrieves single customer by ID with contact and assignment details.
+ * Returns 404 if customer not found.
  *
- * @param request - HTTP request object.
- * @param context.params - Promise resolving to {id: string}.
- * @returns JSON response with customer data or 404 error.
+ * @param request - HTTP request (unused)
+ * @param params - Route parameters with customer ID
+ * @return Customer object or 404 if not found
+ * @throws {Error} On database query errors
+ * @category Customer Management
+ * @performance Direct MongoDB ID lookup
+ * @author Marco Lenschau <contact@marco-lenschau.de>
  */
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }): Promise<Response> {
     try {

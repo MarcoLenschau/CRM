@@ -1,5 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 
+/**
+ * Decodes JWT token without verification to extract claims.
+ * Used for quick admin role checking in middleware.
+ *
+ * @param token - JWT token string to decode
+ * @return Decoded token object with isAdmin flag, or null if invalid
+ * @category Authentication
+ * @security Token decoded without signature verification (for middleware only), safe for role extraction
+ * @performance O(1) base64 decoding operation
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 function decodeJWT(token: string): { isAdmin?: boolean } | null {
   try {
     const parts = token.split(".");
@@ -14,6 +25,17 @@ function decodeJWT(token: string): { isAdmin?: boolean } | null {
   }
 }
 
+/**
+ * Next.js middleware to enforce route protection and role-based access control.
+ * Validates JWT token and admin status for protected routes.
+ *
+ * @param request - The incoming HTTP request
+ * @return NextResponse allowing or redirecting based on authentication/authorization
+ * @category Authentication
+ * @security Enforces JWT validation and admin role restrictions on protected routes, redirects unauthorized
+ * @performance O(n) route matching with early exit optimization
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 export function middleware(request: NextRequest) {
   const token = request.cookies.get("token")?.value;
   const pathname = request.nextUrl.pathname;

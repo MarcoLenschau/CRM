@@ -43,6 +43,21 @@ const colorMap = {
   },
 };
 
+/**
+ * Statistic display card component showing a metric with label, icon, and color-coded styling.
+ * Presents key performance indicators with visual emphasis and consistent design across dashboard.
+ *
+ * @param label - Metric label displayed above the value
+ * @param value - Numeric or text value to display prominently
+ * @param icon - React component or SVG element rendered with the stat label
+ * @param color - Color theme (blue, green, purple, orange, red, cyan, pink, indigo) for styling
+ * @return Rendered stat card with icon, label, and value
+ * @throws Error if invalid color theme provided; uses default styling
+ * @category UI Components
+ * @security Static component displaying provided metrics; no data processing
+ * @performance Lightweight card with CSS transitions for smooth hover effects
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 export default function StatCard({ label, value, icon, color }: StatCardProps) {
   const colors = colorMap[color];
 

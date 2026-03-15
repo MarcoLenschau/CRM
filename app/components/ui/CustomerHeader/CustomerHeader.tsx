@@ -10,6 +10,21 @@ interface CustomerHeaderProps {
   onDelete: () => void;
 }
 
+/**
+ * Rich customer header component displaying customer details with edit and delete action buttons.
+ * Shows customer name, ID, status, and provides mode toggle for inline editing functionality.
+ *
+ * @param customer - Customer object containing name, ID, and status information
+ * @param isEditing - Flag controlling display of edit/delete buttons vs editing state
+ * @param onEditToggle - Callback to toggle between view and edit modes
+ * @param onDelete - Callback executed when delete button is clicked
+ * @return Rendered customer header with avatar, info, and action buttons
+ * @throws Error if customer object is invalid; displays fallback values
+ * @category UI Components
+ * @security Delete action triggers confirmation; status indicators reflect current customer state
+ * @performance Controlled component with efficient conditional rendering for edit/view modes
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 export default function CustomerHeader({
   customer,
   isEditing,

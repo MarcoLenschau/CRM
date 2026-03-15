@@ -11,6 +11,19 @@ import SearchBar from '@/app/components/ui/SearchBar/SearchBar';
 import Table from '@/app/components/ui/Table/Table';
 import StatCard from '@/app/components/ui/StatCard/StatCard';
 
+/**
+ * Renders customer list content with search, filtering, and management functionality.
+ * Displays customers in a table with status indicators and delete/view actions.
+ *
+ * @param customers - Array of customer objects to display
+ * @param onCustomerDeleted - Callback triggered when customer is successfully deleted
+ * @return Customer list component with search, filters, and action dialogs
+ * @throws Error if customer deletion API fails; displays error state in dialog
+ * @category Features
+ * @security Delete operations require confirmation; customer data filtered by user access permissions
+ * @performance Filtered customer list computed efficiently; memoized status badge components
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 // Status Badge Component
 function StatusBadge({ status }: { status: CustomerStatus }) {
   const colors: Record<CustomerStatus, string> = {

@@ -6,6 +6,16 @@ import SearchBar from '@/app/components/ui/SearchBar/SearchBar';
 import StatCard from '@/app/components/ui/StatCard/StatCard';
 import { AuditLog } from '@/app/interfaces/auditlog.interface';
 
+/**
+ * Renders audit log page with filtering and search capabilities.
+ * Displays comprehensive log of all system actions for compliance monitoring.
+ *
+ * @return Audit log page component with filters and statistics
+ * @category Logging
+ * @security Admin-only route, displays sensitive audit trail with access control
+ * @performance Client-side rendering with API calls for log retrieval and filtering
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 export default function AuditLogPage() {
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
   const [searchTerm, setSearchTerm] = useState('');

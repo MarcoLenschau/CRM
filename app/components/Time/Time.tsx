@@ -1,13 +1,16 @@
 import { useEffect, useState, useCallback } from "react";
 
-
 /**
- * A React functional component that displays the current time and updates it every second.
- * 
- * @param {Object} props - The props object.
- * @param {boolean} props.hour12 - A boolean indicating whether the time should be displayed in 12-hour format.
- * 
- * @returns {JSX.Element} A `<time>` element displaying the current time in a bold, large font.
+ * Real-time clock component displaying current time with automatic second-by-second updates.
+ * Supports both 12-hour and 24-hour time formats with German locale and responsive visibility.
+ *
+ * @param hour12 - Boolean flag to toggle between 12-hour (true) and 24-hour (false) time format
+ * @return Rendered time display element with auto-updating clock
+ * @throws Error if locale formatting fails; displays fallback time string
+ * @category Feature Components
+ * @security Displays client-side time only, no sensitive data
+ * @performance Uses useCallback to memoize time formatter; updates every second via interval
+ * @author Marco Lenschau <contact@marco-lenschau.de>
  */
 export default function Time({hour12}: {hour12: boolean}) {
   /**

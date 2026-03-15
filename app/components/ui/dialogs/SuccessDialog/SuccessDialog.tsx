@@ -1,5 +1,23 @@
 import { SuccessDialogProps } from '@/app/interfaces/successdialog.interface';
 
+/**
+ * Modal success dialog component that confirms successful operations with visual feedback.
+ * Displays a success message with optional detail information and a customizable action button.
+ *
+ * @param isOpen - Controls dialog visibility
+ * @param onClose - Callback function triggered when dialog is dismissed
+ * @param title - Main heading displayed in the dialog
+ * @param message - Descriptive message below the title
+ * @param detailLabel - Label for optional detail information section
+ * @param detailValue - Value to display for the detail section
+ * @param buttonText - Custom button text, defaults to 'Fertig'
+ * @return Rendered success dialog with confirmation message and action button
+ * @throws Error if onClose callback fails; dialog remains visible and clickable
+ * @category Dialogs
+ * @security Modal uses backdrop blur and z-index layering to prevent background interaction during operation confirmation
+ * @performance Conditional rendering (null if not isOpen) prevents unnecessary DOM overhead
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 export default function SuccessDialog({ 
   isOpen, 
   onClose, 

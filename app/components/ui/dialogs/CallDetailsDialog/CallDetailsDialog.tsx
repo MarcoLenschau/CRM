@@ -20,6 +20,20 @@ interface CallDetailsDialogProps {
   onClose: () => void;
 }
 
+/**
+ * Modal dialog for recording and logging call details with customer information and follow-up tracking.
+ * Fetches customer data, collects call details (status, notes, next action), and logs event to audit trail.
+ *
+ * @param isOpen - Controls dialog visibility
+ * @param selectedUserId - ID of the customer whose call details are being recorded
+ * @param onClose - Callback function executed when dialog is dismissed or after successful logging
+ * @return Rendered call details form dialog with customer context and logging functionality
+ * @throws Error when customer fetch or call log submission fails; handles gracefully with error logging
+ * @category Dialogs
+ * @security Customer data fetched from backend with authentication; all call details logged for compliance and audit
+ * @performance Fetches customer data on dialog open; form state managed locally before API submission
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 export default function CallDetailsDialog({ isOpen, selectedUserId, onClose }: CallDetailsDialogProps) {
   const [callDetails, setCallDetails] = useState({
     status: '',

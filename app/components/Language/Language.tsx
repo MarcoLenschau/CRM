@@ -6,6 +6,18 @@ const countries = [
   { name: "Spain", code: "ES" },
 ]
 
+/**
+ * Language selector dropdown component with flag icons and time format toggle integration.
+ * Displays available languages with country flags and manages locale selection state.
+ *
+ * @param setHourMode - Callback function to update time format (12-hour vs 24-hour) when language changes
+ * @return Rendered language selector dropdown with flag indicators
+ * @throws Error if flag images fail to load or setHourMode callback fails; displays fallback language selector
+ * @category Feature Components
+ * @security Manages UI locale preference only; no sensitive data exposed
+ * @performance Lightweight dropdown with icon lazy loading via flag assets
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 export default function Language({setHourMode}: {setHourMode: Dispatch<SetStateAction<boolean>>}) {
   const [selectedLanguage, setLanguage] = useState(countries[0]);
   const [open, setOpen] = useState(false);

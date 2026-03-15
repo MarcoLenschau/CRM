@@ -3,7 +3,18 @@
 import { ReactNode } from 'react';
 import { TableColumn, TableProps } from '@/app/interfaces/table.interface';
 
-// Helper function to convert field names to columns
+/**
+ * Converts array of column definitions to normalized TableColumn format.
+ * Handles both object column configs and simple field name strings.
+ *
+ * @param columns - Column definitions (objects or field names)
+ * @return Normalized array of TableColumn objects
+ * @throws Error if column definitions are invalid; returns empty array fallback
+ * @category UI Utilities
+ * @security Validates column configuration objects for type safety
+ * @performance O(n) linear transformation with early termination
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 const normalizeColumns = <T extends Record<string, unknown>>(
   columns: (TableColumn<T> | keyof T)[]
 ): TableColumn<T>[] => {
@@ -32,6 +43,22 @@ export default function Table<T extends Record<string, unknown>>({
   emptyDescription = 'No records to display',
   config = {},
 }: TableProps<T>) {
+/**
+ * Generic table component rendering data in rows and columns.
+ * Automatically handles scrolling for large datasets and empty state messages.
+ *
+ * @param columns - Array of column definitions (fields or TableColumn objects)
+ * @param data - Array of data objects to render as table rows
+ * @param emptyMessage - Message shown when no data (optional)
+ * @param emptyDescription - Description for empty state (optional)
+ * @param config - Optional configuration (scrollable, maxHeight)
+ * @return Rendered table component with responsive layout
+ * @throws Error if columns or data are malformed; displays empty table with error state
+ * @category UI
+ * @security Sanitizes column labels and data for XSS prevention
+ * @performance O(n) rendering, auto-scrolling for n>5 items with optimized updates
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
   // Normalize columns - convert field names to full column config
   const columns = normalizeColumns(columnsInput);
 
@@ -43,6 +70,17 @@ export default function Table<T extends Record<string, unknown>>({
 
   const maxHeight = config.maxHeight || 'max-h-96';
 
+   /**
+   * Maps alignment configuration to Tailwind CSS alignment classes.
+   *
+   * @param align - Alignment direction (left, center, right)
+   * @return Tailwind class string
+   * @throws Error if align parameter is invalid; returns 'text-left' fallback
+   * @category UI Utilities
+   * @security Safe string mapping without dynamic code generation
+   * @performance O(1) constant lookup with switch statement
+   * @author Marco Lenschau <contact@marco-lenschau.de>
+   */
   const getAlignClass = (align: 'left' | 'center' | 'right' = 'left') => {
     switch (align) {
       case 'center':

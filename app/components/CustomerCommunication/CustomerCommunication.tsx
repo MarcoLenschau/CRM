@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * Card component displaying customer communication preferences and available channels.
+ * Shows enabled communication methods (email, phone) and provides UI indicators for communication status.
+ *
+ * @return Rendered communication preferences card with channel indicators
+ * @category Feature Components
+ * @security Displays communication preferences without sensitive contact details
+ * @performance Static component with no state or API calls
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 export default function CustomerCommunication() {
   return (
     <div className="bg-zinc-800 rounded-lg border border-zinc-500 p-4">

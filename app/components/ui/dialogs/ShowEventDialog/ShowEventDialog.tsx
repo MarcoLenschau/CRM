@@ -4,6 +4,20 @@ import { useState } from 'react';
 import { ShowEventDialogProps } from '@/app/interfaces/showeventdialog.interface';
 import DeleteConfirmDialog from '../DeleteConfirmDialog/DeleteConfirmDialog';
 
+/**
+ * Modal dialog displaying detailed event information with edit and delete capabilities.
+ * Fetches event data and integrates DeleteConfirmDialog for safe event removal with backend synchronization.
+ *
+ * @param isOpen - Controls dialog visibility
+ * @param onClose - Callback function executed when dialog is dismissed or event is successfully deleted
+ * @param selectedEvent - Event object containing ID, name, description, and creation timestamp
+ * @return Rendered event details dialog with view and delete options
+ * @throws Error when event deletion API call fails; displays error alert to user
+ * @category Dialogs
+ * @security Event deletion requires confirmation; uses credentials-included fetch for secure deletion; logs deletion via window event dispatch
+ * @performance Manages local delete state during API call; prevents duplicate submissions with isDeleting flag
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 export default function ShowEventDialog({ isOpen, onClose, selectedEvent }: ShowEventDialogProps) {
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);

@@ -2,6 +2,23 @@
 
 import { UserDialogProps } from '@/app/interfaces/userdialog.interface';
 
+/**
+ * Modal dialog for creating and editing user accounts with form validation and role assignment.
+ * Supports both new user creation and existing user modification with conditional UI and button labels.
+ *
+ * @param isOpen - Controls dialog visibility
+ * @param editingId - Optional user ID being edited; undefined for new user creation
+ * @param newUser - User object containing name, email, password, and admin status
+ * @param onUserChange - Callback function triggered when user data is modified
+ * @param onSave - Callback function executed when save/update button is clicked
+ * @param onClose - Callback function executed when dialog is dismissed or cancelled
+ * @return Rendered user management dialog with form fields and action buttons
+ * @throws Error if onSave or onUserChange callbacks fail; displays error state in dialog
+ * @category Dialogs
+ * @security Form includes password field with masking; admin role assignment controls system access; input validation required before save
+ * @performance Managed form state updates through controlled inputs; conditional rendering for edit vs create modes
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 export default function UserDialog({
   isOpen,
   editingId,

@@ -4,6 +4,22 @@ import { useState } from 'react';
 import { CreateEventDialogProps } from '@/app/interfaces/createeventdialog.interface';
 import { Prio } from '@/app/enums/prio.enum';
 
+/**
+ * Modal dialog for creating calendar events with date, time, priority, and description fields.
+ * Collects event details with form validation and submits via callback with computed datetime.
+ *
+ * @param isOpen - Controls dialog visibility
+ * @param onClose - Callback function executed when dialog is dismissed or cancelled
+ * @param onSubmit - Callback function triggered when event is created, receives event data with computed datetime
+ * @param selectedDay - Day of month (1-31) for event creation, pre-populated in date field
+ * @param month - Month index (0-11) for event date calculation
+ * @param year - Full year value for event date calculation
+ * @return Rendered event creation form dialog with all required fields
+ * @category Dialogs
+ * @security Form validation ensures event name is provided before submission; state reset after submission
+ * @performance Local state management for form inputs; datetime computed from separate date and time fields
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 export default function CreateEventDialog({ isOpen, onClose, onSubmit, selectedDay, month, year }: CreateEventDialogProps) {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');

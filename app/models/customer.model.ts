@@ -1,3 +1,21 @@
+/**
+ * Mongoose schema for Customer documents in MongoDB.
+ * Defines customer account structure with contact info, company, status, and assignment tracking.
+ *
+ * @typedef {Object} Customer
+ * @property {string} name - Customer's display name (max 50 characters, required)
+ * @property {string} email - Customer's email address (required)
+ * @property {string} phone - Customer's phone number (max 20 characters, optional)
+ * @property {string} company - Customer's company name (optional)
+ * @property {string} status - Customer account status (active, inactive, pending - defaults to active)
+ * @property {string} assignedUserId - ID of assigned account manager (required)
+ * @property {Date} createdAt - Automatic creation timestamp
+ * @property {Date} updatedAt - Automatic update timestamp
+ * @category MongoDB Models
+ * @security Status field restricted to enum values to prevent invalid states
+ * @performance Indexed on assignedUserId for fast user-customer queries
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 import mongoose from "mongoose";
 import { CustomerStatus } from "@/app/enums/status.enum";
 

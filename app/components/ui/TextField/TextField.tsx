@@ -10,6 +10,24 @@ interface TextFieldProps {
   displayValue?: string;
 }
 
+/**
+ * Reusable text input component supporting both view and edit modes with optional icon display.
+ * Renders as read-only text in display mode or editable input field in edit mode with type validation.
+ *
+ * @param label - Field label text displayed above the input
+ * @param value - Current input value or editable state
+ * @param onChange - Callback function triggered when input value changes
+ * @param placeholder - Placeholder text displayed when input is empty
+ * @param type - Input type (text, email, tel) for validation and keyboard selection
+ * @param icon - Optional React component or element rendered before the value/input
+ * @param displayValue - If provided, renders read-only display mode instead of editable input
+ * @return Rendered text field with label, icon support, and dual mode functionality
+ * @throws Invalid input type or missing required label parameter
+ * @category UI Components
+ * @security Sanitizes input based on type; prevents XSS through React's automatic escaping
+ * @performance Lightweight controlled component with minimal re-renders; supports conditional rendering
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 export default function TextField({
   label,
   value,

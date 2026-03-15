@@ -3,6 +3,16 @@
 import { useState } from 'react';
 import PageHeader from '@/app/components/ui/PageHeader/PageHeader';
 
+/**
+ * Renders settings page with account, notification, appearance, and security configurations.
+ * Allows users to manage their profile and system preferences.
+ *
+ * @return Settings page component with tabbed interface
+ * @category Settings
+ * @security Protected route requiring authentication, sensitive data isolated to local state
+ * @performance Client-side rendering with tabbed state management and form inputs
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState<'account' | 'notifications' | 'appearance' | 'security'>('account');
   const [accountSettings, setAccountSettings] = useState({

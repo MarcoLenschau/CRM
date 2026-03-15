@@ -14,6 +14,20 @@ const colorMap = {
   yellow: 'bg-yellow-700/50 hover:bg-yellow-600 text-yellow-300',
 };
 
+/**
+ * Tooltip component displaying helpful information via a question mark button with hover text.
+ * Provides contextual assistance with color-coded styling for different information types.
+ *
+ * @param text - Main label text displayed next to the tooltip button
+ * @param tooltipText - Tooltip text revealed on hover
+ * @param color - Color scheme for tooltip button (blue, orange, green, red, yellow), defaults to blue
+ * @return Rendered tooltip element with label and hover information
+ * @throws Error if invalid color scheme provided; falls back to blue
+ * @category UI Components
+ * @security Tooltip content controlled by props; no user input processed
+ * @performance Lightweight component with CSS hover states for performance
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 export function QuickTipTooltip({ text, tooltipText, color = 'blue' }: QuickTipTooltipProps) {
   return (
     <div className="group relative inline-flex items-center gap-1">

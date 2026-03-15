@@ -1,3 +1,13 @@
+/**
+ * Renders privacy policy page with legal information.
+ * Displays terms and conditions for data handling and user privacy.
+ *
+ * @return Privacy policy page component
+ * @category Legal
+ * @security Public page with read-only legal information
+ * @performance Static content rendering with no external dependencies
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 export default function PrivacyPage() {
   return (
     <div className="w-full h-full flex flex-col overflow-hidden">

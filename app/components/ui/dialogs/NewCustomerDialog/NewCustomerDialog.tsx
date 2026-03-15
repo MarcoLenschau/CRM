@@ -5,6 +5,19 @@ import { NewCustomerDialogProps } from '@/app/interfaces/newcustomerdialog.inter
 import { logEvent } from '@/app/utils/api';
 import SuccessDialog from '../SuccessDialog/SuccessDialog';
 
+/**
+ * Modal dialog for creating new customer records with form validation and API integration.
+ * Collects customer details (name, email, company, phone) and logs creation events for audit trail.
+ *
+ * @param isOpen - Controls dialog visibility
+ * @param onClose - Callback function triggered when dialog is dismissed or after successful creation
+ * @return Rendered customer creation dialog with form fields and success confirmation
+ * @throws Will log failed creation events if API request fails
+ * @category Dialogs
+ * @security Validates all required fields before submission; logs all create operations for audit purposes
+ * @performance Form state managed locally; success confirmation shown after API call completes
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 export default function NewCustomerDialog({ isOpen, onClose }: NewCustomerDialogProps) {
   const [newCustomer, setNewCustomer] = useState({
     name: '',

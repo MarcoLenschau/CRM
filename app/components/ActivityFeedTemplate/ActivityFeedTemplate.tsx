@@ -17,6 +17,17 @@ const getActivityIcon = (entity: string): string => {
   return iconMap[entity.toLowerCase()] || iconMap['default'];
 };
 
+/**
+ * Dashboard template component displaying activity feed with audit log entries sorted by recency.
+ * Fetches and displays recent user actions with entity icons, timestamps, and status indicators.
+ *
+ * @return Rendered activity feed card with chronologically sorted audit log entries
+ * @throws Error when fetching audit logs from API; logs error to console and continues with empty state
+ * @category Templates
+ * @security Fetches audit logs from authenticated API endpoint; displays sanitized activity records
+ * @performance Fetches activity on mount; lazy loads with loading state; real-time update support
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 export default function ActivityFeedTemplate() {
   const [sortedActivity, setSortedActivity] = useState<AuditLog[]>([]);
   const [loading, setLoading] = useState(true);

@@ -7,6 +7,19 @@ interface RecentActivityProps {
   getStatusColor: (status: string) => string;
 }
 
+/**
+ * Activity list component displaying recent audit log entries with action type and status color coding.
+ * Shows chronological log entries with visual indicators for different operation types (CREATE, UPDATE, DELETE, READ).
+ *
+ * @param logs - Array of audit log entries to display
+ * @param getStatusColor - Helper function returning CSS color classes for status values
+ * @return Rendered activity list with color-coded log entries
+ * @throws Error if logs array is invalid; renders empty state
+ * @category UI Components
+ * @security Displays audit logs with action descriptions; useful for compliance and monitoring
+ * @performance Renders log list efficiently with CSS-based color coding
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 export default function RecentActivity({ logs, getStatusColor }: RecentActivityProps) {
   const getActionColor = (action: string) => {
     const a = action?.toUpperCase() || '';

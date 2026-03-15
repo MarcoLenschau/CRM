@@ -27,6 +27,26 @@ interface CustomerDetailCardProps {
   getStatusColor: (status?: string) => string;
 }
 
+/**
+ * Comprehensive customer detail card component with inline editing and status management.
+ * Displays customer information with toggle between view and edit modes, status management, and user assignment.
+ *
+ * @param customer - Customer object containing base information
+ * @param isEditing - Flag controlling view/edit mode display
+ * @param editForm - Form state object with editable customer fields
+ * @param onEditChange - Callback triggered when form fields change during editing
+ * @param onSave - Callback executed when user submits changes
+ * @param onCancel - Callback executed when user cancels editing
+ * @param onEditToggle - Callback to toggle between edit and view modes
+ * @param onDelete - Callback executed when user deletes the customer
+ * @param getStatusColor - Helper function to get color styling for status display
+ * @return Rendered customer detail card with view/edit modes and action buttons
+ * @throws Error if customer data is invalid; handled by parent component
+ * @category Feature Components
+ * @security Inline editing prevents unauthorized changes; delete action requires confirmation; sensitive customer data displayed with proper access controls
+ * @performance Controlled component with parent-managed state; efficient re-renders with selective field updates
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 export default function CustomerDetailCard({
   customer,
   isEditing,

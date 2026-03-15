@@ -7,6 +7,19 @@ interface CustomerDetailHeaderProps {
   subtitle: string;
 }
 
+/**
+ * Navigation header component for customer detail pages with back navigation and title display.
+ * Provides quick navigation back to previous page with visual back button and customer context.
+ *
+ * @param title - Main heading text displayed prominently
+ * @param subtitle - Secondary text displayed below title for additional context
+ * @return Rendered header with navigation button and title information
+ * @throws Error if router.back() fails; handled gracefully by Next.js router
+ * @category Feature Components
+ * @security Navigation uses router.back() for safe client-side history navigation
+ * @performance Lightweight header component with minimal re-renders
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 export default function CustomerDetailHeader({ title, subtitle }: CustomerDetailHeaderProps) {
   const router = useRouter();
 

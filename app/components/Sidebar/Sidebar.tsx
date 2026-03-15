@@ -1,6 +1,19 @@
 import Links from "../Links/Links";
 import Juridical from "../Juridical/Juridical";
 
+/**
+ * Navigation sidebar with conditional menu items based on authentication and admin status.
+ * Displays different navigation options for authenticated vs admin users.
+ *
+ * @param isUserLogedIn - Whether user is authenticated
+ * @param isAdmin - Whether user has admin privileges (optional, defaults to false)
+ * @return Rendered sidebar with navigation links
+ * @throws Error if links array is invalid or authorization check fails; displays fallback navigation
+ * @category Layout
+ * @security Shows admin-only menu items conditionally based on user role, protects unauthorized access
+ * @performance Memoized with conditional rendering, minimal re-renders on role changes
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 export default function Sidebar({isUserLogedIn, isAdmin = false}: {isUserLogedIn: boolean; isAdmin?: boolean}) {
   // Filter links based on user role
   const allLinks = ["Dashboard", "Customers", "Users", "Email", "Calendar", "Settings", "Log", "Help"];

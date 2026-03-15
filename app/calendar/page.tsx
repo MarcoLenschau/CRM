@@ -5,6 +5,16 @@ import EventStats from "../components/EventStats/EventStats";
 import type { Event } from "../interfaces/event.interface";
 import { fetchWithAuth } from "../utils/api";
 
+/**
+ * Renders calendar page with event management, statistics, and quick tips.
+ * Fetches events server-side and displays interactive calendar widget.
+ *
+ * @return Calendar page component with event visualization
+ * @category Calendar
+ * @security Protected route requiring authentication, server-side data fetching
+ * @performance Server-side rendering with async event fetching and caching
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 export default async function CalendarPage() {
   let events: Event[] = [];
   

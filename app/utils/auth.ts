@@ -3,18 +3,20 @@ import { verifyToken, TokenPayload } from "./jwt";
 export type { TokenPayload };
 
 /**
- * Authenticates an incoming request by extracting and verifying the authorization token.
- * Checks both Authorization header and cookie.
+ * Verifies JWT token from Authorization header or cookies.
+ * Extracts token from "Authorization: Bearer <token>" header or "token" cookie.
  *
- * @param request - The incoming HTTP request object.
- * @returns The payload of the verified token if authentication is successful, or `null` if the token is missing or invalid.
+ * @param request - The incoming HTTP request
+ * @return Decoded token payload if valid, null if invalid or missing
+ * @category Authentication
+ * @security Validates JWT signature and expiration, checks token in headers or cookies
+ * @performance O(1) token parsing and verification
+ * @author Marco Lenschau <contact@marco-lenschau.de>
  */
 export const authenticateRequest = (request: Request): TokenPayload | null => {
-  // Try to get token from Authorization header first
   let token = request.headers.get("authorization")?.split(" ")[1];
   console.log("📌 Auth attempt - Header token:", token ? "Found" : "Not found");
-  
-  // If not found, try to get from cookies
+
   if (!token) {
     const cookieHeader = request.headers.get("cookie");
     if (cookieHeader) {
@@ -33,20 +35,30 @@ export const authenticateRequest = (request: Request): TokenPayload | null => {
 };
 
 /**
- * Checks if the provided token payload corresponds to an admin user.
+ * Checks if a token payload indicates an admin user.
+ * Returns false if token is null or missing isAdmin flag.
  *
- * @param decoded - The decoded token payload, or `null` if no token is provided.
- * @returns `true` if the token payload indicates the user is an admin, otherwise `false`.
+ * @param decoded - Decoded token payload or null
+ * @return True if user has admin privileges, false otherwise
+ * @category Authentication
+ * @security Verifies admin flag presence in token payload
+ * @performance O(1) property check
+ * @author Marco Lenschau <contact@marco-lenschau.de>
  */
 export const requireAdmin = (decoded: TokenPayload | null): boolean => {
   return decoded?.isAdmin === true;
 };
 
 /**
- * Checks if the provided token payload corresponds to an authenticated user.
+ * Checks if a token payload indicates an authenticated user.
+ * Returns true if token exists and is valid, false otherwise.
  *
- * @param decoded - The decoded token payload, or `null` if no token is provided.
- * @returns `true` if the token payload indicates the user is authenticated, otherwise `false`.
+ * @param decoded - Decoded token payload or null
+ * @return True if user is authenticated, false otherwise
+ * @category Authentication
+ * @security Validates token payload presence for session check
+ * @performance O(1) null check
+ * @author Marco Lenschau <contact@marco-lenschau.de>
  */
 export const requireAuth = (decoded: TokenPayload | null): boolean => {
   return decoded !== null;

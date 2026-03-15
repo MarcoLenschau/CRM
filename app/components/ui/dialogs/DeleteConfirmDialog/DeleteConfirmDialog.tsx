@@ -2,6 +2,21 @@
 
 import { DeleteConfirmDialogProps } from '@/app/interfaces/deleteconfirmdialog.interface';
 
+/**
+ * Modal confirmation dialog for destructive delete operations with prominent warning.
+ * Displays the item to be deleted and requires explicit user confirmation before proceeding.
+ *
+ * @param isOpen - Controls dialog visibility
+ * @param userName - Name of the user or item being deleted, displayed in warning message
+ * @param onConfirm - Callback executed when user confirms the deletion
+ * @param onClose - Callback executed when user cancels the operation
+ * @return Rendered delete confirmation dialog with warning styling and action buttons
+ * @throws Error if onConfirm or onClose callbacks fail; dialog remains open and visible
+ * @category Dialogs
+ * @security Critical operation protection with explicit confirmation required; uses red warning colors to indicate irreversible action
+ * @performance Conditional rendering prevents DOM overhead; split button handlers for granular control
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 export default function DeleteConfirmDialog({
   isOpen,
   userName,

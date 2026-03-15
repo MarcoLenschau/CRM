@@ -5,6 +5,17 @@ import { useRouter, useParams } from 'next/navigation';
 import SuccessDialog from '@/app/components/ui/dialogs/SuccessDialog/SuccessDialog';
 import DeleteConfirmDialog from '@/app/components/ui/dialogs/DeleteConfirmDialog/DeleteConfirmDialog';
 
+/**
+ * Renders detailed user profile page with edit and deletion capabilities.
+ * Allows admin users to manage individual user accounts and permissions.
+ *
+ * @return User detail page component with profile and management options
+ * @category User Management
+ * @security Admin-only route, user data protected with authorization checks
+ * @performance Client-side rendering with API calls for user data and updates
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
+
 interface User {
   _id: string;
   name: string;
@@ -19,6 +30,8 @@ interface EditFormData {
   email: string;
   isAdmin: boolean;
 }
+
+export default function UserDetailPage() {
 
 export default function UserDetailPage() {
   const router = useRouter();

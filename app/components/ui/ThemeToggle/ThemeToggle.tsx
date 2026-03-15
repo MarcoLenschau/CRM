@@ -1,5 +1,16 @@
 import { useState, useEffect, SetStateAction, Dispatch } from "react";
 
+/**
+ * Theme toggle switch component allowing users to switch between dark and light mode.
+ * Persists theme selection via document attribute and respects system preference on initial load.
+ *
+ * @return Rendered toggle button with sun/moon icons and animated slider
+ * @throws Error if window object is unavailable; renders light theme as fallback
+ * @category UI Components
+ * @security Theme preference stored in DOM attribute only; no sensitive data processed
+ * @performance Uses CSS transitions for smooth animations; listens to system theme changes
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 export default function ThemeToggle() {
   const [setTheme, theme]: [Dispatch<SetStateAction<string>>, string] = SetDefaultTheme();
   

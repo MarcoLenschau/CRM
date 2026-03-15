@@ -6,6 +6,18 @@ interface CustomerAccountInfoProps {
   customer: Customer;
 }
 
+/**
+ * Card component displaying customer account information and status overview.
+ * Shows account creation date, customer status, assigned user, and connection type in organized layout.
+ *
+ * @param customer - Customer object containing all account details
+ * @return Rendered account information card with status indicators
+ * @throws Error if customer object is missing required fields; renders fallback values
+ * @category Feature Components
+ * @security Displays sensitive customer account information; intended for authenticated dashboard views only
+ * @performance Reads customer data from props; no internal state or API calls
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 export default function CustomerAccountInfo({ customer }: CustomerAccountInfoProps) {
   return (
     <div className="bg-zinc-800 rounded-lg border border-zinc-500 p-4">

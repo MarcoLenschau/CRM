@@ -2,6 +2,21 @@
 
 import { EventCreatedDialogProps } from '@/app/interfaces/eventcreateddialog.interface';
 
+/**
+ * Modal success dialog confirming event creation with event details display.
+ * Shows event name and date in confirmation message with German localization.
+ *
+ * @param isOpen - Controls dialog visibility
+ * @param onClose - Callback function executed when dialog is dismissed
+ * @param eventName - Name of the created event
+ * @param eventDate - Date of the created event
+ * @return Rendered event creation confirmation dialog
+ * @throws Error if onClose callback fails; dialog remains visible and dismissible
+ * @category Dialogs
+ * @security Modal prevents background interaction during confirmation; uses backdrop blur for visual feedback
+ * @performance Conditional rendering prevents DOM overhead; displays minimal information for quick user acknowledgment
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 export default function EventCreatedDialog({ isOpen, onClose, eventName, eventDate }: EventCreatedDialogProps) {
   if (!isOpen) return null;
 

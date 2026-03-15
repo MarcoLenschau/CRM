@@ -9,6 +9,17 @@ export const metadata: Metadata = {
   description: "CRM Login page",
 };
 
+/**
+ * Root layout component wrapping entire application.
+ * Provides global HTML structure, styling, and authentication container.
+ *
+ * @param children - Page component content to render within layout
+ * @return HTML root layout with Container wrapper
+ * @category Layout
+ * @security Container component manages authentication context and session state
+ * @performance Global styles imported at root level for efficient style loading
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 export default function RootLayout({children}: Readonly<{children: React.ReactNode;}>) {
   return (
     <html lang="en">

@@ -4,6 +4,17 @@ import { useEffect, useState } from 'react';
 import { Event } from '@/app/interfaces/event.interface';
 import { Prio } from '@/app/enums/prio.enum';
 
+/**
+ * Dashboard card component displaying event statistics with priority breakdown and trend indicators.
+ * Fetches all events from API and calculates high/medium/low priority counts with visual progress indicators.
+ *
+ * @return Rendered event statistics card with priority breakdown and counts
+ * @throws Error when fetching events from API; logs to console and displays empty stats
+ * @category Feature Components
+ * @security Events fetched from authenticated API endpoint with credentials included
+ * @performance Fetches events on mount and listens to eventsUpdated window event for real-time updates
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 export default function EventStats() {
   const [events, setEvents] = useState<Event[]>([]);
 

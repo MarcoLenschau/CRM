@@ -6,6 +6,16 @@ import SuccessDialog from '@/app/components/ui/dialogs/SuccessDialog/SuccessDial
 import PageHeader from '../components/ui/PageHeader/PageHeader';
 import QuickTip from '../components/ui/QuickTip/QuickTip';
 
+/**
+ * Renders email composition and sending interface with template support.
+ * Allows composing and sending emails to customers with predefined templates.
+ *
+ * @return Email page component with form and template selection
+ * @category Email
+ * @security Protected route requiring authentication, form validation before sending
+ * @performance Client-side rendering with form state management and real-time updates
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 export default function EmailPage() {
   const [formData, setFormData] = useState({
     to: '',

@@ -1,5 +1,22 @@
+/**
+ * In-memory mock database and seed data for development and testing.
+ * Provides sample user data and email templates for quick prototyping.
+ *
+ * @category Database
+ * @security Mock data for development only; not for production use
+ * @performance In-memory data for fast access without database queries
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 import { User } from "./interfaces/user.interface";
 
+/**
+ * Mock user database with sample user records.
+ * Contains 4 predefined users for testing authentication and user management features.
+ *
+ * @type {User[]}
+ * @category Database
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 export const db: User[] = [
     { id: 1, name: "John Doe", email: "john.doe@example.com" },
     { id: 2, name: "Jane Smith", email: "jane.smith@example.com" },
@@ -7,6 +24,15 @@ export const db: User[] = [
     { id: 4, name: "Bob Brown", email: "bob.brown@example.com" }
 ];
 
+/**
+ * Email template library for quick email composition.
+ * Pre-formatted email templates for common communication scenarios.
+ * Each template contains title, subject, and body with placeholder text.
+ *
+ * @type {Array<{title: string, subject: string, body: string}>}
+ * @category Database
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 export const emailTemplates = [
     {
         title: 'Follow-up',

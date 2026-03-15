@@ -5,10 +5,16 @@ import { Event as EventInterace } from "@/app/interfaces/event.interface";
 import { protectRoute } from "@/app/utils/protectRoute"
 
 /**
- * Create a new event
+ * Creates new calendar event and logs the action.
+ * Automatically records event creation in audit trail.
  *
- * @param {Request} request - HTTP request with event data in body
- * @returns {Promise<Response>} Success response with created event or error message
+ * @param request - HTTP request with event details (name, date, priority)
+ * @return Created event object, 401 if unauthorized
+ * @throws {Error} On database or validation errors
+ * @category Event Management
+ * @security Requires valid authentication token
+ * @performance Database insert plus audit logging
+ * @author Marco Lenschau <contact@marco-lenschau.de>
  */
 export async function POST(request: Request): Promise<Response> {
   try {
@@ -46,10 +52,16 @@ export async function POST(request: Request): Promise<Response> {
 }
 
 /**
- * Fetch all events
+ * Retrieves all calendar events from database.
+ * Returns complete event list with dates and priorities.
  *
- * @param {Request} request - HTTP request
- * @returns {Promise<Response>} JSON array of all events or error message
+ * @param request - HTTP request with authentication
+ * @return Array of all events, 401 if unauthorized
+ * @throws {Error} On database query errors
+ * @category Event Management
+ * @security Requires valid authentication token
+ * @performance Database scan of events collection
+ * @author Marco Lenschau <contact@marco-lenschau.de>
  */
 export async function GET(request: Request): Promise<Response> {
   try {
@@ -71,10 +83,14 @@ export async function GET(request: Request): Promise<Response> {
 }
 
 /**
- * Log event creation activity
+ * Records event creation action in audit log for compliance.
+ * Called automatically when new event is created.
  *
- * @param {EventInterace} body - Event data
- * @returns {Promise<void>}
+ * @param body - Event data containing name and details
+ * @return void
+ * @category Logging
+ * @performance Database insert operation
+ * @author Marco Lenschau <contact@marco-lenschau.de>
  */
 const logData = async (body: EventInterace) => {
     await Log.insertMany({

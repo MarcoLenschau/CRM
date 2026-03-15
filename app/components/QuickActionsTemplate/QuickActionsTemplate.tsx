@@ -6,6 +6,17 @@ import NewCustomerDialog from '@/app/components/ui/dialogs/NewCustomerDialog/New
 import SelectContactDialog from '@/app/components/ui/dialogs/SelectContactDialog/SelectContactDialog';
 import CallDetailsDialog from '@/app/components/ui/dialogs/CallDetailsDialog/CallDetailsDialog';
 
+/**
+ * Dashboard template component providing quick access action buttons for common CRM workflows.
+ * Manages multiple dialog states for new customer creation, call logging, email composition, and logout.
+ *
+ * @return Rendered action buttons grid with integrated modal dialogs
+ * @throws Error if logout API call fails; displays error to user but prevents session loss
+ * @category Templates
+ * @security Integrates logout functionality with server-side session clearing; protects route navigation
+ * @performance Manages dialog state locally with minimal re-renders; lazy loads dialogs on demand
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 export default function QuickActionsTemplate() {
   const router = useRouter();
   

@@ -13,6 +13,16 @@ import SearchBar from '@/app/components/ui/SearchBar/SearchBar';
 import Table from '@/app/components/ui/Table/Table';
 import StatCard from '@/app/components/ui/StatCard/StatCard';
 
+/**
+ * Renders user management page with CRUD operations and search functionality.
+ * Displays list of all users with ability to create, edit, and delete users.
+ *
+ * @return User management page component with table and dialogs
+ * @category User Management
+ * @security Admin-only route requiring authentication and admin privileges
+ * @performance Client-side rendering with API calls for CRUD operations and real-time updates
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 export default function UsersPage() {
   const [users, setUsers] = useState<User[]>([]);
   const [showForm, setShowForm] = useState(false);

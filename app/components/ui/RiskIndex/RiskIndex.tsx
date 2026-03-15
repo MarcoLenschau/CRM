@@ -6,6 +6,18 @@ interface RiskIndexProps {
   riskPercentage?: number;
 }
 
+/**
+ * Risk assessment indicator component displaying customer risk level with visual percentage gauge.
+ * Shows risk category label, percentage value, and helpful tooltip explaining risk assessment.
+ *
+ * @param riskPercentage - Risk percentage value (0-100) determining risk level category, defaults to 30%
+ * @return Rendered risk index card with visual gauge and category label
+ * @throws Error if riskPercentage is not a valid number; renders with default value
+ * @category UI Components
+ * @security Displays risk assessment data; useful for decision support in customer interactions
+ * @performance Static component receiving risk value as prop; includes inline tooltip
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 export default function RiskIndex({ riskPercentage = 30 }: RiskIndexProps) {
   const getRiskLabel = (percentage: number) => {
     if (percentage < 10) return 'Low Risk';

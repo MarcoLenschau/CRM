@@ -8,6 +8,20 @@ interface LogDetailsComponentProps {
   getStatusIcon: (status: string) => React.ReactNode;
 }
 
+/**
+ * Detailed audit log entry display component showing complete log information with formatted timestamps.
+ * Renders action type, entity, status, user ID, and description in organized card layout with visual indicators.
+ *
+ * @param log - Complete audit log entry object with all metadata
+ * @param getStatusColor - Helper function returning CSS color classes based on status value
+ * @param getStatusIcon - Helper function returning React node icon for status display
+ * @return Rendered log details card with all information fields and status indicators
+ * @throws Error if log object is missing required fields; displays fallback values
+ * @category UI Components
+ * @security Displays complete audit log; intended for admin/manager review of system actions
+ * @performance Static display component; no data fetching or heavy calculations
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 export default function LogDetailsComponent({ log, getStatusColor, getStatusIcon }: LogDetailsComponentProps) {
   const getActionIcon = (action: string) => {
     const a = action?.toUpperCase() || '';

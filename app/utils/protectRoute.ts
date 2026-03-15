@@ -1,14 +1,16 @@
 import { authenticateRequest, TokenPayload } from "./auth";
 
 /**
- * Protects a route by authenticating the request and optionally verifying admin privileges.
+ * Middleware to protect API routes with authentication and optional admin role verification.
+ * Validates JWT token and checks admin status if required.
  *
- * @param request - The incoming HTTP request to authenticate.
- * @param requireAdminRole - A boolean indicating whether admin privileges are required. Defaults to `false`.
- * @returns A promise that resolves to an object containing:
- * - `error` (optional): A `Response` object with an error message and status code if authentication fails.
- * - `decoded` (optional): The decoded token payload if authentication succeeds.
- * - `isValid`: A boolean indicating whether the request is valid.
+ * @param request - The incoming HTTP request
+ * @param requireAdminRole - Whether to require admin privileges (default: false)
+ * @return Object with error Response and decoded token payload if valid, or error if invalid
+ * @category Authentication
+ * @security Validates JWT token and enforces admin role restrictions based on parameter
+ * @performance O(1) token validation and admin check
+ * @author Marco Lenschau <contact@marco-lenschau.de>
  */
 export const protectRoute = async (request: Request, requireAdminRole: boolean = false): 
     Promise<{ error?: Response; decoded?: TokenPayload; isValid: boolean }> => {

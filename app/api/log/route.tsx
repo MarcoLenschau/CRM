@@ -3,10 +3,16 @@ import Log from "@/app/models/log.model"
 import { protectRoute } from "@/app/utils/protectRoute"
 
 /**
- * Create an audit log entry (admin only).
+ * Creates audit log entry for user actions.
+ * Requires admin authentication and records action for compliance.
  *
- * @param request - HTTP request with log data (userID, action, entity, status, description).
- * @returns JSON response with logged entry.
+ * @param request - HTTP request with action details
+ * @return Created log entry object, 401 if not admin
+ * @throws {Error} On database write errors
+ * @category Logging
+ * @security Admin-only endpoint with JWT validation
+ * @performance Database insert operation
+ * @author Marco Lenschau <contact@marco-lenschau.de>
  */
 export async function POST(request: Request): Promise<Response> {
   try {
@@ -42,10 +48,16 @@ export async function POST(request: Request): Promise<Response> {
 }
 
 /**
- * Fetch all audit log entries.
+ * Retrieves all audit log entries for compliance and monitoring.
+ * Requires valid authentication token to access.
  *
- * @param request - HTTP request object with authentication token.
- * @returns JSON response with logs array.
+ * @param request - HTTP request with authentication token
+ * @return Array of all audit logs, 401 if unauthorized
+ * @throws {Error} On database query errors
+ * @category Logging
+ * @security Authentication required
+ * @performance Database scan of logs collection
+ * @author Marco Lenschau <contact@marco-lenschau.de>
  */
 export async function GET(request: Request): Promise<Response> {
   try {

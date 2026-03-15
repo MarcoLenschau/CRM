@@ -7,6 +7,16 @@ import PageHeader from '@/app/components/ui/PageHeader/PageHeader';
 import LogDetailsComponent from '@/app/components/ui/LogDetails/LogDetails';
 import UserStats from '@/app/components/ui/UserStats/UserStats';
 
+/**
+ * Renders detailed audit log entry page with related user activity history.
+ * Shows comprehensive information about a specific system action and related events.
+ *
+ * @return Log detail page component with full audit trail
+ * @category Logging
+ * @security Admin-only route, sensitive audit data protected with authorization checks
+ * @performance Client-side rendering with API calls for log details and user history
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 export default function LogDetails() {
   const params = useParams();
   const router = useRouter();

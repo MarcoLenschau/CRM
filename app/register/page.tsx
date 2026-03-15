@@ -5,6 +5,17 @@ import { useState } from "react";
 
 export type Status = Promise<{status: number}>;
 
+/**
+ * Renders user registration page with account creation form.
+ * Allows new users to create accounts with email, name, and password validation.
+ *
+ * @return Registration page component with signup form and error handling
+ * @throws Error if registration request fails; displays error toast notification
+ * @category Authentication
+ * @security Passwords validated client-side and hashed server-side; email verification may be required
+ * @performance Client-side form validation with async server registration
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 export default function Register() {
   const searchParams = useSearchParams();
   const [toastMessage, setToastMessage] = useState(searchParams.get("error") || "");
@@ -159,6 +170,20 @@ export default function Register() {
   );
 }
 
+/**
+ * Validates and sends user registration data to API.
+ * Checks password match and required fields before submission.
+ *
+ * @param email - User email address
+ * @param name - User display name
+ * @param password - User password
+ * @param passwordRepeat - Password confirmation for validation
+ * @return void
+ * @category Authentication
+ * @security Validates password matching client-side before transmission, password checked against requirements
+ * @performance Form validation O(1), early return on validation failure
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 const register = async(email: string, name: string, password: string, passwordRepeat: string): Promise<void> => {
   if (password !== passwordRepeat) {
     console.error("Passwords do not match");
@@ -172,6 +197,19 @@ const register = async(email: string, name: string, password: string, passwordRe
   const response = await fetchData(name, email, password);
 };
 
+/**
+ * Sends user registration data to the API endpoint.
+ * Called during user account creation process.
+ *
+ * @param name - User's display name
+ * @param email - User's email address
+ * @param password - User's password (should be hashed before sending)
+ * @return Response from registration API
+ * @category Authentication
+ * @security Password must be transmitted over HTTPS only, never logged or cached
+ * @performance Async network I/O, non-blocking operation
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 const fetchData = async(name: string, email: string, password: string): Status => {
   const response = await fetch("/api/register", {
     method: "POST",

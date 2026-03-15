@@ -2,6 +2,16 @@ import AllEventsTemplate from '@/app/components/AllEventsTemplate/AllEventsTempl
 import QuickActionsTemplate from '@/app/components/QuickActionsTemplate/QuickActionsTemplate';
 import ActivityFeedTemplate from '@/app/components/ActivityFeedTemplate/ActivityFeedTemplate';
 
+/**
+ * Renders the main CRM dashboard with quick actions, events, and activity feed.
+ * Displays overview of key business metrics and recent activities.
+ *
+ * @return Dashboard page component with templates and overview
+ * @category Dashboard
+ * @security Protected route requiring authentication via middleware
+ * @performance Server-side rendering with multiple template components
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 export default async function Dashboard() {
   return (
     <div className="p-6 overflow-y-auto">

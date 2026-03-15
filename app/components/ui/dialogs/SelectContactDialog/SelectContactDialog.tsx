@@ -4,6 +4,20 @@ import { useState, useEffect } from 'react';
 import { Customer } from '@/app/interfaces/customer.interface';
 import { SelectContactDialogProps } from '@/app/interfaces/selectcontactdialog.interface';
 
+/**
+ * Modal dialog for selecting a customer contact from a searchable list with real-time loading states.
+ * Fetches all customers from the API and provides selection callback with error handling.
+ *
+ * @param isOpen - Controls dialog visibility and triggers data fetching
+ * @param onClose - Callback function executed when dialog is dismissed
+ * @param onSelectUser - Callback function triggered when a customer is selected with customer data
+ * @return Rendered customer selection dialog with loading and error states
+ * @throws Error when API request fails; displays error message to user
+ * @category Dialogs
+ * @security Customer list filtered from backend; only accessible when dialog is open and user is authenticated
+ * @performance Lazy loads customer data only when dialog opens; includes loading state management and error handling
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 export default function SelectContactDialog({ isOpen, onClose, onSelectUser }: SelectContactDialogProps) {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(false);

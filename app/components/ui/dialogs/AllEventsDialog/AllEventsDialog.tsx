@@ -3,6 +3,24 @@
 import { AllEventsDialogProps } from '@/app/interfaces/alleventsdialog.interface';
 import { Prio } from '@/app/enums/prio.enum';
 
+/**
+ * Modal dialog displaying all events for a selected calendar day with color-coded priority indicators.
+ * Filters events by date and provides navigation to event details or event creation workflows.
+ *
+ * @param isOpen - Controls dialog visibility
+ * @param onClose - Callback function executed when dialog is dismissed
+ * @param selectedDay - Day of month (1-31) to filter events
+ * @param month - Month index (0-11) for date filtering
+ * @param year - Full year value for date filtering
+ * @param events - Array of all events to filter by selected date
+ * @param onEventClick - Callback triggered when an event is selected for viewing
+ * @param onAddEventClick - Callback triggered when user clicks to create new event
+ * @return Rendered events list dialog with filter and navigation options
+ * @category Dialogs
+ * @security Displays only events for selected day; prevents modification without explicit action
+ * @performance Efficiently filters event list on each render; scrollable container for many events
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 export default function AllEventsDialog({ isOpen, onClose, selectedDay, month, year, events, onEventClick, onAddEventClick }: AllEventsDialogProps) {
   if (!isOpen) return null;
 

@@ -3,6 +3,17 @@
 import { useEffect, useState } from 'react';
 import { Event } from "@/app/interfaces/event.interface";
 
+/**
+ * Dashboard template component displaying comprehensive event list sorted chronologically with status indicators.
+ * Fetches all events from API with detailed logging for debugging and real-time updates via window events.
+ *
+ * @return Rendered events list template with sorting and display capabilities
+ * @throws Error when fetching events from API; logs error and displays empty state
+ * @category Templates
+ * @security Events fetched from authenticated API endpoint with credentials included
+ * @performance Loads events on mount; supports real-time refresh via eventsUpdated event; includes comprehensive error logging
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 export default function AllEventsTemplate() {
   const [sortedEvents, setSortedEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);

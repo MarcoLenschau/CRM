@@ -3,14 +3,15 @@ import { NextRequest, NextResponse } from "next/server";
 const protectedApiRoutes = ["/api/admin", "/api/user", "/api/customers"];
 
 /**
- * Middleware function to handle authentication for API routes.
- * 
- * This function checks if the incoming request is targeting a protected API route.
- * If the route is protected, it verifies the presence of a valid `Authorization` header.
- * If the header is missing or invalid, it returns a 401 Unauthorized response.
- * 
- * @param request - The incoming `NextRequest` object containing details about the HTTP request.
- * @returns A `NextResponse` object with a 401 status if authentication fails, or `null` if the route is not protected or authentication succeeds.
+ * Middleware to check authentication for protected API routes.
+ * Verifies Authorization header contains valid Bearer token.
+ *
+ * @param request - The incoming NextRequest
+ * @return 401 Response if token missing/invalid, null if authorized or route unprotected
+ * @category Authentication
+ * @security Validates Bearer token presence in Authorization header for protected routes
+ * @performance O(n) header check and route matching with early exit
+ * @author Marco Lenschau <contact@marco-lenschau.de>
  */
 export async function apiAuthMiddleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;

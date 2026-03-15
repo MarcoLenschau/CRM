@@ -4,10 +4,16 @@ import { User } from "@/app/interfaces/user.interface";
 import bcryptjs from "bcryptjs";
 
 /**
- * Register a new user
+ * Creates new user account with hashed password.
+ * Validates email uniqueness and hashes password using bcrypt.
  *
- * @param {Request} request - HTTP request with user data in body
- * @returns {Promise<Response>} Created user or error response
+ * @param request - HTTP request with user registration data
+ * @return Created user object (without password hash), 409 if email exists
+ * @throws {Error} On database or validation errors
+ * @category Authentication
+ * @security Password hashed with bcrypt (10 rounds)
+ * @performance Database lookup plus bcrypt hashing
+ * @author Marco Lenschau <contact@marco-lenschau.de>
  */
 export async function POST(request: Request): Promise<Response> {
   try {
@@ -36,10 +42,14 @@ export async function POST(request: Request): Promise<Response> {
 }
 
 /**
- * Check if email already exists in database
+ * Checks if email address already registered in database.
+ * Returns conflict status if email is taken.
  *
- * @param {string} email - Email to check
- * @returns {Promise<{status: number}>} Status 409 if exists, 200 if available
+ * @param email - Email address to verify
+ * @return Status 409 if exists, 200 if available
+ * @category Authentication
+ * @performance Linear search through users collection
+ * @author Marco Lenschau <contact@marco-lenschau.de>
  */
 const checkIfEmailExists = async (email: string): Promise<{status: number}> => {
   const users = await UserModel.find({}).lean();

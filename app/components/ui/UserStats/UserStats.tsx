@@ -61,6 +61,20 @@ function StatItem({ label, value, colors }: { label: string; value: number; colo
   );
 }
 
+/**
+ * Comprehensive user activity statistics dashboard showing success/failure breakdown and risk assessment.
+ * Displays aggregated audit log metrics with color-coded status indicators and recent activity feed.
+ *
+ * @param userID - Identifier of the user whose stats are displayed
+ * @param logs - Array of audit log entries for the user
+ * @param getStatusColor - Helper function to determine color styling for status types
+ * @return Rendered user statistics dashboard with metrics, activity, and risk index
+ * @throws Error if logs array is empty or malformed; renders empty state gracefully
+ * @category UI Components
+ * @security Displays user's own audit logs; color-coded risk assessment helps identify patterns
+ * @performance Filters and aggregates logs on render; memoization recommended for large log arrays
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 export default function UserStats({ userID, logs, getStatusColor }: UserStatsProps) {
   const successCount = logs.filter(l => l.status?.toUpperCase() === 'SUCCESS').length;
   const failedCount = logs.filter(l => l.status?.toUpperCase() === 'FAILED').length;

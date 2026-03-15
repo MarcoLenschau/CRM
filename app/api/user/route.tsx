@@ -4,10 +4,16 @@ import { protectRoute } from "@/app/utils/protectRoute"
 import bcryptjs from "bcryptjs"
 
 /**
- * Fetch all users from database.
+ * Retrieves all user accounts with admin status info.
+ * Excludes password hashes from response for security.
  *
- * @param request - HTTP request object with authentication token.
- * @returns JSON response with users array (excluding password hashes).
+ * @param request - HTTP request with authentication token
+ * @return Array of users without password hashes, 401 if unauthorized
+ * @throws {Error} On database query errors
+ * @category User Management
+ * @security Excludes password hashes, requires authentication
+ * @performance Database scan with field exclusion
+ * @author Marco Lenschau <contact@marco-lenschau.de>
  */
 export async function GET(request: Request): Promise<Response> {
   try {
@@ -25,10 +31,16 @@ export async function GET(request: Request): Promise<Response> {
 }
 
 /**
- * Create a new user (admin only).
+ * Creates new user account with hashed password.
+ * Admin-only endpoint for user management system.
  *
- * @param request - HTTP request with user data (name, email, password, isAdmin).
- * @returns JSON response with created user object.
+ * @param request - HTTP request with user registration data
+ * @return Created user object, 401 if not admin
+ * @throws {Error} On database or validation errors
+ * @category User Management
+ * @security Admin-only, password hashed with bcrypt (10 rounds)
+ * @performance Database insert plus bcrypt hashing
+ * @author Marco Lenschau <contact@marco-lenschau.de>
  */
 export async function POST(request: Request): Promise<Response> {
   try {

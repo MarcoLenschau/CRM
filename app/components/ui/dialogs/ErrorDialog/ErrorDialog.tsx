@@ -1,6 +1,20 @@
 import { Dispatch, SetStateAction } from "react";
 import Button from "../../Button/Button";
 
+/**
+ * Modal error dialog component that displays an error message with customizable action buttons.
+ * Supports multiple button configurations (OK, CANCEL, DELETE, HELP) for different error scenarios.
+ *
+ * @param text - The error message text to display in the dialog
+ * @param setErrorDialog - State setter to close the dialog (set to empty string)
+ * @param controlButtons - Array of button labels to display, defaults to ["OK", "CANCEL"]
+ * @return Rendered error dialog modal with buttons
+ * @throws Error if setErrorDialog callback fails or button rendering fails; dialog remains visible
+ * @category Dialogs
+ * @security Dialog uses backdrop blur for modal effect, preventing interaction with background elements
+ * @performance Lightweight component with minimal re-renders, buttons trigger immediate state updates
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 export default function ErrorDialog({text, setErrorDialog, controlButtons = ["OK", "CANCEL"]}: {text: string, setErrorDialog: Dispatch<SetStateAction<string>>, controlButtons?: string[]}) {
   return ( 
     <dialog className="absolute top-0 flex justify-center items-center h-full w-full bg-transparent backdrop-blur">

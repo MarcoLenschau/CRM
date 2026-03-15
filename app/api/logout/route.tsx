@@ -1,10 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 /**
- * Logout user by clearing authentication token
+ * Clears authentication token cookie and logs user out.
+ * Sets token cookie maxAge to 0 to delete it from browser.
  *
- * @param {NextRequest} _request - HTTP request
- * @returns {Promise<NextResponse>} Success response with cleared token cookie
+ * @param _request - HTTP request (unused)
+ * @return Success response with cleared token cookie
+ * @category Authentication
+ * @security Clears session token from secure cookie
+ * @performance Realtime cookie clearing
+ * @author Marco Lenschau <contact@marco-lenschau.de>
  */
 export async function POST(_request: NextRequest): Promise<NextResponse> {
   try {

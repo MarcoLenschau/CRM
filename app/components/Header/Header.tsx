@@ -4,6 +4,19 @@ import Time from "../Time/Time";
 import Language from "../Language/Language";
 import ThemeToggle from "../ui/ThemeToggle/ThemeToggle";
 
+/**
+ * Main application header with navigation controls and utilities.
+ * Displays menu toggle, time, language selector, and theme toggle.
+ *
+ * @param setSidebarShow - Function to toggle sidebar visibility
+ * @param sidebarShow - Current sidebar visibility state
+ * @return Rendered header component
+ * @throws Error if setSidebarShow callback fails or is unavailable; sidebar toggle becomes unresponsive
+ * @category Layout
+ * @security Sidebar toggle state managed in parent for secure context passing
+ * @performance Lightweight header with minimal re-renders on prop changes
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 export default function Header({setSidebarShow, sidebarShow}: {setSidebarShow: Dispatch<SetStateAction<boolean>>, sidebarShow: boolean}) {
   const [hour12, setHourMode] = useState(false);
   return (

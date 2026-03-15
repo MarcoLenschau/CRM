@@ -2,6 +2,20 @@
 
 import { EmailSentDialogProps } from '@/app/interfaces/emailsentdialog.interface';
 
+/**
+ * Modal confirmation dialog confirming successful email delivery with recipient information.
+ * Displays recipient email and success message in German localization.
+ *
+ * @param isOpen - Controls dialog visibility
+ * @param onClose - Callback function executed when dialog is dismissed
+ * @param recipientEmail - Email address of the recipient for confirmation display
+ * @return Rendered email sent confirmation dialog
+ * @throws Error if onClose callback fails; dialog remains visible but button is clickable
+ * @category Dialogs
+ * @security Modal prevents background interaction; email address displayed for user verification
+ * @performance Lightweight confirmation component with minimal re-renders
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 export default function EmailSentDialog({ isOpen, onClose, recipientEmail }: EmailSentDialogProps) {
   if (!isOpen) return null;
 

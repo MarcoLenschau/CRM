@@ -4,10 +4,16 @@ import bcryptjs from "bcryptjs";
 import { generateToken, verifyToken } from "@/app/utils/jwt";
 
 /**
- * Authenticate user with email and password
+ * Authenticates user and returns JWT token.
+ * Validates email and password against hashed database credentials.
  *
- * @param {Request} request - HTTP request with email and password in body
- * @returns {Promise<Response>} Success response with JWT token or error
+ * @param request - HTTP request containing email and password
+ * @return JWT token if credentials valid, 401 if invalid
+ * @throws {Error} On database or hashing errors
+ * @category Authentication
+ * @security Password validated using bcrypt hash comparison
+ * @performance Database lookup plus bcrypt validation
+ * @author Marco Lenschau <contact@marco-lenschau.de>
  */
 export async function POST(request: Request): Promise<Response> {
   try {
@@ -31,10 +37,15 @@ export async function POST(request: Request): Promise<Response> {
 }
 
 /**
- * Verify authentication token
+ * Verifies JWT token and returns authenticated user information.
+ * Extracts token from Authorization header and validates signature.
  *
- * @param {Request} request - HTTP request with Authorization header
- * @returns {Promise<Response>} User info if valid or error response
+ * @param request - HTTP request with Authorization Bearer token
+ * @return User data if token valid, 401 if invalid or expired
+ * @category Authentication
+ * @security Validates JWT signature and expiration
+ * @performance O(1) token verification
+ * @author Marco Lenschau <contact@marco-lenschau.de>
  */
 export async function GET(request: Request): Promise<Response> {
   try {

@@ -2,11 +2,17 @@ import mongodb from "@/app/utils/mongodb"
 import UserModel from "@/app/models/user.model"
 
 /**
- * Fetch a user by ID (excluding password hash).
+ * Retrieves single user by ID with admin status.
+ * Excludes password hash from response.
  *
- * @param request - HTTP request object.
- * @param context.params - Promise resolving to {id: string}.
- * @returns JSON response with user data or 404 error.
+ * @param request - HTTP request (unused)
+ * @param params - Route parameters with user ID
+ * @return User object without password or 404 if not found
+ * @throws {Error} On database query errors
+ * @category User Management
+ * @security Excludes password hash
+ * @performance Direct MongoDB ID lookup
+ * @author Marco Lenschau <contact@marco-lenschau.de>
  */
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }): Promise<Response> {
   try {
@@ -26,11 +32,16 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 }
 
 /**
- * Update a user by ID with new data.
+ * Updates user account information by ID.
+ * Modifies name, email, or admin status as requested.
  *
- * @param request - HTTP request with update body.
- * @param context.params - Promise resolving to {id: string}.
- * @returns JSON response with updated user or error.
+ * @param request - HTTP request with update data
+ * @param params - Route parameters with user ID
+ * @return Updated user object or 404 if not found
+ * @throws {Error} On database update errors
+ * @category User Management
+ * @performance Direct MongoDB ID update
+ * @author Marco Lenschau <contact@marco-lenschau.de>
  */
 export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }): Promise<Response> {
   try {
@@ -49,11 +60,16 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 }
 
 /**
- * Delete a user by ID from database.
+ * Deletes user account and all associated data from database.
+ * Returns 404 if user not found.
  *
- * @param request - HTTP request object.
- * @param context.params - Promise resolving to {id: string}.
- * @returns JSON response with success message or error.
+ * @param request - HTTP request (unused)
+ * @param params - Route parameters with user ID
+ * @return Success message or 404 if not found
+ * @throws {Error} On database deletion errors
+ * @category User Management
+ * @performance Direct MongoDB ID deletion
+ * @author Marco Lenschau <contact@marco-lenschau.de>
  */
 export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }): Promise<Response> {
   try {

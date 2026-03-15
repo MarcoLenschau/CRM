@@ -5,6 +5,16 @@ import ErrorDialog from "./components/ui/dialogs/ErrorDialog/ErrorDialog";
 
 export type Status = Promise<{status: number}>;
 
+/**
+ * Renders login page with email/password authentication.
+ * Main entry point for user login with error handling and notifications.
+ *
+ * @return Login page component with authentication form
+ * @category Authentication
+ * @security Credentials validated on server-side, session managed with secure cookies
+ * @performance Client-side rendering with form state management and error display
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 export default function Login() {
   const [errorDialogMessage, setErrorDialog] = useState("");
   const [email, setEmail] = useState("");

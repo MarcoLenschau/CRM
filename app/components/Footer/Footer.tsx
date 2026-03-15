@@ -2,6 +2,17 @@ import Link from "next/link";
 import Image from "next/image";
 import linkedin from "../../../public/social-networks/linkedin.png";
 
+/**
+ * Application footer with legal links and social media integration.
+ * Displays copyright info, legal pages, and LinkedIn connection.
+ *
+ * @return Rendered footer component with navigation and social links
+ * @throws Error if LinkedIn image fails to load or social links are unavailable; displays fallback text
+ * @category Layout
+ * @security Links to public legal pages, no sensitive data exposed
+ * @performance Static footer with minimal dependencies
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 export default function Footer() {
   const currentYear = new Date().getFullYear();
 

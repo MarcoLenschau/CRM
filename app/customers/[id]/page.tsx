@@ -11,6 +11,7 @@ import CustomerCommunication from '@/app/components/CustomerCommunication/Custom
 import { Customer } from '@/app/interfaces/customer.interface';
 import { CustomerStatus } from '@/app/enums/status.enum';
 
+
 interface EditFormData {
   name: string;
   email: string;
@@ -20,6 +21,16 @@ interface EditFormData {
   assignedUserId: string;
 }
 
+/**
+ * Renders detailed customer profile page with edit and deletion capabilities.
+ * Displays comprehensive customer information with related communications and actions.
+ *
+ * @return Customer detail page component with profile and management options
+ * @category Customer Management
+ * @security Protected route requiring authentication, customer data validated and authorized
+ * @performance Client-side rendering with API calls for customer data and updates
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 export default function CustomerDetailPage() {
   const router = useRouter();
   const params = useParams();

@@ -4,10 +4,16 @@ import { CustomerStatus } from "@/app/enums/status.enum"
 import { protectRoute } from "@/app/utils/protectRoute"
 
 /**
- * Create a new customer
+ * Creates new customer record in CRM system.
+ * Initializes customer with contact info and assignment.
  *
- * @param {Request} request - HTTP request with customer data in body
- * @returns {Promise<Response>} Created customer or error response
+ * @param request - HTTP request with customer data (name, email, phone, company)
+ * @return Created customer object, 401 if unauthorized
+ * @throws {Error} On database or validation errors
+ * @category Customer Management
+ * @security Requires valid authentication token
+ * @performance Database insert with status default
+ * @author Marco Lenschau <contact@marco-lenschau.de>
  */
 export async function POST(request: Request): Promise<Response> {
   try {
@@ -38,10 +44,16 @@ export async function POST(request: Request): Promise<Response> {
 }
 
 /**
- * Fetch all customers
+ * Retrieves all customer records from database.
+ * Returns formatted customer list with contact and assignment info.
  *
- * @param {Request} request - HTTP request
- * @returns {Promise<Response>} Array of customers or error response
+ * @param request - HTTP request with authentication
+ * @return Array of all customers, 401 if unauthorized
+ * @throws {Error} On database query errors
+ * @category Customer Management
+ * @security Requires valid authentication token
+ * @performance Database scan of customers collection
+ * @author Marco Lenschau <contact@marco-lenschau.de>
  */
 export async function GET(request: Request): Promise<Response> {
     try {

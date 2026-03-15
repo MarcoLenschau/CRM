@@ -1,3 +1,13 @@
+/**
+ * Renders help and support page with FAQ and assistance information.
+ * Provides documentation and troubleshooting guidance for users.
+ *
+ * @return Help page component with support resources
+ * @category Help
+ * @security Public page with read-only help documentation
+ * @performance Static content rendering with no external dependencies
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
 export default function HelpPage() {
   return (
     <div className="w-full h-full flex flex-col">
