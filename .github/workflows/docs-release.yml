@@ -47,7 +47,7 @@ jobs:
         run: echo "HASH=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
       - name: Upload to artefakte
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: CRM-Documentation-V.0.1.0
           path: CRM-Documentation-V.0.1.0.zip
