@@ -1,0 +1,85 @@
+name: Build & Release CRM Desktop App
+
+on:
+  push:
+    branches:
+      - main
+      - feature/automatical-electron-build
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          cd electron
+          npm install
+
+      - name: Build Electron app
+        run: |
+          cd electron
+          npm run build:linux
+
+      - name: Get version from package.json
+        id: version
+        run: |
+          VERSION=$(cat electron/package.json | grep '"version"' | head -1 | awk -F'"' '{print $4}')
+          COMMIT_HASH=$(git rev-parse --short HEAD)
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "COMMIT_HASH=$COMMIT_HASH" >> $GITHUB_OUTPUT
+          echo "RELEASE_TAG=v$VERSION-$COMMIT_HASH" >> $GITHUB_OUTPUT
+
+      - name: List dist contents for debugging
+        run: ls -la electron/dist/
+
+      - name: Create Release
+        uses: actions/create-release@v1
+        id: create_release
+        with:
+          draft: false
+          prerelease: false
+          release_name: CRM Desktop App v${{ steps.version.outputs.VERSION }}
+          tag_name: ${{ steps.version.outputs.RELEASE_TAG }}
+          body: |
+            CRM Desktop Application Release
+            
+            **Version:** ${{ steps.version.outputs.VERSION }}
+            **Commit:** ${{ steps.version.outputs.COMMIT_HASH }}
+            **Build Date:** ${{ github.event.head_commit.timestamp }}
+            
+            This release includes Linux packages (.deb and .rpm).
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload .deb Release Asset
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./electron/dist/crm_${{ steps.version.outputs.VERSION }}_amd64.deb
+          asset_name: CRM-Desktop-${{ steps.version.outputs.VERSION }}-x64.deb
+          asset_content_type: application/vnd.debian.binary-package
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload .rpm Release Asset
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./electron/dist/crm-${{ steps.version.outputs.VERSION }}.x86_64.rpm
+          asset_name: CRM-Desktop-${{ steps.version.outputs.VERSION }}-x64.rpm
+          asset_content_type: application/x-rpm
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
