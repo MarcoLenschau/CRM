@@ -10,7 +10,7 @@ permissions:
   contents: write
 
 jobs:
-  build-windows:
+  build-and-release:
     runs-on: windows-latest
     steps:
       - name: Checkout code

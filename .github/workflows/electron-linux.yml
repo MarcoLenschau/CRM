@@ -1,4 +1,4 @@
-name: Build & Release CRM Desktop App
+name: Build & Release CRM Desktop App (Linux)
 
 on:
   push:
