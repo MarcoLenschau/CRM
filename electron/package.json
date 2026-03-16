@@ -55,7 +55,8 @@
       "target": [
         "dmg",
         "zip"
-      ]
+      ],
+      "category": "Business"
     },
     "nsis": {
       "oneClick": false,
