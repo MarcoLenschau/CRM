@@ -3,9 +3,7 @@ name: Generate & Upload CRM Documentation
 on:
   push:
     branches:
-      - main
-      - master
-      - feauture/create-main-stucture
+      - '*'
   workflow_dispatch:
 
 permissions:
@@ -46,20 +44,11 @@ jobs:
         id: commit
         run: echo "HASH=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
-      - name: Upload to Releases
-        uses: softprops/action-gh-release@v1
+      - name: Upload to artefakte
+        uses: actions/upload-artifact@v3
         with:
-          files: CRM-Documentation-V.0.1.0.zip
-          tag_name: docs-${{ steps.commit.outputs.HASH }}
           name: CRM-Documentation-V.0.1.0
-          body: |
-            ## CRM Documentation V.0.1.0 (Markdown)
-            
-              This ZIP file contains the complete CRM documentation in Markdown format. 
-              Each function is explained in detail here.            
-            ```
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          path: CRM-Documentation-V.0.1.0.zip
 
       - name: Deploy to gh-pages branch
         uses: peaceiris/actions-gh-pages@v3
