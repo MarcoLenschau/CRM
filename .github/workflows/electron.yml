@@ -42,6 +42,9 @@ jobs:
           echo "COMMIT_HASH=$COMMIT_HASH" >> $GITHUB_OUTPUT
           echo "RELEASE_TAG=v$VERSION-$COMMIT_HASH" >> $GITHUB_OUTPUT
 
+      - name: List dist contents for debugging
+        run: ls -la electron/dist/
+
       - name: Create Release
         uses: actions/create-release@v1
         id: create_release
@@ -65,7 +68,7 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./electron/dist/*.deb
+          asset_path: ./electron/dist/crm_${{ steps.version.outputs.VERSION }}_amd64.deb
           asset_name: CRM-Desktop-${{ steps.version.outputs.VERSION }}-x64.deb
           asset_content_type: application/vnd.debian.binary-package
         env:
@@ -75,7 +78,7 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./electron/dist/*.rpm
+          asset_path: ./electron/dist/crm-${{ steps.version.outputs.VERSION }}.x86_64.rpm
           asset_name: CRM-Desktop-${{ steps.version.outputs.VERSION }}-x64.rpm
           asset_content_type: application/x-rpm
         env:
