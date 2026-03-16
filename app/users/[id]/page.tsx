@@ -4,6 +4,13 @@ import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import SuccessDialog from '@/app/components/ui/dialogs/SuccessDialog/SuccessDialog';
 import DeleteConfirmDialog from '@/app/components/ui/dialogs/DeleteConfirmDialog/DeleteConfirmDialog';
+import { User } from '@/app/interfaces/user.interface';
+
+interface EditFormData {
+  name: string;
+  email: string;
+  isAdmin: boolean;
+}
 
 /**
  * Renders detailed user profile page with edit and deletion capabilities.
@@ -15,22 +22,6 @@ import DeleteConfirmDialog from '@/app/components/ui/dialogs/DeleteConfirmDialog
  * @performance Client-side rendering with API calls for user data and updates
  * @author Marco Lenschau <contact@marco-lenschau.de>
  */
-
-interface User {
-  _id: string;
-  name: string;
-  email: string;
-  isAdmin?: boolean;
-  createdAt?: string;
-  updatedAt?: string;
-}
-
-interface EditFormData {
-  name: string;
-  email: string;
-  isAdmin: boolean;
-}
-
 export default function UserDetailPage() {
   const router = useRouter();
   const params = useParams();
