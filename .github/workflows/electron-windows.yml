@@ -1,0 +1,107 @@
+name: Build & Release CRM Desktop App (Windows)
+
+on:
+  push:
+    branches:
+      - main
+      - feature/automatical-electron-build
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          cd electron
+          npm install
+        shell: bash
+
+      - name: Build Electron app (Windows)
+        run: |
+          cd electron
+          npm run build:windows
+        shell: bash
+
+      - name: Get version from package.json
+        id: version
+        run: |
+          $VERSION = (Select-String -Path "electron/package.json" -Pattern '"version"' | Select-Object -First 1 | ForEach-Object { $_ -replace '.*"version": "([^"]+)".*', '$1' })
+          $COMMIT_HASH = git rev-parse --short HEAD
+          echo "VERSION=$VERSION" >> $env:GITHUB_OUTPUT
+          echo "COMMIT_HASH=$COMMIT_HASH" >> $env:GITHUB_OUTPUT
+          echo "RELEASE_TAG=v$VERSION-$COMMIT_HASH" >> $env:GITHUB_OUTPUT
+        shell: pwsh
+
+      - name: List dist contents for debugging
+        run: ls -la electron/dist/
+        shell: bash
+
+      - name: Get existing release
+        id: get_release
+        run: |
+          $TAG = "${{ steps.version.outputs.RELEASE_TAG }}"
+          $RELEASE = gh release view "$TAG" --json uploadUrl -q .uploadUrl 2>/dev/null || echo ""
+          echo "UPLOAD_URL=$RELEASE" >> $env:GITHUB_OUTPUT
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Release if not exists
+        id: create_release
+        if: steps.get_release.outputs.UPLOAD_URL == ''
+        uses: actions/create-release@v1
+        with:
+          draft: false
+          prerelease: false
+          release_name: CRM Desktop App v${{ steps.version.outputs.VERSION }}
+          tag_name: ${{ steps.version.outputs.RELEASE_TAG }}
+          body: |
+            # CRM Desktop Application Release
+            
+            **Version:** ${{ steps.version.outputs.VERSION }}
+            **Commit:** ${{ steps.version.outputs.COMMIT_HASH }}
+            **Build Date:** ${{ github.event.head_commit.timestamp }}
+            
+            ## Download
+            
+            - [Windows EXE](https://github.com/MarcoLenschau/CRM/releases/latest/download/CRM-Desktop-${{ steps.version.outputs.VERSION }}-x64.exe)
+            - [Linux DEB](https://github.com/MarcoLenschau/CRM/releases/latest/download/CRM-Desktop-${{ steps.version.outputs.VERSION }}-x64.deb)
+            - [Linux RPM](https://github.com/MarcoLenschau/CRM/releases/latest/download/CRM-Desktop-${{ steps.version.outputs.VERSION }}-x64.rpm)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Windows EXE Asset
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url || steps.get_release.outputs.UPLOAD_URL }}
+          asset_path: ./electron/dist/crm Setup ${{ steps.version.outputs.VERSION }}.exe
+          asset_name: CRM-Desktop-${{ steps.version.outputs.VERSION }}-x64.exe
+          asset_content_type: application/x-msdownload
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+
+      - name: Upload Windows Installer Asset (alternative)
+        uses: actions/upload-release-asset@v1
+        if: always()
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url || steps.get_release.outputs.UPLOAD_URL }}
+          asset_path: ./electron/dist/crm-${{ steps.version.outputs.VERSION }}.exe
+          asset_name: CRM-Desktop-${{ steps.version.outputs.VERSION }}-installer.exe
+          asset_content_type: application/x-msdownload
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
