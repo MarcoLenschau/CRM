@@ -18,6 +18,7 @@
 14. [GitHub Secrets](#github-secrets)
 15. [Usage](#usage)
 16. [Troubleshooting](#troubleshooting)
+17. [Downloads](#downloads)
 
 ## Overview
 
@@ -25,14 +26,13 @@ This CRM (Customer Relationship Management) application is a modern web-based so
 
 ### Technology Stack
 
-<div style="display: flex; margin-bottom: 12px;">
-   <img src="https://skillicons.dev/icons?i=react" height="75" style="margin-right: 8px;" alt="react"/>
-   <img src="https://skillicons.dev/icons?i=nextjs" height="75" style="margin-rigth: 8px;" alt="nexjs"/>
-   <img src="https://skillicons.dev/icons?i=ts" height="75" style="margin-right: 8px;" alt="typescript"/>
-   <img src="https://skillicons.dev/icons?i=tailwind" height="75" style="margin-right: 8px;" alt="tailwind"/>
-   <img src="https://skillicons.dev/icons?i=mongodb" height="75" style="margin-right: 8px;" alt="mongodb"/>
-   <img src="https://skillicons.dev/icons?i=sass" height="75" alt="sass"/>
-</div>
+![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black)
+![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=next.js&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
+![SASS](https://img.shields.io/badge/SASS-CC6699?style=for-the-badge&logo=sass&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white)
 
 - **Frontend Framework:** Next.js 16.1.6 with React
 - **Authentication:** JWT (JSON Web Tokens)
@@ -971,7 +971,61 @@ Check server terminal for server-side errors.
 
 ---
 
-**Last Updated:** March 15, 2026  
+## 📥 Downloads
+
+### CRM Desktop Application
+
+> **Latest Release:** [![Latest Release](https://img.shields.io/github/v/release/MarcoLenschau/CRM?style=flat-square)](https://github.com/MarcoLenschau/CRM/releases/latest)
+
+#### 🪟 Windows
+
+- **[📦 Setup Installer](https://github.com/MarcoLenschau/CRM/releases/latest/download/CRM-Desktop-1.0.0-Setup.exe)** - Windows installer with uninstaller
+- **[📦 Portable EXE](https://github.com/MarcoLenschau/CRM/releases/latest/download/CRM-Desktop-1.0.0-Portable.exe)** - Standalone executable (no installation needed)
+
+**Installation:**
+```bash
+# Setup Installer (recommended)
+CRM-Desktop-1.0.0-Setup.exe
+
+# Or portable version
+CRM-Desktop-1.0.0-Portable.exe
+```
+
+#### 🍎 macOS
+
+- **[📦 DMG Package](https://github.com/MarcoLenschau/CRM/releases/latest/download/CRM-Desktop-1.0.0-mac-arm64.dmg)** - For Apple Silicon (M1, M2, M3+)
+- **[📦 ZIP Package](https://github.com/MarcoLenschau/CRM/releases/latest/download/CRM-Desktop-1.0.0-mac-arm64.zip)** - Portable app archive
+
+**Installation:**
+```bash
+# DMG: Drag and drop to Applications folder
+# ZIP: Extract and run the app
+```
+
+> **Note:** Built for Apple Silicon (arm64). For Intel Macs, you'll need to build locally or use Rosetta 2 translation
+
+#### 🐧 Linux
+
+- **[📦 DEB Package](https://github.com/MarcoLenschau/CRM/releases/latest/download/CRM-Desktop-1.0.0-x64.deb)** - For Debian, Ubuntu, Linux Mint
+- **[📦 RPM Package](https://github.com/MarcoLenschau/CRM/releases/latest/download/CRM-Desktop-1.0.0-x64.rpm)** - For Red Hat, Fedora, CentOS
+
+**Installation:**
+```bash
+# For DEB-based systems (Debian/Ubuntu)
+sudo dpkg -i CRM-Desktop-1.0.0-x64.deb
+
+# For RPM-based systems (Red Hat/Fedora)
+sudo rpm -i CRM-Desktop-1.0.0-x64.rpm
+```
+
+### 📚 Documentation
+
+- [**CRM-Documentation-V.0.1.0**](https://github.com/MarcoLenschau/CRM/actions/runs/23138976327/artifacts/5941352569) - Complete API and project documentation
+
+> **Note:** Visit [Releases](https://github.com/MarcoLenschau/CRM/releases) page for all versions, changelog, and previous releases 
+
+---
+
+**Last Updated:** March 16, 2026  
 **Version:** 1.0.0  
 **Maintainer:** Marco Lenschau
-
