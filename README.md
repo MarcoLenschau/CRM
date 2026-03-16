@@ -971,16 +971,16 @@ Check server terminal for server-side errors.
 
 ---
 
-## 📥 Downloads
+## Downloads
 
 ### CRM Desktop Application
 
 > **Latest Release:** [![Latest Release](https://img.shields.io/github/v/release/MarcoLenschau/CRM?style=flat-square)](https://github.com/MarcoLenschau/CRM/releases/latest)
 
-#### 🪟 Windows
+#### Windows
 
-- **[📦 Setup Installer](https://github.com/MarcoLenschau/CRM/releases/latest/download/CRM-Desktop-1.0.0-Setup.exe)** - Windows installer with uninstaller
-- **[📦 Portable EXE](https://github.com/MarcoLenschau/CRM/releases/latest/download/CRM-Desktop-1.0.0-Portable.exe)** - Standalone executable (no installation needed)
+- **[Setup Installer](https://github.com/MarcoLenschau/CRM/releases/latest/download/CRM-Desktop-1.0.0-Setup.exe)** - Windows installer with uninstaller
+- **[Portable EXE](https://github.com/MarcoLenschau/CRM/releases/latest/download/CRM-Desktop-1.0.0-Portable.exe)** - Standalone executable (no installation needed)
 
 **Installation:**
 ```bash
@@ -991,10 +991,10 @@ CRM-Desktop-1.0.0-Setup.exe
 CRM-Desktop-1.0.0-Portable.exe
 ```
 
-#### 🍎 macOS
+#### macOS
 
-- **[📦 DMG Package](https://github.com/MarcoLenschau/CRM/releases/latest/download/CRM-Desktop-1.0.0-mac-arm64.dmg)** - For Apple Silicon (M1, M2, M3+)
-- **[📦 ZIP Package](https://github.com/MarcoLenschau/CRM/releases/latest/download/CRM-Desktop-1.0.0-mac-arm64.zip)** - Portable app archive
+- **[DMG Package](https://github.com/MarcoLenschau/CRM/releases/latest/download/CRM-Desktop-1.0.0-mac-arm64.dmg)** - For Apple Silicon (M1, M2, M3+)
+- **[ZIP Package](https://github.com/MarcoLenschau/CRM/releases/latest/download/CRM-Desktop-1.0.0-mac-arm64.zip)** - Portable app archive
 
 **Installation:**
 ```bash
@@ -1004,10 +1004,10 @@ CRM-Desktop-1.0.0-Portable.exe
 
 > **Note:** Built for Apple Silicon (arm64). For Intel Macs, you'll need to build locally or use Rosetta 2 translation
 
-#### 🐧 Linux
+#### Linux
 
-- **[📦 DEB Package](https://github.com/MarcoLenschau/CRM/releases/latest/download/CRM-Desktop-1.0.0-x64.deb)** - For Debian, Ubuntu, Linux Mint
-- **[📦 RPM Package](https://github.com/MarcoLenschau/CRM/releases/latest/download/CRM-Desktop-1.0.0-x64.rpm)** - For Red Hat, Fedora, CentOS
+- **[DEB Package](https://github.com/MarcoLenschau/CRM/releases/latest/download/CRM-Desktop-1.0.0-x64.deb)** - For Debian, Ubuntu, Linux Mint
+- **[RPM Package](https://github.com/MarcoLenschau/CRM/releases/latest/download/CRM-Desktop-1.0.0-x64.rpm)** - For Red Hat, Fedora, CentOS
 
 **Installation:**
 ```bash
