@@ -6,7 +6,7 @@ on:
       - main
       - master
       - feauture/create-main-stucture
-      - feauture/automatical-electon-build
+      - feature/automatical-electron-build
   workflow_dispatch:
 
 permissions:
