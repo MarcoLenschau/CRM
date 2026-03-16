@@ -1,0 +1,65 @@
+{
+  "name": "crm-desktop",
+  "version": "1.0.0",
+  "description": "CRM Desktop Application built with Electron and Next.js",
+  "main": "dist/main.js",
+  "homepage": "./",
+  "author": "Marco Lenschau <contact@marco-lenschau.de>",
+  "license": "MIT",
+  "scripts": {
+    "build:ts": "tsc",
+    "dev": "npm run build:ts && electron .",
+    "start": "electron .",
+    "build": "npm run build:ts && electron-builder",
+    "build:linux": "npm run build:ts && electron-builder --linux rpm deb",
+    "build:windows": "npm run build:ts && electron-builder --win",
+    "build:mac": "npm run build:ts && electron-builder --mac",
+    "pack": "npm run build:ts && electron-builder --dir",
+    "prepack": "npm run build"
+  },
+  "dependencies": {
+    "electron-is-dev": "latest"
+  },
+  "devDependencies": {
+    "electron": "latest",
+    "electron-builder": "latest",
+    "typescript": "^5.0.0",
+    "@types/node": "latest"
+  },
+  "build": {
+    "appId": "com.marcolenschau.crm.desktop",
+    "productName": "CRM Application",
+    "directories": {
+      "buildResources": "assets"
+    },
+    "files": [
+      "dist/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ],
+    "linux": {
+      "target": [
+        "rpm",
+        "deb",
+        "snap"
+      ],
+      "category": "Office"
+    },
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ]
+    },
+    "mac": {
+      "target": [
+        "dmg",
+        "zip"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  }
+}
