@@ -58,7 +58,7 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-500 hover:text-blue-400 text-xs transition-colors flex items-center gap-1">
+                <a href="https://marcolenschau.github.io/CRM" className="text-gray-500 hover:text-blue-400 text-xs transition-colors flex items-center gap-1">
                   <span>→</span> Docs
                 </a>
               </li>

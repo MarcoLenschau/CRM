@@ -18,10 +18,13 @@ import { protectRoute } from "@/app/utils/protectRoute"
 export async function POST(request: Request): Promise<Response> {
   try {
     const protection = await protectRoute(request, false);
+    
     if (!protection.isValid) {
       return protection.error!;
     }
+    
     const body = await request.json();
+    
     await mongodb.dbConnect(); 
     await Customes.insertMany({
       name: body.name,
@@ -31,15 +34,16 @@ export async function POST(request: Request): Promise<Response> {
       status: body.status || CustomerStatus.ACTIVE,
       assignedUserId: body.assignedUserId
     });
-    return Response.json({ 
-      success: true,
-      user: body
-    }, { status: 200 });
-  } catch {
-    return Response.json({ 
-      success: false,
-      error: "Failed to create customer"
-    }, { status: 400 });
+    
+    return new Response(
+      JSON.stringify({ success: true, user: body }),
+      { status: 200, headers: { "Content-Type": "application/json" } }
+    );
+  } catch (error) {
+    return new Response(
+      JSON.stringify({ success: false, error: "Failed to create customer", details: error instanceof Error ? error.message : String(error) }),
+      { status: 400, headers: { "Content-Type": "application/json" } }
+    );
   }
 }
 
@@ -56,14 +60,18 @@ export async function POST(request: Request): Promise<Response> {
  * @author Marco Lenschau <contact@marco-lenschau.de>
  */
 export async function GET(request: Request): Promise<Response> {
-    try {
-      const protection = await protectRoute(request, false);
-      if (!protection.isValid) {
-        return protection.error!;
-      }
-      await mongodb.dbConnect(); 
-      const users = await Customes.find({}).lean();
-      return Response.json({ 
+  try {
+    const protection = await protectRoute(request, false);
+    
+    if (!protection.isValid) {
+      return protection.error!;
+    }
+    
+    await mongodb.dbConnect(); 
+    const users = await Customes.find({}).lean();
+    
+    return new Response(
+      JSON.stringify({ 
         success: true,
         customers: users.map((user) => ({
           id: user._id,
@@ -74,11 +82,13 @@ export async function GET(request: Request): Promise<Response> {
           status: user.status || CustomerStatus.ACTIVE,
           assignedUserId: user.assignedUserId
         }))
-      }, { status: 200 });
-    } catch {
-      return Response.json({ 
-        success: false,
-        error: "Failed to fetch customer"
-      }, { status: 400 });
-    } 
+      }),
+      { status: 200, headers: { "Content-Type": "application/json" } }
+    );
+  } catch (error) {
+    return new Response(
+      JSON.stringify({ success: false, error: "Failed to fetch customer", details: error instanceof Error ? error.message : String(error) }),
+      { status: 400, headers: { "Content-Type": "application/json" } }
+    );
+  } 
 }

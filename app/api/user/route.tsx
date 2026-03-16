@@ -23,10 +23,16 @@ export async function GET(request: Request): Promise<Response> {
     }
     await mongodb.dbConnect();
     const users = await UserModel.find({}).select('-hash').lean();
-    return Response.json({success: true, users}, {status: 200});
+    return new Response(
+      JSON.stringify({success: true, users}),
+      {status: 200, headers: { "Content-Type": "application/json" }}
+    );
   }
   catch {
-    return Response.json({error: "Failed to fetch users"}, {status: 400});
+    return new Response(
+      JSON.stringify({error: "Failed to fetch users"}),
+      {status: 400, headers: { "Content-Type": "application/json" }}
+    );
   }
 }
 
@@ -52,7 +58,10 @@ export async function POST(request: Request): Promise<Response> {
     await mongodb.dbConnect();
     
     if (!body.password) {
-      return Response.json({error: "Password is required"}, {status: 400});
+      return new Response(
+        JSON.stringify({error: "Password is required"}),
+        {status: 400, headers: { "Content-Type": "application/json" }}
+      );
     }
     
     const hashedPassword = await bcryptjs.hash(body.password, 10);
@@ -63,9 +72,15 @@ export async function POST(request: Request): Promise<Response> {
       hash: hashedPassword,
       isAdmin: body.isAdmin || false
     });
-    return Response.json({success: true, user: newUser}, {status: 201});
+    return new Response(
+      JSON.stringify({success: true, user: newUser}),
+      {status: 201, headers: { "Content-Type": "application/json" }}
+    );
   }
   catch {
-    return Response.json({error: "Failed to create user"}, {status: 400});
+    return new Response(
+      JSON.stringify({error: "Failed to create user"}),
+      {status: 400, headers: { "Content-Type": "application/json" }}
+    );
   }
 }

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const protectedApiRoutes = ["/api/admin", "/api/user", "/api/customers"];
+const protectedApiRoutes = ["/api/admin", "/api/user", "/api/customer", "/api/customers", "/api/event", "/api/log"];
 
 /**
  * Middleware to check authentication for protected API routes.
