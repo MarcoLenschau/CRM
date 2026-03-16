@@ -21,15 +21,14 @@ interface RecentActivityProps {
  * @author Marco Lenschau <contact@marco-lenschau.de>
  */
 export default function RecentActivity({ logs, getStatusColor }: RecentActivityProps) {
-  const getActionColor = (action: string) => {
-    const a = action?.toUpperCase() || '';
-    if (a === 'CREATE') return 'from-gray-700/40 to-gray-700/20';
-    if (a === 'UPDATE') return 'from-gray-700/30 to-gray-700/15';
-    if (a === 'DELETE') return 'from-gray-700/35 to-gray-700/18';
-    if (a === 'READ') return 'from-gray-700/25 to-gray-700/10';
-    return 'from-gray-700/32 to-gray-700/16';
-  };
-
+  /**
+   * Maps action type to consistent text color class.
+   * Currently returns gray-200 for all actions; can be extended for action-specific colors.
+   *
+   * @param action - Action type string to get text color for
+   * @return Tailwind CSS text color class string
+   * @category UI Components
+   */
   const getActionTextColor = (action: string) => {
     const a = action?.toUpperCase() || '';
     if (a === 'CREATE') return 'text-gray-200';

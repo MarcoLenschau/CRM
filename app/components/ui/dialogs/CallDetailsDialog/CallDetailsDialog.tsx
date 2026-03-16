@@ -2,23 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import SuccessDialog from '../SuccessDialog/SuccessDialog';
-import { LogStatus } from '@/app/enums/status.enum';
-
-interface Customer {
-  id: string;
-  name: string;
-  email: string;
-  phone?: string;
-  company?: string;
-  status: LogStatus;
-  assignedUserId?: string;
-}
-
-interface CallDetailsDialogProps {
-  isOpen: boolean;
-  selectedUserId: string | null;
-  onClose: () => void;
-}
+import { Customer } from '@/app/interfaces/customer.interface';
+import { CallDetailsDialogProps } from '@/app/interfaces/calldetailsdialog.interface';
 
 /**
  * Modal dialog for recording and logging call details with customer information and follow-up tracking.
