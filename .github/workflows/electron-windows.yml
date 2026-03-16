@@ -1,0 +1,99 @@
+name: Build & Release CRM Desktop App (Windows)
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          cd electron
+          npm install
+        shell: bash
+
+      - name: Build Electron app (Windows)
+        run: |
+          cd electron
+          npm run build:windows
+        shell: bash
+
+      - name: Get version from package.json
+        id: version
+        run: |
+          $packageJson = Get-Content 'electron/package.json' -Raw | ConvertFrom-Json
+          $VERSION = $packageJson.version
+          $COMMIT_HASH = git rev-parse --short HEAD
+          echo "VERSION=$VERSION" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          echo "COMMIT_HASH=$COMMIT_HASH" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          echo "RELEASE_TAG=v$VERSION-$COMMIT_HASH" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+        shell: pwsh
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          draft: false
+          prerelease: false
+          release_name: CRM Desktop App v${{ steps.version.outputs.VERSION }}
+          tag_name: ${{ steps.version.outputs.RELEASE_TAG }}
+          body: |
+            # CRM Desktop Application Release
+            
+            **Version:** ${{ steps.version.outputs.VERSION }}
+            **Commit:** ${{ steps.version.outputs.COMMIT_HASH }}
+            **Build Date:** ${{ github.event.head_commit.timestamp }}
+            
+            ## Download
+            
+            - [Windows Setup](https://github.com/MarcoLenschau/CRM/releases/latest/download/CRM-Desktop-${{ steps.version.outputs.VERSION }}-Setup.exe)
+            - [Windows Portable](https://github.com/MarcoLenschau/CRM/releases/latest/download/CRM-Desktop-${{ steps.version.outputs.VERSION }}-Portable.exe)
+            - [macOS DMG](https://github.com/MarcoLenschau/CRM/releases/latest/download/CRM-Desktop-${{ steps.version.outputs.VERSION }}-mac.dmg)
+            - [macOS ZIP](https://github.com/MarcoLenschau/CRM/releases/latest/download/CRM-Desktop-${{ steps.version.outputs.VERSION }}-mac.zip)
+            - [Linux DEB](https://github.com/MarcoLenschau/CRM/releases/latest/download/CRM-Desktop-${{ steps.version.outputs.VERSION }}-x64.deb)
+            - [Linux RPM](https://github.com/MarcoLenschau/CRM/releases/latest/download/CRM-Desktop-${{ steps.version.outputs.VERSION }}-x64.rpm)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Prepare Windows assets
+        run: |
+          cd electron\dist
+          ren "CRM Application Setup 1.0.0.exe" "CRM-Setup-1.0.0.exe"
+          ren "CRM Application 1.0.0.exe" "CRM-Portable-1.0.0.exe"
+        shell: cmd
+
+      - name: Upload Windows Setup Installer
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./electron/dist/CRM-Setup-1.0.0.exe
+          asset_name: CRM-Desktop-${{ steps.version.outputs.VERSION }}-Setup.exe
+          asset_content_type: application/x-msdownload
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Windows Portable EXE
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./electron/dist/CRM-Portable-1.0.0.exe
+          asset_name: CRM-Desktop-${{ steps.version.outputs.VERSION }}-Portable.exe
+          asset_content_type: application/x-msdownload
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

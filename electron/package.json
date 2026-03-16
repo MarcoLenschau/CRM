@@ -1,5 +1,5 @@
 {
-  "name": "crm-desktop",
+  "name": "crm",
   "version": "1.0.0",
   "description": "CRM Desktop Application built with Electron and Next.js",
   "main": "dist/main.js",
@@ -55,7 +55,8 @@
       "target": [
         "dmg",
         "zip"
-      ]
+      ],
+      "category": "Business"
     },
     "nsis": {
       "oneClick": false,
