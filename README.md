@@ -979,8 +979,8 @@ Check server terminal for server-side errors.
 
 #### Windows
 
-- **[Setup Installer](https://github.com/MarcoLenschau/CRM/releases/latest/download/CRM-Desktop-1.0.0-Setup.exe)** - Windows installer with uninstaller
-- **[Portable EXE](https://github.com/MarcoLenschau/CRM/releases/latest/download/CRM-Desktop-1.0.0-Portable.exe)** - Standalone executable (no installation needed)
+- **[Setup Installer](https://github.com/MarcoLenschau/CRM/releases/download/v1.0.0-cd8c6d5/CRM-Desktop-1.0.0-Setup.exe)** - Windows installer with uninstaller
+- **[Portable EXE](https://github.com/MarcoLenschau/CRM/releases/download/v1.0.0-cd8c6d5/CRM-Desktop-1.0.0-Portable.exe)** - Standalone executable (no installation needed)
 
 **Installation:**
 ```bash
@@ -993,8 +993,8 @@ CRM-Desktop-1.0.0-Portable.exe
 
 #### macOS
 
-- **[DMG Package](https://github.com/MarcoLenschau/CRM/releases/latest/download/CRM-Desktop-1.0.0-mac-arm64.dmg)** - For Apple Silicon (M1, M2, M3+)
-- **[ZIP Package](https://github.com/MarcoLenschau/CRM/releases/latest/download/CRM-Desktop-1.0.0-mac-arm64.zip)** - Portable app archive
+- **[DMG Package](https://github.com/MarcoLenschau/CRM/releases/download/latest/CRM-Desktop-1.0.0-mac.dmg)** - For Apple Silicon (M1, M2, M3+)
+- **[ZIP Package](https://github.com/MarcoLenschau/CRM/releases/download/latest/CRM-Desktop-1.0.0-mac.zip)** - Portable app archive
 
 **Installation:**
 ```bash
@@ -1006,8 +1006,8 @@ CRM-Desktop-1.0.0-Portable.exe
 
 #### Linux
 
-- **[DEB Package](https://github.com/MarcoLenschau/CRM/releases/latest/download/CRM-Desktop-1.0.0-x64.deb)** - For Debian, Ubuntu, Linux Mint
-- **[RPM Package](https://github.com/MarcoLenschau/CRM/releases/latest/download/CRM-Desktop-1.0.0-x64.rpm)** - For Red Hat, Fedora, CentOS
+- **[DEB Package](https://github.com/MarcoLenschau/CRM/releases/download/v1.0.0-cd8c6d5/CRM-Desktop-1.0.0-x64.deb)** - For Debian, Ubuntu, Linux Mint
+- **[RPM Package](https://github.com/MarcoLenschau/CRM/releases/download/v1.0.0-cd8c6d5/CRM-Desktop-1.0.0-x64.rpm)** - For Red Hat, Fedora, CentOS
 
 **Installation:**
 ```bash

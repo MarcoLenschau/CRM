@@ -62,27 +62,27 @@ jobs:
             
             ## Download
             
-            - [Windows Setup](https://github.com/MarcoLenschau/CRM/releases/latest/download/CRM-Desktop-${{ steps.version.outputs.VERSION }}-Setup.exe)
-            - [Windows Portable](https://github.com/MarcoLenschau/CRM/releases/latest/download/CRM-Desktop-${{ steps.version.outputs.VERSION }}-Portable.exe)
-            - [macOS DMG](https://github.com/MarcoLenschau/CRM/releases/latest/download/CRM-Desktop-${{ steps.version.outputs.VERSION }}-mac.dmg)
-            - [macOS ZIP](https://github.com/MarcoLenschau/CRM/releases/latest/download/CRM-Desktop-${{ steps.version.outputs.VERSION }}-mac.zip)
-            - [Linux DEB](https://github.com/MarcoLenschau/CRM/releases/latest/download/CRM-Desktop-${{ steps.version.outputs.VERSION }}-x64.deb)
-            - [Linux RPM](https://github.com/MarcoLenschau/CRM/releases/latest/download/CRM-Desktop-${{ steps.version.outputs.VERSION }}-x64.rpm)
+            - [Windows Setup](https://github.com/MarcoLenschau/CRM/releases/download/${{ steps.version.outputs.RELEASE_TAG }}/CRM-Desktop-${{ steps.version.outputs.VERSION }}-Setup.exe)
+            - [Windows Portable](https://github.com/MarcoLenschau/CRM/releases/download/${{ steps.version.outputs.RELEASE_TAG }}/CRM-Desktop-${{ steps.version.outputs.VERSION }}-Portable.exe)
+            - [macOS DMG](https://github.com/MarcoLenschau/CRM/releases/download/${{ steps.version.outputs.RELEASE_TAG }}/CRM-Desktop-${{ steps.version.outputs.VERSION }}-mac.dmg)
+            - [macOS ZIP](https://github.com/MarcoLenschau/CRM/releases/download/${{ steps.version.outputs.RELEASE_TAG }}/CRM-Desktop-${{ steps.version.outputs.VERSION }}-mac.zip)
+            - [Linux DEB](https://github.com/MarcoLenschau/CRM/releases/download/${{ steps.version.outputs.RELEASE_TAG }}/CRM-Desktop-${{ steps.version.outputs.VERSION }}-x64.deb)
+            - [Linux RPM](https://github.com/MarcoLenschau/CRM/releases/download/${{ steps.version.outputs.RELEASE_TAG }}/CRM-Desktop-${{ steps.version.outputs.VERSION }}-x64.rpm)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Prepare Windows assets
         run: |
           cd electron\dist
-          ren "CRM Application Setup 1.0.0.exe" "CRM-Setup-1.0.0.exe"
-          ren "CRM Application 1.0.0.exe" "CRM-Portable-1.0.0.exe"
+          ren "CRM Application Setup ${{ steps.version.outputs.VERSION }}.exe" "CRM-Setup-${{ steps.version.outputs.VERSION }}.exe"
+          ren "CRM Application ${{ steps.version.outputs.VERSION }}.exe" "CRM-Portable-${{ steps.version.outputs.VERSION }}.exe"
         shell: cmd
 
       - name: Upload Windows Setup Installer
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./electron/dist/CRM-Setup-1.0.0.exe
+          asset_path: ./electron/dist/CRM-Setup-${{ steps.version.outputs.VERSION }}.exe
           asset_name: CRM-Desktop-${{ steps.version.outputs.VERSION }}-Setup.exe
           asset_content_type: application/x-msdownload
         env:
@@ -92,7 +92,7 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./electron/dist/CRM-Portable-1.0.0.exe
+          asset_path: ./electron/dist/CRM-Portable-${{ steps.version.outputs.VERSION }}.exe
           asset_name: CRM-Desktop-${{ steps.version.outputs.VERSION }}-Portable.exe
           asset_content_type: application/x-msdownload
         env:

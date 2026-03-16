@@ -56,12 +56,12 @@ jobs:
             **Commit:** ${{ steps.version.outputs.COMMIT_HASH }}
             **Build Date:** ${{ github.event.head_commit.timestamp }}
 
-            - [Windows Setup](https://github.com/MarcoLenschau/CRM/releases/latest/download/CRM-Desktop-${{ steps.version.outputs.VERSION }}-Setup.exe)
-            - [Windows Portable](https://github.com/MarcoLenschau/CRM/releases/latest/download/CRM-Desktop-${{ steps.version.outputs.VERSION }}-Portable.exe)
-            - [macOS DMG](https://github.com/MarcoLenschau/CRM/releases/latest/download/CRM-Desktop-${{ steps.version.outputs.VERSION }}-mac.dmg)
-            - [macOS ZIP](https://github.com/MarcoLenschau/CRM/releases/latest/download/CRM-Desktop-${{ steps.version.outputs.VERSION }}-mac.zip)
-            - [Linux DEB](https://github.com/MarcoLenschau/CRM/releases/latest/download/CRM-Desktop-${{ steps.version.outputs.VERSION }}-x64.deb)
-            - [Linux RPM](https://github.com/MarcoLenschau/CRM/releases/latest/download/CRM-Desktop-${{ steps.version.outputs.VERSION }}-x64.rpm)
+            - [Windows Setup](https://github.com/MarcoLenschau/CRM/releases/download/${{ steps.version.outputs.RELEASE_TAG }}/CRM-Desktop-${{ steps.version.outputs.VERSION }}-Setup.exe)
+            - [Windows Portable](https://github.com/MarcoLenschau/CRM/releases/download/${{ steps.version.outputs.RELEASE_TAG }}/CRM-Desktop-${{ steps.version.outputs.VERSION }}-Portable.exe)
+            - [macOS DMG](https://github.com/MarcoLenschau/CRM/releases/download/${{ steps.version.outputs.RELEASE_TAG }}/CRM-Desktop-${{ steps.version.outputs.VERSION }}-mac.dmg)
+            - [macOS ZIP](https://github.com/MarcoLenschau/CRM/releases/download/${{ steps.version.outputs.RELEASE_TAG }}/CRM-Desktop-${{ steps.version.outputs.VERSION }}-mac.zip)
+            - [Linux DEB](https://github.com/MarcoLenschau/CRM/releases/download/${{ steps.version.outputs.RELEASE_TAG }}/CRM-Desktop-${{ steps.version.outputs.VERSION }}-x64.deb)
+            - [Linux RPM](https://github.com/MarcoLenschau/CRM/releases/download/${{ steps.version.outputs.RELEASE_TAG }}/CRM-Desktop-${{ steps.version.outputs.VERSION }}-x64.rpm)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
