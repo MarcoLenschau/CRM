@@ -36,13 +36,12 @@ jobs:
       - name: Get version from package.json
         id: version
         run: |
-          $packageJson = Get-Content 'electron/package.json' -Raw | ConvertFrom-Json
-          $VERSION = $packageJson.version
-          $COMMIT_HASH = git rev-parse --short HEAD
+          VERSION=$(cat electron/package.json | grep '"version"' | head -1 | awk -F'"' '{print $4}')
+          COMMIT_HASH=$(git rev-parse --short HEAD)
           echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
           echo "COMMIT_HASH=$COMMIT_HASH" >> $GITHUB_OUTPUT
           echo "RELEASE_TAG=v$VERSION-$COMMIT_HASH" >> $GITHUB_OUTPUT
-        shell: pwsh
+        shell: bash
 
       - name: List dist contents for debugging
         run: ls -lah electron/dist/
@@ -77,31 +76,41 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./electron/dist/CRM Application-${{ steps.version.outputs.VERSION }}.dmg
-          asset_name: CRM-Desktop-${{ steps.version.outputs.VERSION }}-mac.dmg
+          asset_path: ./electron/dist/CRM Application-1.0.0-arm64.dmg
+          asset_name: CRM-Desktop-${{ steps.version.outputs.VERSION }}-mac-arm64.dmg
           asset_content_type: application/x-apple-diskimage
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: true
 
-      - name: Upload macOS ZIP
+      - name: Upload macOS DMG (x64 alternative)
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./electron/dist/CRM Application-${{ steps.version.outputs.VERSION }}-mac.zip
-          asset_name: CRM-Desktop-${{ steps.version.outputs.VERSION }}-mac.zip
+          asset_path: ./electron/dist/CRM Application-1.0.0-x64.dmg
+          asset_name: CRM-Desktop-${{ steps.version.outputs.VERSION }}-mac-x64.dmg
+          asset_content_type: application/x-apple-diskimage
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+
+      - name: Upload macOS ZIP (arm64)
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./electron/dist/CRM Application-1.0.0-arm64-mac.zip
+          asset_name: CRM-Desktop-${{ steps.version.outputs.VERSION }}-mac-arm64.zip
           asset_content_type: application/zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: true
 
-      - name: Try alternative macOS ZIP name
+      - name: Upload macOS ZIP (x64 alternative)
         uses: actions/upload-release-asset@v1
-        if: always()
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./electron/dist/CRM Application.zip
-          asset_name: CRM-Desktop-${{ steps.version.outputs.VERSION }}-mac-alt.zip
+          asset_path: ./electron/dist/CRM Application-1.0.0-mac.zip
+          asset_name: CRM-Desktop-${{ steps.version.outputs.VERSION }}-mac-x64.zip
           asset_content_type: application/zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
