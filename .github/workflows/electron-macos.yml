@@ -1,17 +1,18 @@
-name: Build & Release CRM Desktop App
+name: Build & Release CRM Desktop App (macOS)
 
 on:
   push:
     branches:
       - main
+      - feature/automatical-electron-build
   workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  build-and-release:
-    runs-on: ubuntu-latest
+  build-macos:
+    runs-on: macos-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -27,38 +28,42 @@ jobs:
           cd electron
           npm install
 
-      - name: Build Electron app
+      - name: Build Electron app (macOS)
         run: |
           cd electron
-          npm run build:linux
+          npm run build:mac
 
       - name: Get version from package.json
         id: version
         run: |
-          VERSION=$(cat electron/package.json | grep '"version"' | head -1 | awk -F'"' '{print $4}')
-          COMMIT_HASH=$(git rev-parse --short HEAD)
+          $packageJson = Get-Content 'electron/package.json' -Raw | ConvertFrom-Json
+          $VERSION = $packageJson.version
+          $COMMIT_HASH = git rev-parse --short HEAD
           echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
           echo "COMMIT_HASH=$COMMIT_HASH" >> $GITHUB_OUTPUT
           echo "RELEASE_TAG=v$VERSION-$COMMIT_HASH" >> $GITHUB_OUTPUT
+        shell: pwsh
 
       - name: List dist contents for debugging
-        run: ls -la electron/dist/
+        run: ls -lah electron/dist/
 
       - name: Create Release
-        uses: actions/create-release@v1
         id: create_release
+        uses: actions/create-release@v1
         with:
           draft: false
           prerelease: false
           release_name: CRM Desktop App v${{ steps.version.outputs.VERSION }}
           tag_name: ${{ steps.version.outputs.RELEASE_TAG }}
           body: |
-            CRM Desktop Application Release
+            # CRM Desktop Application Release
             
             **Version:** ${{ steps.version.outputs.VERSION }}
             **Commit:** ${{ steps.version.outputs.COMMIT_HASH }}
             **Build Date:** ${{ github.event.head_commit.timestamp }}
-
+            
+            ## Download
+            
             - [Windows Setup](https://github.com/MarcoLenschau/CRM/releases/latest/download/CRM-Desktop-${{ steps.version.outputs.VERSION }}-Setup.exe)
             - [Windows Portable](https://github.com/MarcoLenschau/CRM/releases/latest/download/CRM-Desktop-${{ steps.version.outputs.VERSION }}-Portable.exe)
             - [macOS DMG](https://github.com/MarcoLenschau/CRM/releases/latest/download/CRM-Desktop-${{ steps.version.outputs.VERSION }}-mac.dmg)
@@ -68,22 +73,36 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Upload .deb Release Asset
+      - name: Upload macOS DMG
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./electron/dist/crm_${{ steps.version.outputs.VERSION }}_amd64.deb
-          asset_name: CRM-Desktop-${{ steps.version.outputs.VERSION }}-x64.deb
-          asset_content_type: application/vnd.debian.binary-package
+          asset_path: ./electron/dist/CRM Application-${{ steps.version.outputs.VERSION }}.dmg
+          asset_name: CRM-Desktop-${{ steps.version.outputs.VERSION }}-mac.dmg
+          asset_content_type: application/x-apple-diskimage
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
 
-      - name: Upload .rpm Release Asset
+      - name: Upload macOS ZIP
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./electron/dist/crm-${{ steps.version.outputs.VERSION }}.x86_64.rpm
-          asset_name: CRM-Desktop-${{ steps.version.outputs.VERSION }}-x64.rpm
-          asset_content_type: application/x-rpm
+          asset_path: ./electron/dist/CRM Application-${{ steps.version.outputs.VERSION }}-mac.zip
+          asset_name: CRM-Desktop-${{ steps.version.outputs.VERSION }}-mac.zip
+          asset_content_type: application/zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+
+      - name: Try alternative macOS ZIP name
+        uses: actions/upload-release-asset@v1
+        if: always()
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./electron/dist/CRM Application.zip
+          asset_name: CRM-Desktop-${{ steps.version.outputs.VERSION }}-mac-alt.zip
+          asset_content_type: application/zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
