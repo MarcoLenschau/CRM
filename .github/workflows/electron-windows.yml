@@ -38,30 +38,22 @@ jobs:
       - name: Get version from package.json
         id: version
         run: |
-          $VERSION = (Select-String -Path "electron/package.json" -Pattern '"version"' | Select-Object -First 1 | ForEach-Object { $_ -replace '.*"version": "([^"]+)".*', '$1' })
-          $COMMIT_HASH = git rev-parse --short HEAD
-          echo "VERSION=$VERSION" >> $env:GITHUB_OUTPUT
-          echo "COMMIT_HASH=$COMMIT_HASH" >> $env:GITHUB_OUTPUT
-          echo "RELEASE_TAG=v$VERSION-$COMMIT_HASH" >> $env:GITHUB_OUTPUT
-        shell: pwsh
+          FOR /F "tokens=2 delims=: " %%i IN ('findstr /R "version" electron\package.json ^| findstr /V "//"') DO SET VERSION=%%i
+          SET VERSION=%VERSION:"=%
+          SET VERSION=%VERSION:,=%
+          FOR /F %%i IN ('git rev-parse --short HEAD') DO SET COMMIT_HASH=%%i
+          SETLOCAL ENABLEDELAYEDEXPANSION
+          echo VERSION=!VERSION! >> %GITHUB_OUTPUT%
+          echo COMMIT_HASH=!COMMIT_HASH! >> %GITHUB_OUTPUT%
+          echo RELEASE_TAG=v!VERSION!-!COMMIT_HASH! >> %GITHUB_OUTPUT%
+        shell: cmd
 
       - name: List dist contents for debugging
-        run: ls -la electron/dist/
-        shell: bash
+        run: dir electron\dist\
+        shell: cmd
 
-      - name: Get existing release
-        id: get_release
-        run: |
-          $TAG = "${{ steps.version.outputs.RELEASE_TAG }}"
-          $RELEASE = gh release view "$TAG" --json uploadUrl -q .uploadUrl 2>/dev/null || echo ""
-          echo "UPLOAD_URL=$RELEASE" >> $env:GITHUB_OUTPUT
-        shell: pwsh
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Create Release if not exists
+      - name: Create Release
         id: create_release
-        if: steps.get_release.outputs.UPLOAD_URL == ''
         uses: actions/create-release@v1
         with:
           draft: false
@@ -77,31 +69,29 @@ jobs:
             
             ## Download
             
-            - [Windows EXE](https://github.com/MarcoLenschau/CRM/releases/latest/download/CRM-Desktop-${{ steps.version.outputs.VERSION }}-x64.exe)
+            - [Windows Setup](https://github.com/MarcoLenschau/CRM/releases/latest/download/CRM-Desktop-${{ steps.version.outputs.VERSION }}-Setup.exe)
+            - [Windows Portable](https://github.com/MarcoLenschau/CRM/releases/latest/download/CRM-Desktop-${{ steps.version.outputs.VERSION }}-Portable.exe)
             - [Linux DEB](https://github.com/MarcoLenschau/CRM/releases/latest/download/CRM-Desktop-${{ steps.version.outputs.VERSION }}-x64.deb)
             - [Linux RPM](https://github.com/MarcoLenschau/CRM/releases/latest/download/CRM-Desktop-${{ steps.version.outputs.VERSION }}-x64.rpm)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Upload Windows EXE Asset
+      - name: Upload Windows Setup Installer
         uses: actions/upload-release-asset@v1
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url || steps.get_release.outputs.UPLOAD_URL }}
-          asset_path: ./electron/dist/crm Setup ${{ steps.version.outputs.VERSION }}.exe
-          asset_name: CRM-Desktop-${{ steps.version.outputs.VERSION }}-x64.exe
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./electron/dist/CRM Application Setup ${{ steps.version.outputs.VERSION }}.exe
+          asset_name: CRM-Desktop-${{ steps.version.outputs.VERSION }}-Setup.exe
           asset_content_type: application/x-msdownload
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        continue-on-error: true
 
-      - name: Upload Windows Installer Asset (alternative)
+      - name: Upload Windows Portable EXE
         uses: actions/upload-release-asset@v1
-        if: always()
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url || steps.get_release.outputs.UPLOAD_URL }}
-          asset_path: ./electron/dist/crm-${{ steps.version.outputs.VERSION }}.exe
-          asset_name: CRM-Desktop-${{ steps.version.outputs.VERSION }}-installer.exe
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./electron/dist/CRM Application ${{ steps.version.outputs.VERSION }}.exe
+          asset_name: CRM-Desktop-${{ steps.version.outputs.VERSION }}-Portable.exe
           asset_content_type: application/x-msdownload
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        continue-on-error: true
