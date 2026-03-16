@@ -5,6 +5,7 @@ import PageHeader from '@/app/components/ui/PageHeader/PageHeader';
 import SearchBar from '@/app/components/ui/SearchBar/SearchBar';
 import StatCard from '@/app/components/ui/StatCard/StatCard';
 import { AuditLog } from '@/app/interfaces/auditlog.interface';
+import { getAuthHeaders } from '@/app/utils/api';
 
 /**
  * Renders audit log page with filtering and search capabilities.
@@ -26,7 +27,7 @@ export default function AuditLogPage() {
     const fetchLogs = async () => {
       try {
         const response = await fetch('/api/log', {
-          credentials: 'include'
+          headers: getAuthHeaders()
         });
         const data = await response.json();
         if (data.success && data.logs) {

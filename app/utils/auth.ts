@@ -3,33 +3,45 @@ import { verifyToken, TokenPayload } from "./jwt";
 export type { TokenPayload };
 
 /**
- * Verifies JWT token from Authorization header.
- * For API routes: ONLY accepts Bearer token in Authorization header, NOT cookies.
- * Cookies are only used for browser-based sessions, not API authentication.
+ * Verifies JWT token from Authorization header or cookies.
+ * For API routes: Accepts Bearer token in Authorization header (primary) or cookie (fallback for SSR).
  *
  * @param request - The incoming HTTP request
  * @return Decoded token payload if valid, null if invalid or missing
  * @category Authentication
- * @security Validates JWT signature and expiration, requires explicit Bearer token in Authorization header
+ * @security Validates JWT signature and expiration, checks Bearer header first, then cookies as fallback
  * @performance O(1) token parsing and verification
  * @author Marco Lenschau <contact@marco-lenschau.de>
  */
 export const authenticateRequest = (request: Request): TokenPayload | null => {
-  // ONLY check Authorization header for API authentication
-  // Cookies should NOT be used for API authentication
+  // Try Authorization header first (preferred for APIs)
   const authHeader = request.headers.get("authorization");
   
-  if (!authHeader?.startsWith("Bearer ")) {
-    console.log("📌 Auth attempt - No Bearer token in Authorization header");
-    return null;
+  if (authHeader?.startsWith("Bearer ")) {
+    const token = authHeader.substring("Bearer ".length);
+    const verified = verifyToken(token);
+    if (verified) {
+      return verified;
+    }
   }
   
-  const token = authHeader.substring("Bearer ".length);
-  console.log("📌 Auth attempt - Bearer token found");
+  // Fallback to cookie (needed for Server-Side Rendering)
+  const cookieHeader = request.headers.get("cookie");
+  if (cookieHeader) {
+    const cookies = cookieHeader.split(';').map(c => c.trim());
+    const tokenCookie = cookies.find(c => c.startsWith('token='));
+    if (tokenCookie) {
+      const token = tokenCookie.substring('token='.length);
+      if (token && token.length > 0) {
+        const verified = verifyToken(token);
+        if (verified) {
+          return verified;
+        }
+      }
+    }
+  }
   
-  const verified = verifyToken(token);
-  console.log("📌 Auth attempt - Token verified:", verified ? "Yes" : "No");
-  return verified;
+  return null;
 };
 
 /**

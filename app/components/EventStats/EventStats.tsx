@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Event } from '@/app/interfaces/event.interface';
 import { Prio } from '@/app/enums/prio.enum';
+import { getAuthHeaders } from '@/app/utils/api';
 
 /**
  * Dashboard card component displaying event statistics with priority breakdown and trend indicators.
@@ -22,7 +23,7 @@ export default function EventStats() {
     const fetchEvents = async () => {
       try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/event`, {
-          credentials: 'include'
+          headers: getAuthHeaders()
         });
         if (response.ok) {
           const data = await response.json();

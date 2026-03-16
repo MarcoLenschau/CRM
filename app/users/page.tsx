@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { User } from '@/app/interfaces/user.interface';
-import { triggerActivityUpdate } from '@/app/utils/api';
+import { triggerActivityUpdate, getAuthHeaders } from '@/app/utils/api';
 import UserDialog from '@/app/components/ui/dialogs/UserDialog/UserDialog';
 import DeleteConfirmDialog from '@/app/components/ui/dialogs/DeleteConfirmDialog/DeleteConfirmDialog';
 import SuccessDialog from '@/app/components/ui/dialogs/SuccessDialog/SuccessDialog';
@@ -41,7 +41,7 @@ export default function UsersPage() {
     const fetchUsers = async () => {
       try {
         const res = await fetch('/api/user', {
-          credentials: 'include'
+          headers: getAuthHeaders()
         });
         const data = await res.json();
         if (data.users) {
@@ -59,7 +59,7 @@ export default function UsersPage() {
   const loadUsers = async () => {
     try {
       const res = await fetch('/api/user', {
-        credentials: 'include'
+        headers: getAuthHeaders()
       });
       const data = await res.json();
       if (data.users) {
@@ -99,8 +99,7 @@ export default function UsersPage() {
       if (editingId !== null) {
         const res = await fetch(`/api/user/${editingId}`, {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
+          headers: getAuthHeaders({ 'Content-Type': 'application/json' }),
           body: JSON.stringify(newUser)
         });
         if (res.ok) {
@@ -115,8 +114,7 @@ export default function UsersPage() {
       } else {
         const res = await fetch('/api/user', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
+          headers: getAuthHeaders({ 'Content-Type': 'application/json' }),
           body: JSON.stringify(newUser)
         });
         if (res.ok) {
@@ -149,7 +147,7 @@ export default function UsersPage() {
       try {
         const res = await fetch(`/api/user/${deleteUserId}`, { 
           method: 'DELETE',
-          credentials: 'include'
+          headers: getAuthHeaders()
         });
         if (res.ok) {
           loadUsers();
