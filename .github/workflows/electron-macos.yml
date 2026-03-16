@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - feature/automatical-electron-build
   workflow_dispatch:
 
 permissions:
@@ -43,9 +42,6 @@ jobs:
           echo "COMMIT_HASH=$COMMIT_HASH" >> $GITHUB_OUTPUT
           echo "RELEASE_TAG=v$VERSION-$COMMIT_HASH" >> $GITHUB_OUTPUT
         shell: pwsh
-
-      - name: List dist contents for debugging
-        run: ls -lah electron/dist/
 
       - name: Create Release
         id: create_release

@@ -41,9 +41,6 @@ jobs:
           echo "COMMIT_HASH=$COMMIT_HASH" >> $GITHUB_OUTPUT
           echo "RELEASE_TAG=v$VERSION-$COMMIT_HASH" >> $GITHUB_OUTPUT
 
-      - name: List dist contents for debugging
-        run: ls -la electron/dist/
-
       - name: Create Release
         uses: actions/create-release@v1
         id: create_release

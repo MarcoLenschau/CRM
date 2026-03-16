@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - main
-      - master
-      - feauture/create-main-stucture
   workflow_dispatch:
 
 permissions:
