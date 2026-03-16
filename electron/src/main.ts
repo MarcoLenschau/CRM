@@ -1,9 +1,13 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import path from 'path';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 let mainWindow: BrowserWindow | null = null;
 
 const createWindow = () => {
+  const appUrl = process.env.VITE_APP_URL!;
   mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
@@ -14,7 +18,7 @@ const createWindow = () => {
     },
     icon: path.join(__dirname, '../assets/icon.png')
   });
-  mainWindow.loadURL('http://localhost:3000');
+  mainWindow.loadURL(appUrl);
 
   mainWindow.on('closed', () => {
     mainWindow = null;

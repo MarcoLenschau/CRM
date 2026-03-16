@@ -36,6 +36,7 @@ jobs:
 
       - name: Create ZIP archive
         run: |
+          cp docs/*.md docs/typedoc-md/
           cd docs/typedoc-md
           zip -r ../../CRM-Documentation-V.0.1.0.zip .
           cd ../../

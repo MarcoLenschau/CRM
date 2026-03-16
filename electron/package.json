@@ -18,6 +18,7 @@
     "prepack": "npm run build"
   },
   "dependencies": {
+    "dotenv": "^16.0.0",
     "electron-is-dev": "latest"
   },
   "devDependencies": {
