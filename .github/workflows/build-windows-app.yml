@@ -1,0 +1,107 @@
+name: Build & Release CRM Desktop App (Windows)
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          cd electron
+          npm install
+        shell: bash
+
+      - name: Build Electron app (Windows)
+        run: |
+          cd electron
+          npm run build:windows
+        shell: bash
+
+      - name: Debug - List dist files
+        run: Get-ChildItem -Path "electron/dist" -Recurse | Format-Table FullName
+        shell: pwsh
+
+      - name: Get version from package.json
+        id: version
+        run: |
+          $packageJson = Get-Content 'electron/package.json' -Raw | ConvertFrom-Json
+          $VERSION = $packageJson.version
+          $COMMIT_HASH = git rev-parse --short HEAD
+          echo "VERSION=$VERSION" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          echo "COMMIT_HASH=$COMMIT_HASH" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          echo "RELEASE_TAG=v$VERSION-$COMMIT_HASH" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+        shell: pwsh
+
+      - name: Prepare Windows assets
+        run: |
+          cd electron\dist
+          ren "CRM Application Setup ${{ steps.version.outputs.VERSION }}.exe" "CRM-Setup-${{ steps.version.outputs.VERSION }}.exe"
+          ren "CRM Application ${{ steps.version.outputs.VERSION }}.exe" "CRM-Portable-${{ steps.version.outputs.VERSION }}.exe"
+        shell: cmd
+
+      - name: Debug - Show files before upload
+        run: |
+          Write-Host "=== Files in electron/dist ===" 
+          Get-ChildItem -Path "electron/dist" -Recurse | Format-Table FullName, Length
+          Write-Host ""
+          Write-Host "=== Looking for .exe files ===" 
+          Get-ChildItem "electron/dist/*.exe" -ErrorAction SilentlyContinue | ForEach-Object { Write-Host "Found: $_" }
+          Write-Host ""
+          Write-Host "=== Looking for .msi files ===" 
+          Get-ChildItem "electron/dist/*.msi" -ErrorAction SilentlyContinue | ForEach-Object { Write-Host "Found: $_" }
+        shell: pwsh
+
+      - name: Upload Windows assets with scp
+        run: |
+          # Create SSH directory
+          New-Item -ItemType Directory -Path "$env:USERPROFILE\.ssh" -Force | Out-Null
+          
+          # Convert SSH key to file
+          $keyContent = @"
+          ${{ secrets.SCP_PRIVATE_KEY }}
+          "@
+          $keyContent | Out-File -FilePath "$env:USERPROFILE\.ssh\deploy_key" -Encoding UTF8 -Force
+          
+          # Set proper permissions
+          icacls "$env:USERPROFILE\.ssh\deploy_key" /inheritance:r /grant:r "$env:USERNAME`:(F)" | Out-Null
+          
+          # Create target directory
+          ssh -i "$env:USERPROFILE\.ssh\deploy_key" -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_HOST }} -p ${{ secrets.SSH_PORT }} "mkdir -p ${{ secrets.SCP_TARGET_PATH }}"
+          
+          # Upload .exe files if they exist
+          $exeFiles = Get-ChildItem "electron/dist/*.exe" -ErrorAction SilentlyContinue
+          if ($exeFiles) {
+            Write-Host "Uploading .exe files..."
+            scp -i "$env:USERPROFILE\.ssh\deploy_key" -o StrictHostKeyChecking=no -P ${{ secrets.SSH_PORT }} "electron/dist/*.exe" "${{ secrets.SSH_USER }}@${{ secrets.SERVER_HOST }}:${{ secrets.SCP_TARGET_PATH }}/"
+          } else {
+            Write-Host "No .exe files found"
+          }
+          
+          # Upload .msi files if they exist
+          $msiFiles = Get-ChildItem "electron/dist/*.msi" -ErrorAction SilentlyContinue
+          if ($msiFiles) {
+            Write-Host "Uploading .msi files..."
+            scp -i "$env:USERPROFILE\.ssh\deploy_key" -o StrictHostKeyChecking=no -P ${{ secrets.SSH_PORT }} "electron/dist/*.msi" "${{ secrets.SSH_USER }}@${{ secrets.SERVER_HOST }}:${{ secrets.SCP_TARGET_PATH }}/"
+          } else {
+            Write-Host "No .msi files found"
+          }
+          
+          Write-Host "✓ Windows assets upload completed"
+        shell: pwsh

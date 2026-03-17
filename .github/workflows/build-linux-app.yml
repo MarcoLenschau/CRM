@@ -1,0 +1,54 @@
+name: Build & Release CRM Desktop App (Linux)
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          cd electron
+          npm install
+
+      - name: Build Electron app
+        run: |
+          cd electron
+          npm run build:linux
+
+      - name: Get version from package.json
+        id: version
+        run: |
+          VERSION=$(cat electron/package.json | grep '"version"' | head -1 | awk -F'"' '{print $4}')
+          COMMIT_HASH=$(git rev-parse --short HEAD)
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "COMMIT_HASH=$COMMIT_HASH" >> $GITHUB_OUTPUT
+          echo "RELEASE_TAG=v$VERSION-$COMMIT_HASH" >> $GITHUB_OUTPUT
+        
+      - name: Upload Linux assets with scp
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SCP_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          source: "electron/dist/*.deb,electron/dist/*.rpm"
+          target: ${{ secrets.SCP_TARGET_PATH }}
+          strip_components: 2
+          overwrite: true

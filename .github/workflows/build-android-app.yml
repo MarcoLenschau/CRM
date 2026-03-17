@@ -1,0 +1,104 @@
+name: Build & Release CRM Android App
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install Java Development Kit
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Cordova
+        run: npm install -g cordova
+
+      - name: Install project dependencies
+        run: npm install
+
+      - name: Check and initialize Cordova project
+        run: |
+          if [ ! -f "mobile/config.xml" ]; then
+            echo "config.xml not found in mobile folder"
+            exit 1
+          fi
+          
+          # Create basic Cordova project structure if missing
+          if [ ! -d "mobile/www" ]; then
+            mkdir -p mobile/www
+            echo '<!DOCTYPE html><html><head><meta charset="utf-8"><title>CRM App</title></head><body><h1>CRM App</h1></body></html>' > mobile/www/index.html
+          fi
+          
+          if [ ! -f "mobile/package.json" ]; then
+            cd mobile
+            npm init -y
+            cd ..
+          fi
+
+      - name: Install dependencies in mobile folder
+        run: |
+          cd mobile
+          npm install --save cordova
+
+      - name: Add Android platform
+        run: |
+          cd mobile
+          npx cordova platform add android@latest --save
+
+      - name: Build APK
+        run: |
+          cd mobile
+          npx cordova build android --no-telemetry
+
+      - name: Find and upload APK
+        run: |
+          echo "Searching for APK files..."
+          # Try to find APK first
+          APK_PATH=$(find mobile/platforms/android -name "*.apk" -type f | head -1)
+          
+          echo "Found: $APK_PATH"
+          ls -lh "$APK_PATH"
+          echo "APK_PATH=$APK_PATH" >> $GITHUB_ENV
+
+      - name: Extract version from package.json and rename APK
+        run: |
+          # Extract version from package.json
+          VERSION=$(grep -o '"version": "[^"]*"' package.json | cut -d'"' -f4)
+          echo "Version: $VERSION"
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          
+          # Rename APK with version
+          NEW_APK_PATH="mobile/platforms/android/CRM-v${VERSION}.apk"
+          mv "$APK_PATH" "$NEW_APK_PATH"
+          echo "Renamed to: $NEW_APK_PATH"
+          echo "APK_PATH=$NEW_APK_PATH" >> $GITHUB_ENV
+          ls -lh "$NEW_APK_PATH"
+
+      - name: Upload APK with scp
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SCP_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          source: ${{ env.APK_PATH }}
+          target: ${{ secrets.SCP_TARGET_PATH }}
+          strip_components: 3
+          overwrite: true
