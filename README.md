@@ -979,8 +979,8 @@ Check server terminal for server-side errors.
 
 #### Windows
 
-- **[Setup Installer](https://github.com/MarcoLenschau/CRM/releases/download/v1.0.0-cd8c6d5/CRM-Desktop-1.0.0-Setup.exe)** - Windows installer with uninstaller
-- **[Portable EXE](https://github.com/MarcoLenschau/CRM/releases/download/v1.0.0-cd8c6d5/CRM-Desktop-1.0.0-Portable.exe)** - Standalone executable (no installation needed)
+- **[Setup Installer](https://downloads.marco-lenschau.de/crm/CRM-Setup-1.0.0.exe)** - Windows installer with uninstaller
+- **[Portable EXE](https://downloads.marco-lenschau.de/crm/CRM-Portable-1.0.0.exe)** - Standalone executable (no installation needed)
 
 **Installation:**
 ```bash
@@ -993,8 +993,8 @@ CRM-Desktop-1.0.0-Portable.exe
 
 #### macOS
 
-- **[DMG Package](https://github.com/MarcoLenschau/CRM/releases/download/latest/CRM-Desktop-1.0.0-mac.dmg)** - For Apple Silicon (M1, M2, M3+)
-- **[ZIP Package](https://github.com/MarcoLenschau/CRM/releases/download/latest/CRM-Desktop-1.0.0-mac.zip)** - Portable app archive
+- **[DMG Package](https://downloads.marco-lenschau.de/crm/CRM%20Application-1.0.0-arm64.dmg)** - For Apple Silicon (M1, M2, M3+)
+- **[ZIP Package](https://downloads.marco-lenschau.de/crm/CRM%20Application-1.0.0-arm64-mac.zip)** - Portable app archive
 
 **Installation:**
 ```bash
@@ -1006,8 +1006,8 @@ CRM-Desktop-1.0.0-Portable.exe
 
 #### Linux
 
-- **[DEB Package](https://github.com/MarcoLenschau/CRM/releases/download/v1.0.0-cd8c6d5/CRM-Desktop-1.0.0-x64.deb)** - For Debian, Ubuntu, Linux Mint
-- **[RPM Package](https://github.com/MarcoLenschau/CRM/releases/download/v1.0.0-cd8c6d5/CRM-Desktop-1.0.0-x64.rpm)** - For Red Hat, Fedora, CentOS
+- **[DEB Package](https://downloads.marco-lenschau.de/crm/crm_1.0.0_amd64.deb)** - For Debian, Ubuntu, Linux Mint
+- **[RPM Package](https://downloads.marco-lenschau.de/crm/crm-1.0.0.x86_64.rpm)** - For Red Hat, Fedora, CentOS
 
 **Installation:**
 ```bash
@@ -1016,6 +1016,16 @@ sudo dpkg -i CRM-Desktop-1.0.0-x64.deb
 
 # For RPM-based systems (Red Hat/Fedora)
 sudo rpm -i CRM-Desktop-1.0.0-x64.rpm
+```
+
+#### Android
+
+- **[APK Package](https://downloads.marco-lenschau.de/crm/CRM-v0.1.0.apk)** - Android application package for mobile devices
+
+**Installation:**
+```bash
+# Enable installation from unknown sources on your Android device
+# Then download and install the APK file
 ```
 
 ### 📚 Documentation
