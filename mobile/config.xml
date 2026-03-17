@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="com.marcolenschau.crm" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>CRM Application</name>
+    <description>CRM Application from Marco Lenschau</description>
+    <author email="contact@marco-lenschau.de" href="https://marco-lenschau.de">
+        Marco Lenschau
+    </author>
+    <icon src="app/favicon.ico" width="512" height="512"/>
+    <!-- Android Icons -->
+    <icon src="res/mipmap-mdpi/ic_launcher.png" platform="android" width="48" height="48" density="mdpi"/>
+    <icon src="res/mipmap-hdpi/ic_launcher.png" platform="android" width="72" height="72" density="hdpi"/>
+    <icon src="res/mipmap-xhdpi/ic_launcher.png" platform="android" width="96" height="96" density="xhdpi"/>
+    <icon src="res/mipmap-xxhdpi/ic_launcher.png" platform="android" width="144" height="144" density="xxhdpi"/>
+    <icon src="res/mipmap-xxxhdpi/ic_launcher.png" platform="android" width="192" height="192" density="xxxhdpi"/>
+    <splash src="app/favicon.ico" width="320" height="426"/>
+    <content src="http://localhost:3000"/>
+    <allow-intent href="http://*/*"/>
+    <allow-intent href="https://*/*"/>
+</widget>

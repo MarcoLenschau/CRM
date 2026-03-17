@@ -2,7 +2,7 @@
   "entryPoints": ["app"],
   "entryPointStrategy": "expand",
   "out": "docs/typedoc",
-  "exclude": ["**/node_modules/**", "**/.next/**", "**/dist/**"],
+  "exclude": ["**/node_modules/**", "**/.next/**", "**/dist/**", "electron/**"],
   "excludePrivate": true,
   "excludeInternal": false,
   "excludeProtected": false,

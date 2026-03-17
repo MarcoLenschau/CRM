@@ -45,11 +45,17 @@ jobs:
         id: commit
         run: echo "HASH=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
-      - name: Upload to artefakte
-        uses: actions/upload-artifact@v4
+      - name: Upload APK with scp
+        uses: appleboy/scp-action@v1
         with:
-          name: CRM-Documentation-V.0.1.0
-          path: CRM-Documentation-V.0.1.0.zip
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SCP_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          source: "docs/typedoc-md/CRM-Documentation-V.0.1.0.zip"
+          target: ${{ secrets.SCP_TARGET_PATH }}
+          strip_components: 3
+          overwrite: true
 
       - name: Deploy to gh-pages branch
         uses: peaceiris/actions-gh-pages@v3
