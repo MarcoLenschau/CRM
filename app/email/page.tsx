@@ -5,7 +5,6 @@ import { db, emailTemplates } from '@/app/db';
 import SuccessDialog from '@/app/components/ui/dialogs/SuccessDialog/SuccessDialog';
 import PageHeader from '../components/ui/PageHeader/PageHeader';
 import QuickTip from '../components/ui/QuickTip/QuickTip';
-import { send } from 'process';
 
 /**
  * Renders email composition and sending interface with template support.
