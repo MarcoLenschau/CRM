@@ -5,6 +5,7 @@ import { db, emailTemplates } from '@/app/db';
 import SuccessDialog from '@/app/components/ui/dialogs/SuccessDialog/SuccessDialog';
 import PageHeader from '../components/ui/PageHeader/PageHeader';
 import QuickTip from '../components/ui/QuickTip/QuickTip';
+import { send } from 'process';
 
 /**
  * Renders email composition and sending interface with template support.
@@ -25,15 +26,8 @@ export default function EmailPage() {
   const [isEmailSentDialogOpen, setIsEmailSentDialogOpen] = useState(false);
   const [sentToEmail, setSentToEmail] = useState('');
 
-  const handleSendEmail = () => {
-    if (!formData.to.trim() || !formData.subject.trim() || !formData.message.trim()) {
-      alert('Please fill in all fields');
-      return;
-    }
-
-    // Simulate sending email
-    console.log('Email sent:', formData);
-    
+  const handleSendEmail = async () => {
+    await sendEmail(formData);
     setSentToEmail(formData.to);
     setIsEmailSentDialogOpen(true);
     setFormData({ to: '', subject: '', message: '' });
@@ -205,3 +199,17 @@ export default function EmailPage() {
     </div>
   );
 }
+
+const sendEmail = async (formData: { to: string; subject: string; message: string }) => {
+    if (!formData.to.trim() || !formData.subject.trim() || !formData.message.trim()) {
+      alert('Please fill in all fields');
+      return;
+    }
+    await fetch(process.env.NEXT_PUBLIC_API_BASE_URL + '/email', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    });
+};
