@@ -1,6 +1,9 @@
 import { protectRoute } from "@/app/utils/protectRoute"
+import type { TokenPayload } from "@/app/utils/jwt";
 import { NextResponse } from 'next/server';
 import { ImapFlow } from 'imapflow';
+import mongodb from "@/app/utils/mongodb"
+import Log from "@/app/models/log.model"
 import nodemailer from "nodemailer";
 
 interface EmailRequestBody {
@@ -59,8 +62,8 @@ export async function POST(request: Request): Promise<Response> {
       );
     }
     
-    await sendMail(requestData.to, requestData.subject, requestData.text);
-
+  await sendMail(requestData.to, requestData.subject, requestData.text);
+  await logEmail(requestData, protection.decoded as TokenPayload);
     return new Response(
       JSON.stringify({ success: true, message: "Email was sent!" }),
       { status: 200, headers: { "Content-Type": "application/json" } }
@@ -96,10 +99,10 @@ const sendMail = async (to: string, subject: string, text: string) => {
       },
     });
     await transporter.sendMail({
-        from: process.env.SUPPORT_EMAIL,
-        to: to,
-        subject: subject,
-        text: text,
+      from: process.env.SUPPORT_EMAIL,
+      to: to,
+      subject: subject,
+      text: text,
     });
 };
 
@@ -155,4 +158,24 @@ const loadMails = async (client: ImapFlow, limit: number) => {
       results.push({ uid: msg.uid, from, subject: env?.subject ?? undefined });
     }
   return results;
+};
+
+/**
+ * Logs the email sending action to the database.
+ *
+ * @param requestData - The data of the email being sent, including recipient details.
+ * @param decoded - The decoded token payload containing user information.
+ * @return {Promise<void>} A promise that resolves when the log entry is successfully inserted into the database.
+ * @category EmailService
+ * @author Marco Lenschau <contact@marco-lenschau.de>
+ */
+const logEmail = async(requestData: EmailRequestBody, decoded: TokenPayload) => {
+  await mongodb.dbConnect();
+  await Log.insertMany({
+      userID: decoded.userId,
+      action: "SEND",
+      entity: "Email",
+      status: "SUCCESS",
+      description: `Sent email to ${requestData.to}`
+  });
 };
