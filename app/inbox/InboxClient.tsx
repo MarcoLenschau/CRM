@@ -1,6 +1,8 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import InboxMessageItem from "../components/ui/InboxMessageItem/InboxMessageItem";
+import SearchBar from '@/app/components/ui/SearchBar/SearchBar';
 
 type EmailMessage = { uid: number; from?: string; subject?: string };
 
@@ -19,6 +21,7 @@ export default function InboxClient({ initialMessages = [], limit = 50, pollInte
   const [error, setError] = useState<string | null>(null);
   const latestRef = useRef<string>(JSON.stringify(messages));
   const mountedRef = useRef(true);
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
     mountedRef.current = true;
@@ -26,65 +29,83 @@ export default function InboxClient({ initialMessages = [], limit = 50, pollInte
   }, []);
 
   useEffect(() => {
-    // update latestRef when messages change (so compare uses latest value)
     latestRef.current = JSON.stringify(messages);
   }, [messages]);
 
-  useEffect(() => {
+  const fetchLatest = useCallback(async () => {
     const base = process.env.NEXT_PUBLIC_API_URL ?? '/api';
-    const fetchLatest = async () => {
-      try {
-        const res = await fetch(`${base}/email?limit=${limit}`, { cache: 'no-store' });
-        const json = await res.json();
-        if (!res.ok || !json?.success) {
-          const msg = json?.error || `HTTP ${res.status}`;
-          if (mountedRef.current) setError(msg);
-          return;
-        }
-        const msgs: EmailMessage[] = Array.isArray(json.messages) ? json.messages : [];
-        msgs.sort((a, b) => (b.uid ?? 0) - (a.uid ?? 0));
-        const key = JSON.stringify(msgs);
-        if (key !== latestRef.current) {
-          if (mountedRef.current) {
-            setMessages(msgs);
-            setError(null);
-          }
-        }
-      } catch (e: unknown) {
-        const err = e instanceof Error ? e.message : String(e);
-        if (mountedRef.current) setError(err);
+    try {
+      const res = await fetch(`${base}/email?limit=${limit}`, { cache: 'no-store' });
+      const json = await res.json();
+      if (!res.ok || !json?.success) {
+        const msg = json?.error || `HTTP ${res.status}`;
+        if (mountedRef.current) setError(msg);
+        return;
       }
-    };
+      const msgs: EmailMessage[] = Array.isArray(json.messages) ? json.messages : [];
+      msgs.sort((a, b) => (b.uid ?? 0) - (a.uid ?? 0));
+      const key = JSON.stringify(msgs);
+      if (key !== latestRef.current) {
+        if (mountedRef.current) {
+          setMessages(msgs);
+          setError(null);
+        }
+      }
+    } catch (e: unknown) {
+      const err = e instanceof Error ? e.message : String(e);
+      if (mountedRef.current) setError(err);
+    }
+  }, [limit]);
 
-    // initial fetch to ensure freshest state on client
-    void fetchLatest();
-    const id = setInterval(fetchLatest, pollIntervalMs);
-    return () => { clearInterval(id); };
-  }, [limit, pollIntervalMs]);
+  useEffect(() => {
+    const t = setTimeout(() => { void fetchLatest(); }, 50);
+    const id = setInterval(() => { void fetchLatest(); }, pollIntervalMs);
+    return () => { clearInterval(id); clearTimeout(t); };
+  }, [fetchLatest, pollIntervalMs]);
+
+  const visible = query.trim()
+    ? messages.filter((m) => {
+        const q = query.toLowerCase();
+        return (m.subject ?? "").toLowerCase().includes(q) || (m.from ?? "").toLowerCase().includes(q) || String(m.uid).includes(q);
+      })
+    : messages;
 
   return (
-    <main className="px-8 py-8 max-w-4xl mx-auto text-slate-800 font-sans">
+    <main className="px-6 py-6 max-w-4xl mx-auto font-sans text-slate-100">
+      <div className="mb-4">
+        <SearchBar
+          searchTerm={query}
+          onSearchChange={setQuery}
+          placeholder="Search by subject, sender or id"
+          focusColor="blue">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => { void fetchLatest(); }}
+              className="px-3 py-2 rounded-md bg-sky-800 hover:bg-sky-600 text-white text-sm font-medium focus:outline-none cursor-pointer">
+              Refresh
+            </button>
+          </div>
+        </SearchBar>
+      </div>
+
       {error ? (
-        <div className="border border-red-200 bg-red-900 text-red-800 p-3 rounded" role="status">Fehler beim Laden: {error}</div>
+        <div className="rounded-md border border-red-700 text-red-200 p-3" role="status">Fail of loading: {error}</div>
       ) : (
         <section>
-          <ul className="grid gap-3 list-none p-0 m-0">
-            {messages && messages.length > 0 ? (
-              messages.map((m) => (
-                <li key={m.uid} className="flex justify-between items-center p-3 rounded border-2 border-zinc-600">
-                  <div className="max-w-[80%]">
-                    <div className="text-base font-semibold text-slate-900">{m.subject ?? <em>No Subject</em>}</div>
-                    <div className="text-sm text-slate-500 mt-1">{m.from ?? <em>Unknown Sender</em>}</div>
-                  </div>
-                  <div className="text-sm text-slate-400 min-w-[60px] text-right font-bold cursor-pointer hover:underline">#{m.uid}</div>
-                </li>
-              ))
-            ) : (
-              <li className="p-4 text-slate-500">Keine Nachrichten gefunden.</li>
-            )}
-          </ul>
+          <div className="rounded-xl shadow border-2 border-zinc-700 overflow-hidden">
+            <ul className="p-0 m-0 list-none">
+              {visible && visible.length > 0 ? (
+                visible.map((m) => (
+                  <InboxMessageItem key={m.uid} message={m} />
+                ))
+              ) : (
+                <li className="p-6 text-center text-slate-400">Keine Nachrichten gefunden.</li>
+              )}
+            </ul>
+          </div>
         </section>
       )}
+    <div className="text-sm text-slate-400 mt-4">Showing <span className="text-slate-100 font-medium">{visible.length}</span> of {messages.length}</div>
     </main>
   );
 }
