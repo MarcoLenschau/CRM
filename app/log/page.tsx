@@ -53,6 +53,16 @@ export default function AuditLogPage() {
     return matchesSearch && matchesAction && matchesStatus;
   });
 
+  // Default to XML so the selector shows XML pre-selected
+  const [exportFormat, setExportFormat] = useState<string>('xml');
+
+  const downloadString = (content: string, filename: string, type = 'text/plain', addBom = true) => {
+    const payload = addBom ? '\uFEFF' + content : content;
+    const b = new Blob([payload], { type });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(b);
+    a.download = filename; a.click(); URL.revokeObjectURL(a.href);
+  };
+
   const actionCounts = {
     CREATE: auditLogs.filter((l: AuditLog) => l.action === 'CREATE').length,
     UPDATE: auditLogs.filter((l: AuditLog) => l.action === 'UPDATE').length,
@@ -173,6 +183,31 @@ export default function AuditLogPage() {
               <option value="FAILED">Failed</option>
               <option value="WARNING">Warning</option>
             </select>
+
+            {/* Export format selector + button */}
+            <select
+              value={exportFormat}
+              onChange={(e) => setExportFormat(e.target.value)}
+              className="bg-zinc-700/50 border border-zinc-600 rounded-lg px-4 py-2.5 text-white min-w-max">
+              <option value="csv">CSV</option>
+              <option value="xml">XML</option>
+              <option value="json">JSON</option>
+            </select>
+
+            <button
+              onClick={() => {
+                const filename = `audit-log.${exportFormat}`;
+                let content = '';
+                let type = 'application/octet-stream';
+                if (exportFormat === 'csv') { content = buildCSV(filteredLogs); type = 'text/csv;charset=utf-8;'; }
+                else if (exportFormat === 'xml') { content = buildXML(filteredLogs); type = 'application/xml;charset=utf-8;'; }
+                else { content = buildJSON(filteredLogs); type = 'application/json;charset=utf-8;'; }
+                downloadString(content, filename, type, true);
+              }}
+            className="bg-green-600 hover:bg-green-500 text-white rounded-lg px-4 py-2.5 ml-2"
+          >
+              Export
+            </button>
           </SearchBar>
 
           {/* Audit Log Table */}
@@ -261,3 +296,48 @@ export default function AuditLogPage() {
     </div>
   );
 }
+
+const escapeXml = (s: string) =>
+  (s || '').toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+
+const buildCSV = (logs: AuditLog[]) => {
+  const hdr = ['ID','Timestamp','User','Action','Entity','Description','Status'].join(";");
+  const rows = logs.map(log => [
+    log._id,
+    new Date(log.createdAt!).toISOString(),
+    log.userID,
+    log.action,
+    log.entity,
+    log.description,
+    log.status
+  ].map(cell => '"' + (cell || '').toString().replace(/"/g, '""') + '"').join(";")).join('\r\n');
+  return hdr + '\r\n' + rows;
+};
+
+const buildXML = (logs: AuditLog[]) => {
+  const items = logs.map(log => (
+    '<log>' +
+      '<id>' + escapeXml(log._id!) + '</id>' +
+      '<timestamp>' + new Date(log.createdAt!).toISOString() + '</timestamp>' +
+      '<user>' + escapeXml(log.userID) + '</user>' +
+      '<action>' + escapeXml(log.action) + '</action>' +
+      '<entity>' + escapeXml(log.entity) + '</entity>' +
+      '<description>' + escapeXml(log.description) + '</description>' +
+      '<status>' + escapeXml(log.status) + '</status>' +
+    '</log>'
+  )).join('');
+  return '<?xml version="1.0" encoding="UTF-8"?>\n<logs>' + items + '</logs>';
+};
+
+const buildJSON = (logs: AuditLog[]) => {
+  const data = logs.map(log => ({
+    id: log._id,
+    timestamp: new Date(log.createdAt!).toISOString(),
+    user: log.userID,
+    action: log.action,
+    entity: log.entity,
+    description: log.description,
+    status: log.status
+  }));
+  return JSON.stringify(data, null, 2);
+};
