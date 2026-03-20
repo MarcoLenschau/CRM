@@ -1,5 +1,8 @@
 "use client";
 
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+
 type EmailMessage = { uid: number; from?: string; subject?: string };
 
 function initialsFromName(name?: string) {
@@ -10,9 +13,12 @@ function initialsFromName(name?: string) {
 }
 
 export default function InboxMessageItem({ message }: { message: EmailMessage }) {
+  const router = useRouter();
   const initials = initialsFromName(message.from);
+  const id = String(message.uid ?? '');
   return (
     <li
+      onMouseEnter={() => { if (id) void router.prefetch(`/inbox/${id}`); }}
       tabIndex={0}
       className="flex items-center gap-4 p-3 border-1 border-zinc-700"
       aria-label={`Email ${message.subject ?? 'No Subject'} from ${message.from ?? 'Unknown sender'}`}>
@@ -24,10 +30,14 @@ export default function InboxMessageItem({ message }: { message: EmailMessage })
 
       <div className="min-w-0 flex-1">
         <div className="flex items-center justify-between">
-          <div className="text-sm font-semibold text-slate-100 truncate underline cursor-pointer">
-            {message.subject ?? <em className="text-slate-400">No Subject</em>}
+          <div className="text-sm font-semibold text-slate-100 truncate">
+            <Link href={`/inbox/${id}`} className="underline hover:text-sky-300 truncate" aria-label={`Open email ${id} - ${message.subject ?? ''}`}>
+              {message.subject ?? <em className="text-slate-400">No Subject</em>}
+            </Link>
           </div>
-          <div className="text-xs text-slate-400 ml-4">#{message.uid}</div>
+          <div className="text-xs text-slate-400 ml-4">
+            <Link href={`/inbox/${id}`} className="hover:text-sky-300">#{id}</Link>
+          </div>
         </div>
         <div className="mt-1 text-sm text-slate-300 truncate">{message.from ?? <em>Unknown Sender</em>}</div>
       </div>

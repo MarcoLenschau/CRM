@@ -156,8 +156,7 @@ export default function CustomerDetailPage() {
     <div className="flex flex-col h-full">
       <CustomerDetailHeader 
         title="Customer Details"
-        subtitle="View and manage customer information"
-      />
+        subtitle="View and manage customer information"/>
 
       <div className="flex-1 overflow-y-auto scrollbar-dark">
         <section className="flex flex-col justify-start items-center gap-4 px-6 py-4">
@@ -181,25 +180,16 @@ export default function CustomerDetailPage() {
               }}
               onEditToggle={setIsEditing}
               onDelete={() => setShowDeleteConfirm(true)}
-              getStatusColor={getStatusColor}
-            />
-
-            {/* Additional Info Section */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-              <CustomerAccountInfo customer={customer} />
-              <CustomerCommunication />
-            </div>
+              getStatusColor={getStatusColor}/>
           </div>
         </section>
       </div>
 
-      {/* Dialogs */}
       <DeleteConfirmDialog 
         isOpen={showDeleteConfirm}
         userName={customer.name}
         onConfirm={handleDeleteCustomer}
-        onClose={() => setShowDeleteConfirm(false)}
-      />
+        onClose={() => setShowDeleteConfirm(false)}/>
 
       <SuccessDialog 
         isOpen={isSuccessDialogOpen}
@@ -208,8 +198,7 @@ export default function CustomerDetailPage() {
         message={successMessage}
         detailLabel="Customer"
         detailValue={customer.name}
-        buttonText="Done"
-      />
+        buttonText="Done"/>
     </div>
   );
 }
