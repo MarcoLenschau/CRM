@@ -25,6 +25,12 @@ export async function POST(request: Request): Promise<Response> {
     const user = await User.findOne({ email: body.email }).lean();
     if (user && await bcryptjs.compare(body.password!, user.hash)) {
         const token = generateToken({ userId: String(user._id), email: user.email, isAdmin: user.isAdmin });
+        mongodb.logData({ email: user.email, userId: String(user._id), isAdmin: user.isAdmin }, {
+          action: "LOGIN",
+          entity: "User",
+          status: "SUCCESS",
+          description: "User logged in"
+        });
         return Response.json({success: true, token: token}, {status: 200});        
     } else {
         return Response.json({success: false, error: "Invalid email or password"}, {status: 401});

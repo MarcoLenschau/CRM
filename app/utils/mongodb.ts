@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import Log from "../models/log.model";
+import { TokenPayload } from "./jwt";
 
 interface CacheType {
   con: typeof mongoose | null;
@@ -44,5 +46,17 @@ const dbDisconnect = async () => {
   await mongoose.disconnect()
 };
 
-const mongodb = {dbConnect, dbDisconnect};
+const logData = async(decoded: TokenPayload, logObj: { action: string; entity: string; status: string; description?: string }) => {
+  await dbConnect();
+  await Log.create({
+    userID: decoded.email!,
+    action: logObj.action,
+    entity: logObj.entity,
+    status: logObj.status,
+    description: logObj.description
+  });
+};
+
+const mongodb = {dbConnect, dbDisconnect, logData};
 export default mongodb;
+export { logData };
