@@ -38,7 +38,8 @@ const userSchema = new mongoose.Schema({
     },
     totpSecret: {
         type: String,
-        required: false
+        required: true,
+        default: null
     },
     isAdmin: {
         type: Boolean,

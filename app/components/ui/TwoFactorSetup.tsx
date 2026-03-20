@@ -46,7 +46,7 @@ export default function TwoFactorSetup({ userId }: { userId: string }) {
     <div className="space-y-4">
       <h4 className="text-lg font-bold text-white">Zwei-Faktor-Authentifizierung (TOTP)</h4>
       {step === 'init' && (
-        <button onClick={handleActivate} className="bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold">2FA aktivieren</button>
+          <button onClick={handleActivate} className={`bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold`}>2FA aktivieren</button>
       )}
       {step === 'qr' && otpauthUrl && (
         <div>

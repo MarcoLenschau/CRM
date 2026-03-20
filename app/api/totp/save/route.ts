@@ -10,7 +10,7 @@ export async function POST(request: Request) {
     const {secret } = await request.json();
     if (!protection.decoded || !secret) return NextResponse.json({ success: false });
     await mongodb.dbConnect();
-    await User.updateOne(
+    await User.updateMany(
       { email: protection.decoded.email },
       { $set: { twoFactorAuth: true, totpSecret: secret } }
     );
