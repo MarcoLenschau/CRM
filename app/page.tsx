@@ -58,7 +58,6 @@ export default function Login() {
                   <input 
                     id="email"
                     type="email"
-                    autoComplete="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="name@example.com"
@@ -74,7 +73,6 @@ export default function Login() {
                     <input 
                       id="password"
                       type={showPassword ? "text" : "password"}
-                      autoComplete="current-password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="Enter your password"
@@ -196,18 +194,10 @@ const login = async(email: string, password: string, setErrorDialog: Dispatch<Se
       return;
     }
 
-    // Token im SessionStorage und als Cookie speichern
     if (data.token) {
       sessionStorage.setItem("authToken", data.token);
-      
-      // Optional: User Info auch speichern
       sessionStorage.setItem("userEmail", email);
-      
-      // Token auch als Cookie speichern (damit Middleware es sieht)
-      // Cookie wird automatisch mit jedem Request mitgeschickt
       document.cookie = `token=${data.token}; path=/; SameSite=Strict`;
-      
-      // Weiterleitung zum Dashboard nach erfolgreichem Login
       window.location.href = "/dashboard";
     }
   } catch (error) {

@@ -1,6 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import TwoFactorSetup from '@/app/components/ui/TwoFactorSetup';
+import { useState, useEffect } from 'react';
+import { getAuthHeaders } from '@/app/utils/api';
 import PageHeader from '@/app/components/ui/PageHeader/PageHeader';
 
 /**
@@ -16,11 +18,46 @@ import PageHeader from '@/app/components/ui/PageHeader/PageHeader';
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState<'account' | 'notifications' | 'appearance' | 'security'>('account');
   const [accountSettings, setAccountSettings] = useState({
-    fullName: 'Max Mustermann',
-    email: 'max.mustermann@example.com',
-    phone: '+49 123 45789',
-    company: 'CRM Solutions GmbH',
+    fullName: '',
+    email: '',
+    phone: '',
+    company: '',
   });
+  // Fetch user data on mount
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await fetch('/api/user', {
+          headers: typeof window !== 'undefined' ? getAuthHeaders() : {},
+        });
+        const data = await res.json();
+        if (data && data.users && Array.isArray(data.users)) {
+          // Find current user by email from token
+          const token = typeof window !== 'undefined' ? sessionStorage.getItem('authToken') : null;
+          let email = '';
+          if (token) {
+            try {
+              const payload = JSON.parse(atob(token.split('.')[1]));
+              email = payload.email;
+            } catch {}
+          }
+          type UserType = { name?: string; email?: string; phone?: string; company?: string };
+          const user = data.users.find((u: UserType) => u.email === email);
+          if (user) {
+            setAccountSettings({
+              fullName: user.name || '',
+              email: user.email || '',
+              phone: user.phone || '',
+              company: user.company || '',
+            });
+          }
+        }
+      } catch {
+        // fallback: do nothing
+      }
+    };
+    fetchUser();
+  }, []);
   const [notifications, setNotifications] = useState({
     emailNotifications: true,
     pushNotifications: false,
@@ -58,8 +95,7 @@ export default function SettingsPage() {
   const tabs = [
     { id: 'account', label: 'Account', icon: 'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z' },
     { id: 'notifications', label: 'Notifications', icon: 'M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.86 5.36 6.25 7.92 6.25 11v5l-2 2v1h15v-1l-2-2z' },
-    { id: 'appearance', label: 'Appearance', icon: 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 9 15.5 9 14 9.67 14 10.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 9 8.5 9 7 9.67 7 10.5 7.67 12 8.5 12zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z' },
-    { id: 'security', label: 'Security', icon: 'M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z' },
+    { id: 'security', label: 'Security', icon: 'M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z' }
   ];
 
   return (
@@ -78,13 +114,12 @@ export default function SettingsPage() {
             {tabs.map(tab => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id as 'account' | 'notifications' | 'appearance' | 'security')}
+                onClick={() => setActiveTab(tab.id as 'account' | 'notifications' | 'security')}
                 className={`flex items-center gap-2 px-4 py-3 border-b-2 transition-all font-semibold text-sm ${
                   activeTab === tab.id
                     ? 'border-blue-500 text-blue-400'
                     : 'border-transparent text-gray-400 hover:text-gray-300'
-                }`}
-              >
+                }`}>
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                   <path d={tab.icon} />
                 </svg>
@@ -105,16 +140,13 @@ export default function SettingsPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {[
                     { label: 'Full Name', key: 'fullName' },
-                    { label: 'Email Address', key: 'email' },
-                    { label: 'Phone Number', key: 'phone' },
-                    { label: 'Company', key: 'company' },
+                    { label: 'Email Address', key: 'email' }
                   ].map(field => (
                     <div key={field.key} className="flex flex-col gap-2">
                       <label className="text-sm font-semibold text-gray-300">{field.label}</label>
                       <input
                         type="text"
-                        value=""
-                        placeholder={accountSettings[field.key as keyof typeof accountSettings] as string}
+                        value={accountSettings[field.key as keyof typeof accountSettings] as string}
                         onChange={(e) => handleAccountChange(field.key, e.target.value)}
                         className="bg-zinc-700/50 border border-zinc-600 rounded-lg px-4 py-2.5 text-white placeholder-gray-400 transition-all"
                       />
@@ -143,8 +175,7 @@ export default function SettingsPage() {
                 </h3>
                 <div className="space-y-4">
                   {[
-                    { label: 'Email Notifications', key: 'emailNotifications', desc: 'Receive emails for important updates' },
-                    { label: 'Push Notifications', key: 'pushNotifications', desc: 'Get push notifications on your devices' },
+                    { label: 'Email Notifications', key: 'emailNotifications', desc: 'Receive emails for important updates' }
                   ].map(notif => (
                     <div key={notif.key} className="flex items-center justify-between p-4 bg-zinc-700/30 rounded-lg border border-zinc-600/50 hover:border-zinc-600 transition-colors">
                       <div>
@@ -162,63 +193,6 @@ export default function SettingsPage() {
                       </label>
                     </div>
                   ))}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Appearance Settings Tab */}
-          {activeTab === 'appearance' && (
-            <div className="space-y-8">
-              <div className="bg-gradient-to-br from-zinc-800/50 to-zinc-900/50 rounded-lg border border-zinc-700/50 p-6">
-                <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-                  <svg className="w-6 h-6 text-purple-400" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
-                  </svg>
-                  Display Preferences
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <div className="space-y-4">
-                    <h4 className="text-lg font-semibold text-white mb-4">Theme</h4>
-                    {[
-                      { value: 'dark', label: '🌙 Dark' },
-                      { value: 'light', label: '☀️ Light' },
-                      { value: 'auto', label: '🔄 Auto' },
-                    ].map(option => (
-                      <label key={option.value} className="flex items-center gap-3 p-3 bg-zinc-700/30 rounded-lg border border-zinc-600/50 hover:border-zinc-600 transition-colors cursor-pointer">
-                        <input
-                          type="radio"
-                          name="theme"
-                          value={option.value}
-                          checked={appearance.theme === option.value}
-                          onChange={(e) => handleAppearanceChange('theme', e.target.value)}
-                          className="w-4 h-4"
-                        />
-                        <span className="text-white font-medium">{option.label}</span>
-                      </label>
-                    ))}
-                  </div>
-
-                  <div className="space-y-4">
-                    <h4 className="text-lg font-semibold text-white mb-4">Language</h4>
-                    {[
-                      { value: 'de', label: '🇩🇪 Deutsch' },
-                      { value: 'en', label: '🇬🇧 English' },
-                      { value: 'es', label: '🇪🇸 Español' },
-                    ].map(option => (
-                      <label key={option.value} className="flex items-center gap-3 p-3 bg-zinc-700/30 rounded-lg border border-zinc-600/50 hover:border-zinc-600 transition-colors cursor-pointer">
-                        <input
-                          type="radio"
-                          name="language"
-                          value={option.value}
-                          checked={appearance.language === option.value}
-                          onChange={(e) => handleAppearanceChange('language', e.target.value)}
-                          className="w-4 h-4"
-                        />
-                        <span className="text-white font-medium">{option.label}</span>
-                      </label>
-                    ))}
-                  </div>
                 </div>
               </div>
             </div>
@@ -254,6 +228,8 @@ export default function SettingsPage() {
                       </label>
                     </div>
                   ))}
+                  {/* TOTP Setup UI */}
+                  <TwoFactorSetup userId={accountSettings.email} />
 
                 </div>
               </div>
