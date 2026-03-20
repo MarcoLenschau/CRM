@@ -31,6 +31,15 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    twoFactorAuth: {
+        type: Boolean,
+        required: true,
+        default: false
+    },
+    totpSecret: {
+        type: String,
+        required: false
+    },
     isAdmin: {
         type: Boolean,
         required: true

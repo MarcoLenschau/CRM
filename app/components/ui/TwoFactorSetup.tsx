@@ -29,10 +29,13 @@ export default function TwoFactorSetup({ userId }: { userId: string }) {
     const data = await res.json();
     setValid(data.valid);
     if (data.valid) {
-      // Secret speichern (Mock):
+      const token = sessionStorage.getItem('authToken');
       await fetch('/api/totp/save', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        },
         body: JSON.stringify({ userId, secret })
       });
       setStep('done');

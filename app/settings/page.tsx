@@ -32,7 +32,6 @@ export default function SettingsPage() {
         });
         const data = await res.json();
         if (data && data.users && Array.isArray(data.users)) {
-          // Find current user by email from token
           const token = typeof window !== 'undefined' ? sessionStorage.getItem('authToken') : null;
           let email = '';
           if (token) {
