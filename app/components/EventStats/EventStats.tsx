@@ -29,18 +29,15 @@ export default function EventStats() {
           const data = await response.json();
           setEvents(data);
         }
-      } catch (error) {
-        console.error('Error fetching events:', error);
+      } catch {
+        // failed to fetch events
       }
     };
 
     fetchEvents();
 
     // Höre auf eventsUpdated Event
-    const handleEventsUpdated = () => {
-      console.log('📢 EventStats: Events updated - refreshing stats');
-      fetchEvents();
-    };
+    const handleEventsUpdated = () => { fetchEvents(); };
 
     window.addEventListener('eventsUpdated', handleEventsUpdated);
     return () => window.removeEventListener('eventsUpdated', handleEventsUpdated);

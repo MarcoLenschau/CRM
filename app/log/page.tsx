@@ -33,8 +33,8 @@ export default function AuditLogPage() {
         if (data.success && data.logs) {
           setAuditLogs(data.logs);
         }
-      } catch (err) {
-        console.error('Failed to fetch logs:', err);
+      } catch {
+        // failed to fetch logs; UI will stay empty
       }
     };
 
@@ -79,7 +79,7 @@ export default function AuditLogPage() {
       'LOGIN': 'M10 17v-5h2v5h4v-8H2v8h4zm8-10h-4V5h4v2z',
       'LOGOUT': 'M17 7l-1.41-1.41L12 10.17V3h-2v7.17L8.41 5.59 7 7l5 5 5-5z',
       'EXPORT': 'M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z',
-      'IMPORT': 'M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z',
+      'IMPORT': 'M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z'
     };
     return iconMap[action] || iconMap['CREATE'];
   };
@@ -155,6 +155,7 @@ export default function AuditLogPage() {
               <option value="CREATE">Create</option>
               <option value="UPDATE">Update</option>
               <option value="DELETE">Delete</option>
+              <option value="SEND">Send</option>
               <option value="VIEW">View</option>
               <option value="LOGIN">Login</option>
               <option value="LOGOUT">Logout</option>

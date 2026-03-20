@@ -21,34 +21,27 @@ export default function AllEventsTemplate() {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        console.log("🎯 AllEventsTemplate: Fetching events from API");
         const eventResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/event`, {
           credentials: 'include'
         });
-        
-        console.log("📊 Response status:", eventResponse.status, eventResponse.statusText);
-        
+
         if (!eventResponse.ok) {
-          console.error('❌ Failed to fetch events:', eventResponse.status, eventResponse.statusText);
           setLoading(false);
           return;
         }
-        
+
         const event: Event[] = await eventResponse.json();
-        console.log('✅ Fetched events count:', event?.length || 0);
-        console.log('📋 Events data:', JSON.stringify(event, null, 2));
-        
+
         if (!event || event.length === 0) {
-          console.warn("⚠️ No events returned from API");
           setSortedEvents([]);
           setLoading(false);
           return;
         }
-        
+
         const sorted = event.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
         setSortedEvents(sorted);
-      } catch (error) {
-        console.error('❌ Error fetching events:', error);
+      } catch {
+        // failed to fetch events
       } finally {
         setLoading(false);
       }
@@ -57,10 +50,7 @@ export default function AllEventsTemplate() {
     fetchEvents();
 
     // Listen for events updated event
-    const handleEventsUpdated = () => {
-      console.log('📢 Events updated event received - refreshing');
-      fetchEvents();
-    };
+    const handleEventsUpdated = () => { fetchEvents(); };
 
     window.addEventListener('eventsUpdated', handleEventsUpdated);
     return () => window.removeEventListener('eventsUpdated', handleEventsUpdated);

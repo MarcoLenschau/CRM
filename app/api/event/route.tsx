@@ -42,7 +42,7 @@ export async function POST(request: Request): Promise<Response> {
       event: eventData
     }, { status: 200 });
   } catch (error) {
-    console.error("Event creation error:", error);
+    // event creation failed
     return Response.json({ 
       success: false,
       error: "Failed to create event",
@@ -73,7 +73,7 @@ export async function GET(request: Request): Promise<Response> {
     const events = await Event.find({}).lean();
     return Response.json(events, { status: 200 });
   } catch (error) {
-    console.error("Event fetch error:", error);
+    // failed to fetch events
     return Response.json({
       success: false,
       error: "Failed to fetch events",

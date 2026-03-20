@@ -40,9 +40,8 @@ export default function SelectContactDialog({ isOpen, onClose, onSelectUser }: S
       } else {
         setError('Failed to load customers');
       }
-    } catch (err) {
+    } catch {
       setError('Error loading customers');
-      console.error(err);
     } finally {
       setLoading(false);
     }

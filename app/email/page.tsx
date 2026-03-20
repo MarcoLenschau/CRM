@@ -20,7 +20,7 @@ export default function EmailPage() {
   const [formData, setFormData] = useState({
     to: '',
     subject: '',
-    message: ''
+    text: ''
   });
   const [isEmailSentDialogOpen, setIsEmailSentDialogOpen] = useState(false);
   const [sentToEmail, setSentToEmail] = useState('');
@@ -29,7 +29,7 @@ export default function EmailPage() {
     await sendEmail(formData);
     setSentToEmail(formData.to);
     setIsEmailSentDialogOpen(true);
-    setFormData({ to: '', subject: '', message: '' });
+    setFormData({ to: '', subject: '', text: '' });
   };
 
   return (
@@ -115,8 +115,8 @@ export default function EmailPage() {
                     Message
                   </label>
                   <textarea 
-                    value={formData.message} 
-                    onChange={(e) => setFormData({ ...formData, message: e.target.value })} 
+                    value={formData.text} 
+                    onChange={(e) => setFormData({ ...formData, text: e.target.value })} 
                     placeholder="Write your message here..."
                     rows={6}
                     className="bg-zinc-700/50 text-white rounded-lg px-3 py-2 border border-zinc-600 hover:border-zinc-500 focus:border-orange-400 focus:outline-none resize-none text-sm transition-colors placeholder-gray-500"
@@ -134,7 +134,7 @@ export default function EmailPage() {
                     Send Email
                   </button>
                   <button 
-                    onClick={() => setFormData({ to: '', subject: '', message: '' })}
+                    onClick={() => setFormData({ to: '', subject: '', text: '' })}
                     className="flex-1 bg-zinc-700 hover:bg-zinc-600 text-white py-3 rounded-lg font-semibold cursor-pointer transition-colors flex items-center justify-center gap-2">
                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/>
@@ -158,13 +158,13 @@ export default function EmailPage() {
             </div>
             <section className="flex flex-col justify-between gap-4">
               <div className="space-y-2 max-h-96 overflow-y-auto scrollbar-dark pr-2">  
-              {emailTemplates.map((template, idx) => (
+                  {emailTemplates.map((template, idx) => (
                 <button 
                   key={idx} 
                   onClick={() => setFormData({
                     ...formData,
                     subject: template.subject,
-                    message: template.body
+                    text: template.body
                   })}
                   className="w-full bg-zinc-700/50 hover:bg-zinc-600/70 border border-zinc-600 hover:border-purple-500/50 rounded-lg p-4 text-left cursor-pointer transition-all group">
                   <div className="flex items-start justify-between gap-3">
@@ -199,16 +199,19 @@ export default function EmailPage() {
   );
 }
 
-const sendEmail = async (formData: { to: string; subject: string; message: string }) => {
-    if (!formData.to.trim() || !formData.subject.trim() || !formData.message.trim()) {
-      alert('Please fill in all fields');
-      return;
-    }
-    await fetch(process.env.NEXT_PUBLIC_API_BASE_URL + '/email', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formData),
-    });
+const sendEmail = async (formData: { to: string; subject: string; text: string }) => {
+  if (!formData.to.trim() || !formData.subject.trim() || !formData.text.trim()) {
+    alert('Please fill in all fields');
+    return;
+  }
+  const payload = { to: formData.to, subject: formData.subject, text: formData.text };
+  const baseUrl = typeof process !== 'undefined' && process.env.NEXT_PUBLIC_API_BASE_URL
+    ? process.env.NEXT_PUBLIC_API_BASE_URL : '/api';
+  await fetch(baseUrl + '/email', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  });
 };

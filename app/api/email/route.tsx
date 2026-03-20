@@ -5,6 +5,7 @@ import { ImapFlow } from 'imapflow';
 import mongodb from "@/app/utils/mongodb"
 import Log from "@/app/models/log.model"
 import nodemailer from "nodemailer";
+import Email from "@/app/models/email.model";
 
 interface EmailRequestBody {
     to: string;
@@ -22,18 +23,68 @@ interface EmailRequestBody {
  */
 export async function GET(request: Request) {
   const url = new URL(request.url);
-  const DEFAULT_LIMIT = 20;
+  const DEFAULT_LIMIT = Number(process.env.EMAIL_DEFAULT_LIMIT ?? process.env.EMAIL_LIMIT ?? 20);
   const limitParam = url.searchParams.get('limit');
-  const limit = limitParam !== null && !Number.isNaN(Number(limitParam)) && Number(limitParam) > 0
+  const limit = limitParam && !Number.isNaN(Number(limitParam)) && Number(limitParam) > 0
     ? Math.floor(Number(limitParam)) : DEFAULT_LIMIT;
+  const subjectFilter = (process.env.SUBJECT_FILTER || '').trim();
+  const matchesFilter = (subject?: string) => !subjectFilter || (subject ?? '').toLowerCase().includes(subjectFilter.toLowerCase());
+  const dbQuery = subjectFilter ? { subject: { $regex: subjectFilter, $options: 'i' } } : {};
+
   const client = createImapClient();
   try {
-    const results = await loadMails(client, limit);
-    const filtered = results.filter(mail => (mail.subject || "").toLowerCase().includes(process.env.SUBJECT_FILTER!.toLowerCase()));
-    await client.logout();
-    return NextResponse.json({ success: true, found: filtered.length, messages: filtered });
+    await mongodb.dbConnect();
+    const dbMessages = await Email.find(dbQuery).sort({ createdAt: -1 }).limit(limit).lean();
+
+    // If DB is empty, synchronously fetch remote IMAP (respecting limit/env) and return those results immediately.
+    if (!dbMessages || dbMessages.length === 0) {
+      try {
+        const remote = await loadMails(client, limit);
+        const filteredRemote = (remote || []).filter(m => matchesFilter(m.subject));
+        if (filteredRemote.length) {
+          await mongodb.dbConnect();
+          const ops = filteredRemote.map(m => ({
+            updateOne: {
+              filter: { uid: m.uid.toString() },
+              update: { $set: { uid: m.uid.toString(), from: m.from ?? '', subject: m.subject ?? '' } },
+              upsert: true
+            }
+          }));
+          if (ops.length) await Email.bulkWrite(ops);
+        }
+        try { await client.logout(); } catch { }
+        return NextResponse.json({ success: true, found: filteredRemote.length, messages: filteredRemote });
+      } catch {
+        try { await client.logout(); } catch { }
+        // fall through and return DB messages (empty) below
+      }
+    }
+
+    // background sync: fetch all remote mails and upsert in background
+    void (async () => {
+      const bgClient = createImapClient();
+      try {
+        const remote = await loadMails(bgClient, 0);
+        const toUpsert = (remote || []).filter(m => matchesFilter(m.subject));
+        if (toUpsert.length) {
+          await mongodb.dbConnect();
+          const ops = toUpsert.map(m => ({
+            updateOne: {
+              filter: { uid: m.uid.toString() },
+              update: { $set: { uid: m.uid.toString(), from: m.from ?? '', subject: m.subject ?? '' } },
+              upsert: true
+            }
+          }));
+          if (ops.length) await Email.bulkWrite(ops);
+        }
+      } catch (e) {
+        try { await mongodb.dbConnect(); await Log.insertMany({ userID: 'system', action: 'FETCH_EMAILS', entity: 'Email', status: 'FAILED', description: String(e) }); } catch { }
+      } finally {
+        try { await bgClient.logout(); } catch { }
+      }
+    })();
+    return NextResponse.json({ success: true, found: dbMessages.length, messages: dbMessages });
   } catch (err) {
-    try { await client.logout(); } catch { }
     return NextResponse.json({ success: false, error: String(err) }, { status: 500 });
   }
 }
@@ -132,7 +183,8 @@ const loadMails = async (client: ImapFlow, limit: number) => {
     await client.logout();
     return [] as { uid: number; from?: string; subject?: string }[];
   }
-  const selected = uids.slice(-limit);
+  // if limit <= 0, fetch all uids
+  const selected = (limit <= 0) ? uids : uids.slice(-limit);
   const results = [];
     for await (const msg of client.fetch(selected, { envelope: true })) {
       const env = msg.envelope;
@@ -172,7 +224,7 @@ const loadMails = async (client: ImapFlow, limit: number) => {
 const logEmail = async(requestData: EmailRequestBody, decoded: TokenPayload) => {
   await mongodb.dbConnect();
   await Log.insertMany({
-      userID: decoded.userId,
+      userID: decoded.email,
       action: "SEND",
       entity: "Email",
       status: "SUCCESS",

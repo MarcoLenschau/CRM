@@ -49,8 +49,7 @@ export default function UserDetailPage() {
         } else {
           setUser(null);
         }
-      } catch (error) {
-        console.error('Error fetching user:', error);
+      } catch {
         setUser(null);
       } finally {
         setIsLoading(false);

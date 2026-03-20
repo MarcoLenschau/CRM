@@ -41,8 +41,7 @@ export default function LogDetails() {
             setUserLogs(data.logs.filter((l: AuditLog) => l.userID === currentLog.userID));
           }
         }
-      } catch (err) {
-        console.error('Error:', err);
+      } catch {
       } finally {
         setLoading(false);
       }

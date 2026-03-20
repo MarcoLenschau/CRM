@@ -49,8 +49,8 @@ export default function UsersPage() {
         } else if (Array.isArray(data)) {
           setUsers(data);
         }
-      } catch (error) {
-        console.error('Error loading users:', error);
+      } catch {
+        // failed to load users
       }
     };
     fetchUsers();
@@ -67,8 +67,8 @@ export default function UsersPage() {
       } else if (Array.isArray(data)) {
         setUsers(data);
       }
-    } catch (error) {
-      console.error('Error loading users:', error);
+    } catch {
+      // failed to load users
     }
   };
 
@@ -130,8 +130,7 @@ export default function UsersPage() {
       }
       setNewUser({ name: '', email: '', password: '', isAdmin: false });
       setShowForm(false);
-    } catch (error) {
-      console.error('Error:', error);
+    } catch {
       alert('Error saving user');
     }
   };
@@ -160,8 +159,7 @@ export default function UsersPage() {
           setDeleteUserId(null);
           setDeleteUserName('');
         }
-      } catch (error) {
-        console.error('Error:', error);
+      } catch {
         alert('Error deleting user');
       }
     }

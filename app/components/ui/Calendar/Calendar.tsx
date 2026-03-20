@@ -40,18 +40,16 @@ export default function Calendar({height=100, width=100, events=[]}: {height?: n
    */
   useEffect(() => {
     const handleEventsUpdated = async () => {
-      console.log('📢 Calendar: Events updated event received - refreshing');
       try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/event`, {
           credentials: 'include'
         });
         if (response.ok) {
           const newEvents = await response.json();
-          console.log('📊 Calendar: Loaded', newEvents.length, 'events');
           setCalendarEvents(newEvents);
         }
-      } catch (error) {
-        console.error('❌ Calendar: Error fetching events:', error);
+      } catch {
+        // failed to refresh events
       }
     };
 
@@ -136,9 +134,7 @@ export default function Calendar({height=100, width=100, events=[]}: {height?: n
         selectedDay={selectedDay || 0} month={month} year={year}
         onSubmit={async (eventData) => {
           try {
-            console.log("🎯 Creating event:", eventData);
             const userEmail = typeof window !== 'undefined' ? sessionStorage.getItem('userEmail') || 'unknown' : 'unknown';
-            console.log("👤 Using userEmail:", userEmail);
             
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/event`, {
               method: 'POST',
@@ -154,7 +150,6 @@ export default function Calendar({height=100, width=100, events=[]}: {height?: n
             });
             
             if (response.ok) {
-              console.log("✅ Event created successfully");
               setIsCreateEventDialogOpen(false);
               setCreatedEventInfo({ 
                 name: eventData.name, 
@@ -165,11 +160,11 @@ export default function Calendar({height=100, width=100, events=[]}: {height?: n
               window.dispatchEvent(new Event('eventsUpdated'));
             } else {
               const errorData = await response.json();
-              console.error("❌ Failed to create event:", response.status, errorData);
+              // failed to create event
               alert(`Event erstellen fehlgeschlagen: ${errorData.details || errorData.error}`);
             }
-          } catch (error) {
-            console.error("❌ Error creating event:", error);
+          } catch {
+            // error creating event
             alert('Fehler beim Erstellen des Events');
           }
         }}/>

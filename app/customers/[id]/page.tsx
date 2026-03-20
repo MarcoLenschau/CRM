@@ -72,8 +72,7 @@ export default function CustomerDetailPage() {
         } else if (response.status === 404) {
           setCustomer(null);
         }
-      } catch (error) {
-        console.error('Error fetching customer:', error);
+      } catch {
         setCustomer(null);
       } finally {
         setIsLoading(false);

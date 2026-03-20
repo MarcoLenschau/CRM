@@ -55,8 +55,7 @@ export default function QuickActionsTemplate() {
       
       // Redirect to home page
       router.push('/');
-    } catch (error) {
-      console.error('Logout error:', error);
+    } catch {
       // Still redirect even if API call fails
       sessionStorage.removeItem('authToken');
       window.dispatchEvent(new Event('logoutEvent'));

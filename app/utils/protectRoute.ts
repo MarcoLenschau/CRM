@@ -16,12 +16,10 @@ export const protectRoute = async (request: Request, requireAdminRole: boolean =
     Promise<{ error?: Response; decoded?: TokenPayload; isValid: boolean }> => {
 
   const decoded = authenticateRequest(request);
-  console.log("🛡️ protectRoute - decoded:", decoded ? "Valid token" : "No valid token");
   
   if (!decoded) {
-    const authHeader = request.headers.get("authorization");
-    const cookieHeader = request.headers.get("cookie");
-    console.log("🛡️ protectRoute - Returning 401 Unauthorized");
+  const authHeader = request.headers.get("authorization");
+  const cookieHeader = request.headers.get("cookie");
     return {
       error: new Response(
         JSON.stringify({ 
@@ -38,7 +36,6 @@ export const protectRoute = async (request: Request, requireAdminRole: boolean =
     };
   }
   if (requireAdminRole && !decoded.isAdmin) {
-    console.log("🛡️ protectRoute - Returning 403 Forbidden (not admin)");
     return {
       error: new Response(
         JSON.stringify({success: false, error: "Forbidden - Admin access required" }),
@@ -47,7 +44,6 @@ export const protectRoute = async (request: Request, requireAdminRole: boolean =
       isValid: false,
     };
   }
-  console.log("🛡️ protectRoute - Route protected successfully, user email:", decoded.email);
   return {
     decoded,
     isValid: true,

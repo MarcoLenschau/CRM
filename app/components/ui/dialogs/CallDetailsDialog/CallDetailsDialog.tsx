@@ -40,8 +40,8 @@ export default function CallDetailsDialog({ isOpen, selectedUserId, onClose }: C
         if (data.success && data.customer) {
           setSelectedCustomer(data.customer);
         }
-      } catch (err) {
-        console.error('Error fetching customer:', err);
+      } catch {
+        // failed to fetch customer
       }
     };
 

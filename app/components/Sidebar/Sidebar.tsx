@@ -16,12 +16,12 @@ import Juridical from "../Juridical/Juridical";
  */
 export default function Sidebar({isUserLogedIn, isAdmin = false}: {isUserLogedIn: boolean; isAdmin?: boolean}) {
   // Filter links based on user role
-  const allLinks = ["Dashboard", "Customers", "Users", "Email", "Calendar", "Settings", "Log", "Help"];
+  const allLinks = ["Dashboard", "Customers", "Users", "Email", "Inbox", "Calendar", "Settings", "Log", "Help"];
   
   // Only show Users and Log for admin users
   const linksArray = isUserLogedIn 
     ? allLinks.filter(link => {
-        if (!isAdmin && (link === "Users" || link === "Log")) {
+        if (!isAdmin && (link === "Users" || link === "Log" || link === "Inbox")) {
           return false;
         }
         return true;

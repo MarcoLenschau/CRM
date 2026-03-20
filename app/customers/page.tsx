@@ -18,14 +18,13 @@ async function fetchCustomers(): Promise<Customer[]> {
     const response = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/customer`);
     
     if (!response.ok) {
-      console.error('Failed to fetch customers');
+      // failed to fetch customers
       return [];
     }
     
     const data = await response.json();
     return data.customers || [];
-  } catch (error) {
-    console.error('Error fetching customers:', error);
+  } catch {
     return [];
   }
 }

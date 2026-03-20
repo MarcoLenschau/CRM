@@ -44,12 +44,11 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
     });
     
     return Response.json({ success: true, message: "Event deleted successfully" }, { status: 200 });
-  } catch (error) {
-    console.error("Event deletion error:", error);
+  } catch {
     return Response.json({ 
       success: false,
       error: "Failed to delete event",
-      details: error instanceof Error ? error.message : String(error)
+      details: 'Unknown error'
     }, { status: 400 });
   }
 }

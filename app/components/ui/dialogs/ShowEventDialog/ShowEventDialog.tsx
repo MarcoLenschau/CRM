@@ -31,7 +31,6 @@ export default function ShowEventDialog({ isOpen, onClose, selectedEvent }: Show
   const handleConfirmDelete = async () => {
     try {
       setIsDeleting(true);
-      console.log("🗑️ Deleting event:", selectedEvent._id);
       
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/event/${selectedEvent._id}`, {
         method: 'DELETE',
@@ -40,18 +39,15 @@ export default function ShowEventDialog({ isOpen, onClose, selectedEvent }: Show
       });
 
       if (response.ok) {
-        console.log("✅ Event deleted successfully");
         // Benachrichtige andere Komponenten von der Löschung
         window.dispatchEvent(new Event('eventsUpdated'));
         setIsDeleteConfirmOpen(false);
         onClose();
       } else {
         const errorData = await response.json();
-        console.error("❌ Failed to delete event:", response.status, errorData);
         alert(`Event löschen fehlgeschlagen: ${errorData.error || 'Unbekannter Fehler'}`);
       }
-    } catch (error) {
-      console.error("❌ Error deleting event:", error);
+    } catch {
       alert('Fehler beim Löschen des Events');
     } finally {
       setIsDeleting(false);

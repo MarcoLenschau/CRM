@@ -21,9 +21,8 @@ export default async function CalendarPage() {
   try {
     const response: Response = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/event`);
     events = await response.json();
-    console.log(events);
-  } catch (error) {
-    console.error('Error fetching events:', error);
+  } catch {
+    // failed to fetch events
   }
   
   return (

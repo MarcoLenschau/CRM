@@ -43,13 +43,12 @@ export default function ActivityFeedTemplate() {
       if (response.ok) {
         const data = await response.json();
         const activities = Array.isArray(data) ? data : (data.data || data.logs || []);
-        setSortedActivity(activities);
-        console.log('Activity data loaded:', activities.length, 'items');
+  setSortedActivity(activities);
       } else {
-        console.error('API Error:', response.status);
+        // API error when fetching activity
       }
-    } catch (error) {
-      console.error('Fetch error:', error);
+    } catch {
+      // failed to fetch activity
     } finally {
       setLoading(false);
     }
@@ -62,10 +61,7 @@ export default function ActivityFeedTemplate() {
 
   // Listen for activity updates from other components
   useEffect(() => {
-    const handleActivityUpdate = () => {
-      console.log('Activity update event received');
-      fetchActivity();
-    };
+    const handleActivityUpdate = () => { fetchActivity(); };
 
     // Listen to custom event
     window.addEventListener('activityUpdated', handleActivityUpdate);

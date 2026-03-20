@@ -51,8 +51,7 @@ export default function Container({children}: {children: React.ReactNode}) {
         setUserState(false);
         setIsAdmin(false);
       }
-    } catch (error) {
-      console.error('Error checking auth status:', error);
+    } catch {
       setUserState(false);
       setIsAdmin(false);
     } finally {

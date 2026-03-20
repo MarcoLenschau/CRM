@@ -100,7 +100,7 @@ export default function UserStats({ userID, logs, getStatusColor }: UserStatsPro
 }
 
 const getRiskIndex = (logs: AuditLog[]): number => {
-    const riskValues: number[] = logs.map(log => log.status === "SUCCESS" ? 25 : log.status === "FAILED" ? 50 : log.status === "WARNING" ? 75 : 0);
-    console.log(riskValues, logs.length);
-    return riskValues.reduce((acc, num) => acc + num, 0) / logs.length;
+  if (!logs || logs.length === 0) return 0;
+  const riskValues: number[] = logs.map(log => log.status === "SUCCESS" ? 25 : log.status === "FAILED" ? 50 : log.status === "WARNING" ? 75 : 0);
+  return riskValues.reduce((acc, num) => acc + num, 0) / logs.length;
 };

@@ -19,7 +19,6 @@ const cache: CacheType = { con: null, promise: null };
  */
 const dbConnect = async () => {
   if (cache.con) {
-    console.log("Connection sucess");
     return cache.con;
   }
   if (!cache.promise) {
@@ -42,36 +41,7 @@ const dbConnect = async () => {
  * @author Marco Lenschau <contact@marco-lenschau.de>
  */
 const dbDisconnect = async () => {
-  console.log("DB connection closed")
   await mongoose.disconnect()
-};
-
-/**
- * Sends user registration data to the API endpoint.
- * Called during user account creation process.
- *
- * @param userName - User's display name
- * @param email - User's email address
- * @param password - User's password (should be hashed before sending)
- * @return Response from registration API
- * @category Authentication
- * @security Password should be transmitted over HTTPS only, never logged
- * @performance Network I/O, asynchronous non-blocking request
- * @author Marco Lenschau <contact@marco-lenschau.de>
- */
-const fetchData = async(userName: string, email: string, password: string): Promise<Response> => {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/register`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ 
-      name: userName,
-      email: email,
-      password: password
-    })
-  });
-  return response;
 };
 
 const mongodb = {dbConnect, dbDisconnect};

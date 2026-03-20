@@ -1,6 +1,5 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 export type Status = Promise<{status: number}>;
@@ -17,8 +16,6 @@ export type Status = Promise<{status: number}>;
  * @author Marco Lenschau <contact@marco-lenschau.de>
  */
 export default function Register() {
-  const searchParams = useSearchParams();
-  const [toastMessage, setToastMessage] = useState(searchParams.get("error") || "");
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
@@ -185,16 +182,10 @@ export default function Register() {
  * @author Marco Lenschau <contact@marco-lenschau.de>
  */
 const register = async(email: string, name: string, password: string, passwordRepeat: string): Promise<void> => {
-  if (password !== passwordRepeat) {
-    console.error("Passwords do not match");
-    return;
-  }
-  
-  if (!email || !name || !password) {
-    console.error("Please fill in all fields");
-    return;
-  }
-  const response = await fetchData(name, email, password);
+  if (password !== passwordRepeat) return;
+
+  if (!email || !name || !password) return;
+  void fetchData(name, email, password);
 };
 
 /**
