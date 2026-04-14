@@ -27,7 +27,7 @@ export default function LoginPage() {
       <div className="w-full max-w-sm bg-gray-900 rounded-xl p-8 flex flex-col gap-6">
         <h1 className="text-2xl font-semibold text-white text-center">Anmelden</h1>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4" noValidate>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div className="flex flex-col gap-1">
             <label htmlFor="email" className="text-sm text-gray-300">
               E-Mail
@@ -37,8 +37,10 @@ export default function LoginPage() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              aria-describedby={error ? "form-error" : undefined}
               className="rounded-md px-3 py-2 bg-gray-800 text-white border border-gray-600 focus:outline-none focus:border-indigo-500"
               autoComplete="email"
+              required
             />
           </div>
 
@@ -51,12 +53,18 @@ export default function LoginPage() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              aria-describedby={error ? "form-error" : undefined}
               className="rounded-md px-3 py-2 bg-gray-800 text-white border border-gray-600 focus:outline-none focus:border-indigo-500"
               autoComplete="current-password"
+              required
             />
           </div>
 
-          {error && <p className="text-red-400 text-sm">{error}</p>}
+          {error && (
+            <p id="form-error" role="alert" aria-live="polite" className="text-red-400 text-sm">
+              {error}
+            </p>
+          )}
 
           <button
             type="submit"
